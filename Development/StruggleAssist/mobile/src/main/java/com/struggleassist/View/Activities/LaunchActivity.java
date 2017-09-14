@@ -2,8 +2,12 @@ package com.struggleassist.View.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.widget.TextView;
 
+import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
+import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
 import com.struggleassist.R;
 import com.struggleassist.Controller.Utilities.CheckAPIandSensors;
 
@@ -11,6 +15,8 @@ public class LaunchActivity extends AppCompatActivity {
 
     TextView api;
     TextView hifi;
+    AccelerationController accel;
+    GravityController grav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,5 +31,10 @@ public class LaunchActivity extends AppCompatActivity {
 
         api.setText(Integer.toString(apiVal));
         hifi.setText(String.valueOf(hifiSensors));
+
+        //register sensors
+        accel = new AccelerationController(this);
+        grav = new GravityController(this);
+
     }
 }
