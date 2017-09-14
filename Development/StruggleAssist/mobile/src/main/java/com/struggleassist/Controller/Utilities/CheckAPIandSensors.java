@@ -1,4 +1,4 @@
-package com.struggleassist.Utilities;
+package com.struggleassist.Controller.Utilities;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

@@ -1,11 +1,11 @@
-package com.struggleassist.Activities;
+package com.struggleassist.View.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.struggleassist.R;
-import com.struggleassist.Utilities.CheckAPIandSensors;
+import com.struggleassist.Controller.Utilities.CheckAPIandSensors;
 
 public class LaunchActivity extends AppCompatActivity {
 
