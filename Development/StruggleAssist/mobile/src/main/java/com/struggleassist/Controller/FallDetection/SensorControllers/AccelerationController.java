@@ -7,6 +7,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.struggleassist.Controller.FallDetection.FallDetection;
+import com.struggleassist.Controller.FallDetection.SensorData;
+
 /**
  * Created by lucas on 9/14/2017.
  * Purpose: Will control the low level interactions with the devices linear accelerometer (no gravity)
@@ -45,9 +48,18 @@ public class AccelerationController implements SensorEventListener {
         xAccel = event.values[0]; //x-axis (wide)
         yAccel = event.values[1]; //y-axis (tall)
         zAccel = event.values[2]; //z-axis (screen)
+        SensorData.setAccelX(xAccel);
+        SensorData.setAccelY(yAccel);
+        SensorData.setAccelZ(zAccel);
 
-        Log.d("SENSOR", "ACCEL");
+        Log.d("ACCEL SENSOR", "xAccel " + xAccel);
+        Log.d("ACCEL SENSOR", "yAccel " + yAccel);
+        Log.d("ACCEL SENSOR", "zAccel " + zAccel);
+
         //trigger fall detection class somewhere in here based on conditionals
+        if(xAccel > 10 || yAccel > 10 || zAccel > 10){
+            FallDetection.run();
+        }
     }
 
     //**********************************************************************************************

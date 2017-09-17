@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
+import com.struggleassist.Controller.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.Controller.Utilities.CheckAPIandSensors;
 
@@ -22,6 +23,7 @@ public class LaunchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
+        ViewContext.setContext(this);
 
         api = (TextView) findViewById(R.id.api);
         hifi = (TextView) findViewById(R.id.hifi);
@@ -32,9 +34,8 @@ public class LaunchActivity extends AppCompatActivity {
         api.setText(Integer.toString(apiVal));
         hifi.setText(String.valueOf(hifiSensors));
 
+
         //register sensors
         accel = new AccelerationController(this);
-        grav = new GravityController(this);
-
     }
 }

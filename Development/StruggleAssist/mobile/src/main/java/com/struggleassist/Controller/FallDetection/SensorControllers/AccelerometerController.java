@@ -1,0 +1,9 @@
+package com.struggleassist.Controller.FallDetection.SensorControllers;
+
+/**
+ * Created by lucas on 9/14/2017.
+ * Purpose: Will control the low level interactions with the devices accelerometer (include gravity)
+ */
+
+public class AccelerometerController {
+}
