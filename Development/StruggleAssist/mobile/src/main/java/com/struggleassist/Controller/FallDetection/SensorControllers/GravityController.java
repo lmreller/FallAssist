@@ -45,7 +45,7 @@ public class GravityController implements SensorEventListener{
         xGravity = event.values[0]; //x-axis (wide)
         yGravity = event.values[1]; //y-axis (tall)
         zGravity = event.values[2]; //z-axis (screen)
-        Log.d("SENSOR", "GRAV");
+//        Log.d("SENSOR", "GRAV");
     }
 
     //**********************************************************************************************

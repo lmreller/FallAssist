@@ -57,7 +57,9 @@ public class AccelerationController implements SensorEventListener {
         Log.d("ACCEL SENSOR", "zAccel " + zAccel);
 
         //trigger fall detection class somewhere in here based on conditionals
-        if(xAccel > 10 || yAccel > 10 || zAccel > 10){
+        if(Math.abs(xAccel) > 10 ||Math.abs(yAccel) > 10 || Math.abs(zAccel) > 10){
+            Log.d("FALL", "Potential Fall");
+
             FallDetection.run();
         }
     }

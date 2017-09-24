@@ -1,4 +1,4 @@
-package com.struggleassist.Controller;
+package com.struggleassist.Model;
 
 import android.content.Context;
 
