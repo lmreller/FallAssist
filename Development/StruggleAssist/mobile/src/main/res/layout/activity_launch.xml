@@ -29,4 +29,17 @@
         app:layout_constraintTop_toBottomOf="@+id/api"
         app:layout_constraintVertical_bias="0.164" />
 
+    <Button
+        android:id="@+id/bCreatProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Profile"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="324dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hifi"
+        app:layout_constraintVertical_bias="0.164" />
+
 </android.support.constraint.ConstraintLayout>
