@@ -1,6 +1,7 @@
 package com.struggleassist.View.Activities;
 
 import android.content.Intent;
+import android.hardware.Sensor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
+import com.struggleassist.Controller.FallDetection.SensorControllers.SensorController;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.Controller.Utilities.CheckAPIandSensors;
@@ -22,8 +24,8 @@ public class LaunchActivity extends AppCompatActivity {
 
     TextView api;
     TextView hifi;
-    AccelerationController accel;
-    GravityController grav;
+    SensorController accel;
+    SensorController grav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,8 @@ public class LaunchActivity extends AppCompatActivity {
 
         //register sensors
         accel = new AccelerationController(this);
-
+		
+		accel.start();
 
         //Create Profile Button
         Button bCreateProfile = (Button) findViewById(R.id.bCreatProfile);
