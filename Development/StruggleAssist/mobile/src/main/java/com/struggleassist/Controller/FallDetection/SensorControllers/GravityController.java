@@ -13,9 +13,6 @@ import android.util.Log;
  */
 
 public class GravityController extends SensorController{
-    private float xGravity;
-    private float yGravity;
-    private float zGravity;
 
     //**********************************************************************************************
     //Description: Constuctor for the GravityController
@@ -35,26 +32,8 @@ public class GravityController extends SensorController{
     //**********************************************************************************************
     @Override
     public void onSensorChanged(SensorEvent event){
-        xGravity = event.values[0]; //x-axis (wide)
-        yGravity = event.values[1]; //y-axis (tall)
-        zGravity = event.values[2]; //z-axis (screen)
+        xValue = event.values[0]; //x-axis (wide)
+        yValue = event.values[1]; //y-axis (tall)
+        zValue = event.values[2]; //z-axis (screen)
     }
-
-    //**********************************************************************************************
-    //Description: GETTERS
-    //Input: N/A
-    //Result: Each respective variable is returned to the function call location
-    //**********************************************************************************************
-    public float getxGravity(){
-        return xGravity;
-    }
-
-    public float getyGravity(){
-        return yGravity;
-    }
-
-    public float getzGravity(){
-        return zGravity;
-    }
-    //END GETTERS
 }

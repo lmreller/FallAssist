@@ -15,6 +15,10 @@ public class SensorController implements SensorEventListener{
     protected SensorManager mSensorManager;
     protected Sensor mSensor;
 
+    protected float xValue;
+    protected float yValue;
+    protected float zValue;
+
     public SensorController(Context context){
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
@@ -41,4 +45,21 @@ public class SensorController implements SensorEventListener{
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
+    //**********************************************************************************************
+    //Description: GETTERS
+    //Input: N/A
+    //Result: Each respective variable is returned to the function call location
+    //**********************************************************************************************
+    public float getxValue() {
+        return xValue;
+    }
+
+    public float getyValue() {
+        return yValue;
+    }
+
+    public float getzValue() {
+        return zValue;
+    }
+    //END GETTERS
 }
