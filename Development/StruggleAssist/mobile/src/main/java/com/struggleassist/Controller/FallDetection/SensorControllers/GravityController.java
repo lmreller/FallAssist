@@ -12,28 +12,80 @@ import android.util.Log;
  * Purpose: Will control the low level interactions with the devices gravity sensor
  */
 
-public class GravityController extends SensorController{
+public class GravityController implements SensorEventListener{
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private float xGravity;
+    private float yGravity;
+    private float zGravity;
 
     //**********************************************************************************************
     //Description: Constuctor for the GravityController
+    //
     //Input: Context context, should be 'this' to reference the device
+    //
     //Result: a new sensor setup is configured and registered with a listener for the gravity
     //        sensor in the device
     //**********************************************************************************************
     public GravityController(Context context){
-        super(context);
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        mSensorManager.registerListener(this, mSensor , SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     //**********************************************************************************************
     //Description: Event Listener for the gravity sensor
+    //
     //Input: SensorEvent event, sensor info from the phones hardware
+    //
     //Result: !!!!!!!!!!!!!!
     //**********************************************************************************************
     @Override
     public void onSensorChanged(SensorEvent event){
-        xValue = event.values[0]; //x-axis (wide)
-        yValue = event.values[1]; //y-axis (tall)
-        zValue = event.values[2]; //z-axis (screen)
+        xGravity = event.values[0]; //x-axis (wide)
+        yGravity = event.values[1]; //y-axis (tall)
+        zGravity = event.values[2]; //z-axis (screen)
+//        Log.d("SENSOR", "GRAV");
     }
+
+    //**********************************************************************************************
+    //Description: unused, required to implement SensorEvenListener
+    //
+    //Input: N/A
+    //
+    //Result: N/A
+    //**********************************************************************************************
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    //**********************************************************************************************
+    //Description: unregisters the event listener to conserve battery life
+    //
+    //Input: N/A
+    //
+    //Result: event listener no longer exists so sensor is no longer in use
+    //**********************************************************************************************
+    public void end(){
+        mSensorManager.unregisterListener(this);
+    }
+
+    //**********************************************************************************************
+    //Description: GETTERS
+    //
+    //Input: N/A
+    //
+    //Result: Each respective variable is returned to the function call location
+    //**********************************************************************************************
+    public float getxGravity(){
+        return xGravity;
+    }
+
+    public float getyGravity(){
+        return yGravity;
+    }
+
+    public float getzGravity(){
+        return zGravity;
+    }
+    //END GETTERS
 }

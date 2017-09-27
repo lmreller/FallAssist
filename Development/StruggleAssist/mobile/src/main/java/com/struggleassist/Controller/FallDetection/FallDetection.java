@@ -46,9 +46,9 @@ public class FallDetection {
                 accelData[0] = SensorData.getAccelX();
                 accelData[1] = SensorData.getAccelY();
                 accelData[2] = SensorData.getAccelZ();
-                gravData[0] = grav.getxValue();
-                gravData[1] = grav.getyValue();
-                gravData[2] = grav.getzValue();
+                gravData[0] = grav.getxGravity();
+                gravData[1] = grav.getyGravity();
+                gravData[2] = grav.getzGravity();
                 index = findFallDirection();
                 fallData.add(accelData[index]);
             }
