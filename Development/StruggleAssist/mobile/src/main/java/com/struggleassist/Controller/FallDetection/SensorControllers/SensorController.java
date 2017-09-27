@@ -15,6 +15,10 @@ public class SensorController implements SensorEventListener{
     protected SensorManager mSensorManager;
     protected Sensor mSensor;
 
+    protected float xValue;
+    protected float yValue;
+    protected float zValue;
+
     public SensorController(Context context){
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
@@ -35,10 +39,25 @@ public class SensorController implements SensorEventListener{
         mSensorManager.unregisterListener(this);
     }
 
-    //not used or implemented in subclasses
+    //Implemented in subclasses
     @Override
     public void onSensorChanged(SensorEvent event){}
+
+    //GETTERS
+    public float getxValue() {
+        return xValue;
+    }
+
+    public float getyValue() {
+        return yValue;
+    }
+
+    public float getzValue() {
+        return zValue;
+    }
+    //END GETTERS
+
+    //Un-used method required by SensorEventListener
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-
 }
