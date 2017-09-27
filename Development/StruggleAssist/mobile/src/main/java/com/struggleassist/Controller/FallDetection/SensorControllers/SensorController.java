@@ -1,0 +1,44 @@
+package com.struggleassist.Controller.FallDetection.SensorControllers;
+
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+
+/**
+ * Created by Lucas on 9/25/2017.
+ */
+
+public class SensorController implements SensorEventListener{
+
+    protected SensorManager mSensorManager;
+    protected Sensor mSensor;
+
+    public SensorController(Context context){
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+    }
+
+    //**********************************************************************************************
+    //Description: registers the event listener to the sensor
+    //Result: event listener is now registered and the sensor is ready to use
+    //**********************************************************************************************
+    public void start(){
+        mSensorManager.registerListener(this, mSensor , SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    //**********************************************************************************************
+    //Description: unregisters the event listener to conserve battery life
+    //Result: event listener no longer exists so sensor is no longer in use
+    //**********************************************************************************************
+    public void end(){
+        mSensorManager.unregisterListener(this);
+    }
+
+    //not used or implemented in subclasses
+    @Override
+    public void onSensorChanged(SensorEvent event){}
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+}

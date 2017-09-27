@@ -15,32 +15,25 @@ import com.struggleassist.Controller.FallDetection.SensorData;
  * Purpose: Will control the low level interactions with the devices linear accelerometer (no gravity)
  */
 
-public class AccelerationController implements SensorEventListener {
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
+public class AccelerationController extends SensorController {
     private float xAccel;
     private float yAccel;
     private float zAccel;
 
     //**********************************************************************************************
     //Description: Constuctor for the AccelerationController
-    //
     //Input: Context context, should be 'this' to reference the device
-    //
     //Result: a new sensor setup is configured and registered with a listener for the linear
     //        acceleration sensor in the device
     //**********************************************************************************************
     public AccelerationController(Context context){
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        super(context);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        mSensorManager.registerListener(this, mSensor , SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     //**********************************************************************************************
     //Description: Event Listener for the linear acceleration sensor
-    //
     //Input: SensorEvent event, sensor info from the phones hardware
-    //
     //Result: !!!!!!!!!!!!!!
     //**********************************************************************************************
     @Override
@@ -64,32 +57,9 @@ public class AccelerationController implements SensorEventListener {
         }
     }
 
-    //**********************************************************************************************
-    //Description: unused, required to implement SensorEvenListener
-    //
-    //Input: N/A
-    //
-    //Result: N/A
-    //**********************************************************************************************
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-
-    //**********************************************************************************************
-    //Description: unregisters the event listener to conserve battery life
-    //
-    //Input: N/A
-    //
-    //Result: event listener no longer exists so sensor is no longer in use
-    //**********************************************************************************************
-    public void end(){
-        mSensorManager.unregisterListener(this);
-    }
 
     //**********************************************************************************************
     //Description: GETTERS
-    //
-    //Input: N/A
-    //
     //Result: Each respective variable is returned to the function call location
     //**********************************************************************************************
     public float getxAccel(){
