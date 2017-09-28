@@ -58,6 +58,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         finish();
     }
 
+    //Launch DatePickerDialog when selecting Date of Birth text field
     public void launchDatePicker(View v){
         //To show current date in the datepicker
         Calendar mcurrentDate=Calendar.getInstance();
@@ -65,12 +66,12 @@ public class CreateProfileActivity extends AppCompatActivity {
         int mMonth=mcurrentDate.get(Calendar.MONTH);
         int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog mDatePicker= new DatePickerDialog(CreateProfileActivity.this, AlertDialog.THEME_HOLO_LIGHT,
-                new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog mDatePicker= new DatePickerDialog(CreateProfileActivity.this,
+                AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                etDateOfBirth.setText((++selectedmonth)+"/"+selectedday+"/"+selectedyear);
+                etDateOfBirth.setText((++selectedmonth)+"/"+selectedday+"/"+selectedyear);      //Set etDateOfBirth text field to selected date
             }
         },mYear, mMonth, mDay);
-        mDatePicker.setTitle("Select date");
+        mDatePicker.setTitle("Select date");s
         mDatePicker.show();}
 }
