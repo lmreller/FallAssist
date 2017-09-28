@@ -23,7 +23,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="date"
-        android:hint="Date"
+        android:hint="Date of Birth"
+        android:focusable="false"
+        android:onClick="launchDatePicker"
         app:layout_constraintTop_toBottomOf="@+id/etName"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
@@ -44,6 +46,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/bCancel"
         android:text="Cancel"
+        android:onClick="cancelCreateProfile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/bConfirm"/>
@@ -53,6 +56,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/bConfirm"
         android:text="Confirm"
+        android:onClick="confirmCreateProfile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/bCancel"/>

@@ -20,6 +20,8 @@ public class LaunchActivity extends AppCompatActivity {
 
     TextView api;
     TextView hifi;
+    Button bCreateProfile;
+
     SensorController accel;
     SensorController grav;
 
@@ -36,6 +38,9 @@ public class LaunchActivity extends AppCompatActivity {
         api = (TextView) findViewById(R.id.api);
         hifi = (TextView) findViewById(R.id.hifi);
 
+        //Create Profile Button
+        bCreateProfile = (Button) findViewById(R.id.bCreateProfile);
+
         int apiVal = CheckAPIandSensors.getAPINumber();
         boolean hifiSensors = CheckAPIandSensors.highAccuracySensorSupport(this);
 
@@ -46,16 +51,13 @@ public class LaunchActivity extends AppCompatActivity {
         //register sensors
         accel = new AccelerationController(this);
         accel.start();
+    }
 
-        //Create Profile Button
-        Button bCreateProfile = (Button) findViewById(R.id.bCreateProfile);
-        bCreateProfile.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent i = new Intent(getApplicationContext(),CreateProfileActivity.class);
-                startActivityForResult(i, 1);
-            }
-        });
+
+    //Launch CreateProfileActivity (button click)
+    public void createProfileLaunch(View v){
+        Intent i = new Intent(getApplicationContext(),CreateProfileActivity.class);
+        startActivityForResult(i, 1);
     }
 
     //Retrieve information from CreateProfile activity
