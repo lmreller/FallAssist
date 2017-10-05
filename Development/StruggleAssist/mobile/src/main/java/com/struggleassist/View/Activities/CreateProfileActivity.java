@@ -72,6 +72,6 @@ public class CreateProfileActivity extends AppCompatActivity {
                 etDateOfBirth.setText((++selectedmonth)+"/"+selectedday+"/"+selectedyear);      //Set etDateOfBirth text field to selected date
             }
         },mYear, mMonth, mDay);
-        mDatePicker.setTitle("Select date");s
+        mDatePicker.setTitle("Select date");
         mDatePicker.show();}
 }

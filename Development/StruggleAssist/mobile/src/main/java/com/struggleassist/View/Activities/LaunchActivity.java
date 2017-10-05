@@ -74,4 +74,9 @@ public class LaunchActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void settingsLaunch(View v){
+        Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+        startActivity(i);
+    }
 }

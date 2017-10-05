@@ -16,7 +16,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.Activities.CreateProfileActivity"></activity>
+        <activity android:name=".View.Activities.CreateProfileActivity" />
+        <activity
+            android:name=".View.Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".View.Activities.LaunchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.struggleassist.View.Activities.LaunchActivity" />
+        </activity>
     </application>
 
 </manifest>
