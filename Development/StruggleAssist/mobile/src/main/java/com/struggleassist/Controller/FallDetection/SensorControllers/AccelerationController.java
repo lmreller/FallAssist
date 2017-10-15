@@ -17,6 +17,8 @@ import com.struggleassist.Controller.FallDetection.SensorData;
 
 public class AccelerationController extends SensorController {
 
+    private final static int startThreshold = 5;
+
     //**********************************************************************************************
     //Description: Constuctor for the AccelerationController
     //Input: Context context, should be 'this' to reference the device
@@ -47,7 +49,7 @@ public class AccelerationController extends SensorController {
         Log.d("ACCEL SENSOR", "zAccel " + zValue);
 
         //trigger fall detection class somewhere in here based on conditionals
-        if(Math.abs(xValue) > 10 ||Math.abs(yValue) > 10 || Math.abs(zValue) > 10){
+        if(Math.abs(xValue) > startThreshold ||Math.abs(yValue) > startThreshold || Math.abs(zValue) > startThreshold){
             Log.d("FALL", "Potential Fall");
 
             FallDetection.run();
