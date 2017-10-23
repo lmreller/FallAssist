@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
 import com.struggleassist.Model.ViewContext;
+import com.struggleassist.View.Notifications.Notification;
 import com.struggleassist.View.Notifications.ToastController;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class FallDetection {
     private static ToastController potentialFall;
     private static ToastController falseAlarm;
 
+    private static Notification notification;
+
     private static float min;
     private static float Q1;
     private static float med;
@@ -39,6 +42,8 @@ public class FallDetection {
         potentialFall = new ToastController("Potential Fall!");
         fallDetected = new ToastController("Fall Detected!");
         falseAlarm = new ToastController("False Alarm!");
+
+        notification = new Notification(ViewContext.getContext());
 
 
         potentialFall.showToastShort();
@@ -79,7 +84,8 @@ public class FallDetection {
                 Log.d("SCORE", Float.toString(incidentScore));
 
                 if(incidentScore > 4)
-                    fallDetected.showToastLong();
+                    notification.Notify("Fall detected!",""); //Notify user of fall (Title, description)
+                    //fallDetected.showToastLong();
                 else
                     falseAlarm.showToastLong();
             }
