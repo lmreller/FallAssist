@@ -1,4 +1,4 @@
-package com.struggleassist.Controller.FallDetection.SensorControllers;
+package com.struggleassist.Controller.FallDetection.SensorControllers.Unused;
 
 /**
  * Created by lucas on 9/14/2017.

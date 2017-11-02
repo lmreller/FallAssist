@@ -23,6 +23,7 @@ public class FallDetection {
 
     private static AccelerationController accel;
     private static GravityController grav;
+
     private static float accelData[] = new float[3];
     private static float gravData[] = new float[3];
     private static ArrayList<Float> fallData = new ArrayList<Float>();
@@ -98,7 +99,7 @@ public class FallDetection {
                     notification.Notify("Fall detected!",""); //Notify user of fall (Title, description)
                     //fallDetected.showToastLong();
                 else
-                    falseAlarm.showToastLong();
+                    falseAlarm.showToastLong();//debugging purposes only
 
                 accel.stopSensor();
                 grav.stopSensor();

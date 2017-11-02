@@ -1,4 +1,4 @@
-package com.struggleassist.Controller.FallDetection.SensorControllers;
+package com.struggleassist.Controller.FallDetection.SensorControllers.Unused;
 
 import android.content.Context;
 import android.hardware.Sensor;
