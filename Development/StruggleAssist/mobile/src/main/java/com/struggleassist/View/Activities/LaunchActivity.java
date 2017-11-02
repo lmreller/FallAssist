@@ -47,7 +47,7 @@ public class LaunchActivity extends AppCompatActivity {
         hifi.setText(String.valueOf(hifiSensors));
 
 
-        FallDetection.start();
+        FallDetection.startDetection();
     }
 
 

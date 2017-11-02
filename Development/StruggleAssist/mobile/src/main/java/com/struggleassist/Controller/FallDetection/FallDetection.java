@@ -34,21 +34,21 @@ public class FallDetection {
 
     private static Notification notification;
 
-    private static float min;
     private static float Q1;
     private static float med;
     private static float Q3;
     private static float max;
     private static float incidentScore;
-    private static float avg;
 
-    public static void start(){
+    public static void startDetection() {
+        Log.d("START", "Start start()");
         accel = new AccelerationController(ViewContext.getContext(), true);
         accel.start();
     }
 
-    public static void run(){
-        accel.stopSensor();
+    public static void runAlgorithm() {
+        Log.d("RUN", "Start run()");
+
         accel = new AccelerationController(ViewContext.getContext(), false);
         grav = new GravityController(ViewContext.getContext());
         accel.start();
@@ -64,11 +64,11 @@ public class FallDetection {
         potentialFall.showToastShort();
 
         //timer for fall duration and to collect data on ticks
-        new CountDownTimer(timerLength, tickLength){
+        new CountDownTimer(timerLength, tickLength) {
 
             int index;
 
-            public void onTick(long millisUntilFinished){
+            public void onTick(long millisUntilFinished) {
                 accelData[0] = Math.abs(accel.getxValue());
                 accelData[1] = Math.abs(accel.getyValue());
                 accelData[2] = Math.abs(accel.getzValue());
@@ -79,11 +79,9 @@ public class FallDetection {
                 fallData.add(accelData[index]);
             }
 
-            public void onFinish(){
-
+            public void onFinish() {
                 Collections.sort(fallData);
 
-                min = findMin();
                 Q1 = findQ1();
                 med = findMed();
                 Q3 = findQ3();
@@ -91,92 +89,85 @@ public class FallDetection {
 
                 incidentScore = calcWeightedScore();
 
-                Log.d("MIN", Float.toString(min));
                 Log.d("Q1", Float.toString(Q1));
                 Log.d("MED", Float.toString(med));
                 Log.d("Q3", Float.toString(Q3));
                 Log.d("MAX", Float.toString(max));
                 Log.d("SCORE", Float.toString(incidentScore));
 
-                if(incidentScore > 4)
-                    notification.Notify("Fall detected!",""); //Notify user of fall (Title, description)
-                    //fallDetected.showToastLong();
-                else
+                if (incidentScore > 3.5) {
+                    notification.Notify("Fall detected!", ""); //Notify user of fall (Title, description)
+                    fallDetected.showToastLong();
+                } else
                     falseAlarm.showToastLong();//debugging purposes only
-
                 accel.stopSensor();
                 grav.stopSensor();
-                start();
+                startDetection();
             }
         }.start();
     }
 
-    private static int findFallDirection(){
+    private static int findFallDirection() {
         int direction = 4;
 
-        if(gravData[0] >= gravData[1] && gravData[0] >= gravData[2])
+        if (gravData[0] >= gravData[1] && gravData[0] >= gravData[2])
             direction = 0;
-        else if(gravData[1] >= gravData[0] && gravData[1] >= gravData[2])
+        else if (gravData[1] >= gravData[0] && gravData[1] >= gravData[2])
             direction = 1;
-        else if(gravData[2] >= gravData[0] && gravData[2] >= gravData[1])
+        else if (gravData[2] >= gravData[0] && gravData[2] >= gravData[1])
             direction = 2;
         return direction;
     }
 
-    private static float findMin(){
-        return fallData.get(0);
-    }
-
-    private static float findQ1(){
+    private static float findQ1() {
         ArrayList<Float> lowerHalf = new ArrayList<Float>();
-        for(int i = 0; i < fallData.size()/2; i++)
+        for (int i = 0; i < fallData.size() / 2; i++)
             lowerHalf.add(fallData.get(i));
 
-        float upperMed = lowerHalf.get(lowerHalf.size()/2);
-        float lowerMed = lowerHalf.get((lowerHalf.size()/2)-1);
+        float upperMed = lowerHalf.get(lowerHalf.size() / 2);
+        float lowerMed = lowerHalf.get((lowerHalf.size() / 2) - 1);
 
-        return(upperMed+lowerMed)/2;
+        return (upperMed + lowerMed) / 2;
     }
 
-    private static float findMed(){
-        float upperMed = fallData.get(fallData.size()/2);
-        float lowerMed = fallData.get((fallData.size()/2)-1);
-        return(upperMed+lowerMed)/2;
+    private static float findMed() {
+        float upperMed = fallData.get(fallData.size() / 2);
+        float lowerMed = fallData.get((fallData.size() / 2) - 1);
+        return (upperMed + lowerMed) / 2;
     }
 
-    private static float findQ3(){
+    private static float findQ3() {
         ArrayList<Float> upperHalf = new ArrayList<Float>();
-        for(int i = fallData.size()/2; i < fallData.size(); i++)
+        for (int i = fallData.size() / 2; i < fallData.size(); i++)
             upperHalf.add(fallData.get(i));
 
-        float upperMed = upperHalf.get(upperHalf.size()/2);
-        float lowerMed = upperHalf.get((upperHalf.size()/2)-1);
+        float upperMed = upperHalf.get(upperHalf.size() / 2);
+        float lowerMed = upperHalf.get((upperHalf.size() / 2) - 1);
 
-        return(upperMed+lowerMed)/2;
+        return (upperMed + lowerMed) / 2;
     }
 
-    private static float findMax(){
-        return fallData.get(fallData.size()-1);
+    private static float findMax() {
+        return fallData.get(fallData.size() - 1);
     }
 
-    private static float calcWeightedScore(){
-        float minWeight = 0.1f;
+    private static float calcWeightedScore() {
         float Q1Weight = 0.125f;
-        float avgWeight = 0.25f;
+        float medWeight = 0.35f;
         float Q3Weight = 0.125f;
         float maxWeight = 0.4f;
 
-        float score = (minWeight*min) + (Q1Weight*Q1) + (avgWeight*avg) + (Q3Weight*Q3) + (maxWeight*max);
+        float score = (Q1Weight * Q1) + (medWeight * med) + (Q3Weight * Q3) + (maxWeight * max);
 
         return score;
     }
 
-    private static float calculateAverage(ArrayList<Float> list){
+    private static float calculateAverage(ArrayList<Float> list) {
         float total = 0;
 
-        for(int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             total += list.get(i);
         }
-        return total/list.size();
+        return total / list.size();
     }
 }

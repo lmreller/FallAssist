@@ -16,6 +16,7 @@ public class AccelerationController extends SensorController {
 
     private final static int startThreshold = 5;
     private boolean type;
+    private boolean triggered;
 
     //**********************************************************************************************
     //Description: Constuctor for the AccelerationController
@@ -26,8 +27,9 @@ public class AccelerationController extends SensorController {
     //**********************************************************************************************
     public AccelerationController(Context context, boolean type) {
         super(context);
-        this.type = type;
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        this.type = type;
+        triggered = false;
     }
 
     //**********************************************************************************************
@@ -43,9 +45,11 @@ public class AccelerationController extends SensorController {
 
         if (type) {
             //trigger fall detection class somewhere in here based on conditionals
-            if (Math.abs(xValue) > startThreshold || Math.abs(yValue) > startThreshold || Math.abs(zValue) > startThreshold) {
+            if ((Math.abs(xValue) > startThreshold || Math.abs(yValue) > startThreshold || Math.abs(zValue) > startThreshold) && !triggered) {
+                triggered = true;
                 Log.d("FALL", "Potential Fall");
-                FallDetection.run();
+                stopSensor();
+                FallDetection.runAlgorithm();
             }
         }
     }
