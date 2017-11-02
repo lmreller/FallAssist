@@ -2,7 +2,9 @@ package com.struggleassist.Controller.FallDetection;
 
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.View;
 
+import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.View.Notifications.Notification;
@@ -19,6 +21,8 @@ public class FallDetection {
     private static final int timerLength = 2000;
     private static final int tickLength = 50;
 
+    private static AccelerationController accel;
+    private static GravityController grav;
     private static float accelData[] = new float[3];
     private static float gravData[] = new float[3];
     private static ArrayList<Float> fallData = new ArrayList<Float>();
@@ -37,8 +41,15 @@ public class FallDetection {
     private static float incidentScore;
     private static float avg;
 
+    public static void start(){
+        accel = new AccelerationController(ViewContext.getContext(), true);
+    }
+
     public static void run(){
-        final GravityController grav = new GravityController(ViewContext.getContext());
+        accel.stopSensor();
+        accel = new AccelerationController(ViewContext.getContext(), false);
+        grav = new GravityController(ViewContext.getContext());
+
         potentialFall = new ToastController("Potential Fall!");
         fallDetected = new ToastController("Fall Detected!");
         falseAlarm = new ToastController("False Alarm!");
@@ -54,9 +65,9 @@ public class FallDetection {
             int index;
 
             public void onTick(long millisUntilFinished){
-                accelData[0] = Math.abs(SensorData.getAccelX());
-                accelData[1] = Math.abs(SensorData.getAccelY());
-                accelData[2] = Math.abs(SensorData.getAccelZ());
+                accelData[0] = Math.abs(accel.getxValue());
+                accelData[1] = Math.abs(accel.getyValue());
+                accelData[2] = Math.abs(accel.getzValue());
                 gravData[0] = grav.getxValue();
                 gravData[1] = grav.getyValue();
                 gravData[2] = grav.getzValue();
@@ -88,6 +99,10 @@ public class FallDetection {
                     //fallDetected.showToastLong();
                 else
                     falseAlarm.showToastLong();
+
+                accel.stopSensor();
+                grav.stopSensor();
+                start();
             }
         }.start();
     }

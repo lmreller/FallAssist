@@ -36,4 +36,8 @@ public class GravityController extends SensorController{
         yValue = event.values[1]; //y-axis (tall)
         zValue = event.values[2]; //z-axis (screen)
     }
+
+    public void stopSensor(){
+        mSensorManager.unregisterListener(this);
+    }
 }

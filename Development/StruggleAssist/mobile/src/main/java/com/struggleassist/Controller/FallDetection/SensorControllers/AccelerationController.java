@@ -18,15 +18,18 @@ import com.struggleassist.Controller.FallDetection.SensorData;
 public class AccelerationController extends SensorController {
 
     private final static int startThreshold = 5;
+    private boolean type;
 
     //**********************************************************************************************
     //Description: Constuctor for the AccelerationController
     //Input: Context context, should be 'this' to reference the device
+    //       boolean type, true is to start fall detection; false is for data collection
     //Result: a new sensor setup is configured and registered with a listener for the linear
     //        acceleration sensor in the device
     //**********************************************************************************************
-    public AccelerationController(Context context){
+    public AccelerationController(Context context, boolean type) {
         super(context);
+        this.type = type;
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
     }
 
@@ -36,23 +39,22 @@ public class AccelerationController extends SensorController {
     //Result: !!!!!!!!!!!!!!
     //**********************************************************************************************
     @Override
-    public void onSensorChanged(SensorEvent event){
+    public void onSensorChanged(SensorEvent event) {
         xValue = event.values[0]; //x-axis (wide)
         yValue = event.values[1]; //y-axis (tall)
         zValue = event.values[2]; //z-axis (screen)
-        SensorData.setAccelX(xValue);
-        SensorData.setAccelY(yValue);
-        SensorData.setAccelZ(zValue);
 
-        Log.d("ACCEL SENSOR", "xAccel " + xValue);
-        Log.d("ACCEL SENSOR", "yAccel " + yValue);
-        Log.d("ACCEL SENSOR", "zAccel " + zValue);
-
-        //trigger fall detection class somewhere in here based on conditionals
-        if(Math.abs(xValue) > startThreshold ||Math.abs(yValue) > startThreshold || Math.abs(zValue) > startThreshold){
-            Log.d("FALL", "Potential Fall");
-
-            FallDetection.run();
+        if (type) {
+            //trigger fall detection class somewhere in here based on conditionals
+            if (Math.abs(xValue) > startThreshold || Math.abs(yValue) > startThreshold || Math.abs(zValue) > startThreshold) {
+                Log.d("FALL", "Potential Fall");
+                FallDetection.run();
+            }
         }
     }
+
+    public void stopSensor(){
+        mSensorManager.unregisterListener(this);
+    }
+
 }
