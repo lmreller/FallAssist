@@ -18,7 +18,7 @@ import java.util.Collections;
  */
 
 public class FallDetection {
-    private static final int timerLength = 2000;
+    private static final int timerLength = 1000;
     private static final int tickLength = 50;
 
     private static AccelerationController accel;
@@ -38,6 +38,7 @@ public class FallDetection {
     private static float med;
     private static float Q3;
     private static float max;
+    private static float avg;
     private static float incidentScore;
 
     public static void startDetection() {
@@ -86,6 +87,7 @@ public class FallDetection {
                 med = findMed();
                 Q3 = findQ3();
                 max = findMax();
+                avg = calculateAverage(fallData);
 
                 incidentScore = calcWeightedScore();
 
@@ -93,9 +95,10 @@ public class FallDetection {
                 Log.d("MED", Float.toString(med));
                 Log.d("Q3", Float.toString(Q3));
                 Log.d("MAX", Float.toString(max));
+                Log.d("AVG", Float.toString(avg));
                 Log.d("SCORE", Float.toString(incidentScore));
 
-                if (incidentScore > 3.5) {
+                if (incidentScore > 3) {
                     notification.Notify("Fall detected!", ""); //Notify user of fall (Title, description)
                     fallDetected.showToastLong();
                 } else
@@ -152,12 +155,13 @@ public class FallDetection {
     }
 
     private static float calcWeightedScore() {
-        float Q1Weight = 0.125f;
-        float medWeight = 0.35f;
-        float Q3Weight = 0.125f;
-        float maxWeight = 0.4f;
+        float Q1Weight = 0.1f;
+        //float medWeight = 0.1f;
+        float Q3Weight = 0.1f;
+        float maxWeight = 0.2f;
+        float avgWeight = 0.6f;
 
-        float score = (Q1Weight * Q1) + (medWeight * med) + (Q3Weight * Q3) + (maxWeight * max);
+        float score = (Q1Weight * Q1) + (Q3Weight * Q3) + (maxWeight * max) + (avgWeight * avg);
 
         return score;
     }
