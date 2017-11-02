@@ -3,12 +3,9 @@ package com.struggleassist.Controller.FallDetection.SensorControllers;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.util.Log;
 
 import com.struggleassist.Controller.FallDetection.FallDetection;
-import com.struggleassist.Controller.FallDetection.SensorData;
 
 /**
  * Created by lucas on 9/14/2017.

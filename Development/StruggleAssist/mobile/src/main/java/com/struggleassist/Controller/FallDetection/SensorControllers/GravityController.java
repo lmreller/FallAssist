@@ -3,16 +3,13 @@ package com.struggleassist.Controller.FallDetection.SensorControllers;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.util.Log;
 
 /**
  * Created by lucas on 9/14/2017.
  * Purpose: Will control the low level interactions with the devices gravity sensor
  */
 
-public class GravityController extends SensorController{
+public class GravityController extends SensorController {
 
     //**********************************************************************************************
     //Description: Constuctor for the GravityController
