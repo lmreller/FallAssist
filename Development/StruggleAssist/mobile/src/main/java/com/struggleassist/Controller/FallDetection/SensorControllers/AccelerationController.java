@@ -50,8 +50,4 @@ public class AccelerationController extends SensorController {
         }
     }
 
-    public void stopSensor(){
-        mSensorManager.unregisterListener(this);
-    }
-
 }

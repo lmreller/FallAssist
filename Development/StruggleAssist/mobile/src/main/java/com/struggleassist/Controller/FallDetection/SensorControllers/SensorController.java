@@ -35,7 +35,7 @@ public class SensorController implements SensorEventListener{
     //Description: unregisters the event listener to conserve battery life
     //Result: event listener no longer exists so sensor is no longer in use
     //**********************************************************************************************
-    public void end(){
+    public void stopSensor(){
         mSensorManager.unregisterListener(this);
     }
 

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.struggleassist.Controller.FallDetection.FallDetection;
 import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.FallDetection.SensorControllers.SensorController;
 import com.struggleassist.Model.ViewContext;
@@ -46,9 +47,7 @@ public class LaunchActivity extends AppCompatActivity {
         hifi.setText(String.valueOf(hifiSensors));
 
 
-        //register sensors
-        accel = new AccelerationController(this);
-        accel.start();
+        FallDetection.start();
     }
 
 

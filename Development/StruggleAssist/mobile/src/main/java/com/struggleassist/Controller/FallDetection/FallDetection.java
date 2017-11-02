@@ -44,12 +44,15 @@ public class FallDetection {
 
     public static void start(){
         accel = new AccelerationController(ViewContext.getContext(), true);
+        accel.start();
     }
 
     public static void run(){
         accel.stopSensor();
         accel = new AccelerationController(ViewContext.getContext(), false);
         grav = new GravityController(ViewContext.getContext());
+        accel.start();
+        grav.start();
 
         potentialFall = new ToastController("Potential Fall!");
         fallDetected = new ToastController("Fall Detected!");
