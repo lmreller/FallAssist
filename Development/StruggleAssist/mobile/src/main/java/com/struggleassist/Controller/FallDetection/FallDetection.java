@@ -100,7 +100,7 @@ public class FallDetection {
 
                 if (incidentScore > 3) {
                     notification.Notify("Fall detected!", ""); //Notify user of fall (Title, description)
-                    fallDetected.showToastLong();
+                    //fallDetected.showToastLong(); //debugging purposes only
                 } else
                     falseAlarm.showToastLong();//debugging purposes only
                 accel.stopSensor();
