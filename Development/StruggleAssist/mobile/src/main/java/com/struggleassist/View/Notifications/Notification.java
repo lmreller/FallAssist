@@ -6,7 +6,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.LaunchActivity;
@@ -35,6 +37,9 @@ public class Notification {
     public static final String CONFIRM_ACTION = "com.struggleassist.View.Notifications.Notification.confirmAction";
     public static final String TIMEOUT_ACTION = "com.struggleassist.View.Notifications.Notification.timeoutAction";
 
+    public static final int timeoutLength = 30000;
+    public static final int tickLength = 1000;
+
     public void Notify(String notificationTitle, String notificationMessage){
 
         //Cancel action intent
@@ -58,11 +63,10 @@ public class Notification {
                 = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher_round,"Confirm",confirmPendingIntent).build();
 
         //Notification Timeout
-        AlarmManager alarmManager = (AlarmManager) nContext.getSystemService(Context.ALARM_SERVICE);
         Intent timeoutIntent = new Intent(nContext,NotificationReceiver.class)
             .setAction(TIMEOUT_ACTION)
             .putExtra("uniqueID",uniqueID);
-        PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+         PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Creates notification properties
         notification = new NotificationCompat.Builder(nContext)
@@ -79,12 +83,23 @@ public class Notification {
 
         //Brings user to LaunchActivity upon selecting the notification
         Intent launchIntent = new Intent(nContext, LaunchActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(nContext, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(nContext, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setContentIntent(pendingIntent);
 
         //Issues notification
         NotificationManager notificationManager = (NotificationManager) nContext.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(uniqueID,notification.build());
-        //alarmManager.setExact(AlarmManager.RTC,15000,timeoutPendingIntent);
+
+        new CountDownTimer(timeoutLength,tickLength){
+            public void onTick(long millisUntilFinished){
+            }
+            public void onFinish(){
+                try{
+                    timeoutPendingIntent.send(nContext,0,timeoutIntent);
+                } catch (PendingIntent.CanceledException e){
+                    System.out.println("Sending timeoutIntent failed");
+                }
+            }
+        }.start();
     }
 }
