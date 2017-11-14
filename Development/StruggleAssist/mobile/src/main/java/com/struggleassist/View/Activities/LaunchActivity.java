@@ -21,9 +21,6 @@ public class LaunchActivity extends AppCompatActivity {
     TextView hifi;
     Button bCreateProfile;
 
-    SensorController accel;
-    SensorController grav;
-
     String name;
     String dateOfBirth;
     String emergencyContact;
@@ -48,14 +45,18 @@ public class LaunchActivity extends AppCompatActivity {
 
 
         FallDetection.startDetection();
-    }
 
-
-    //Launch CreateProfileActivity (button click)
-    public void createProfileLaunch(View v){
-        Intent i = new Intent(getApplicationContext(),CreateProfileActivity.class);
+        Intent i = new Intent(getApplicationContext(),MainActivity.class);
         startActivityForResult(i, 1);
+        finish();
     }
+
+
+//    //Launch CreateProfileActivity (button click)
+//    public void createProfileLaunch(View v){
+//        Intent i = new Intent(getApplicationContext(),CreateProfileActivity.class);
+//        startActivityForResult(i, 1);
+//    }
 
     //Retrieve information from CreateProfile activity
     @Override
@@ -72,8 +73,8 @@ public class LaunchActivity extends AppCompatActivity {
         }
     }
 
-    public void settingsLaunch(View v){
-        Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
-        startActivity(i);
-    }
+//    public void settingsLaunch(View v){
+//        Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+//        startActivity(i);
+//    }
 }

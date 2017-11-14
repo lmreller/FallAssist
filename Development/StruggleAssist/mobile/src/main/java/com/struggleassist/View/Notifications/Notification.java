@@ -63,10 +63,10 @@ public class Notification {
                 = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher_round,"Confirm",confirmPendingIntent).build();
 
         //Notification Timeout
-        Intent timeoutIntent = new Intent(nContext,NotificationReceiver.class)
+        final Intent timeoutIntent = new Intent(nContext,NotificationReceiver.class)
             .setAction(TIMEOUT_ACTION)
             .putExtra("uniqueID",uniqueID);
-         PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+         final PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Creates notification properties
         notification = new NotificationCompat.Builder(nContext)
