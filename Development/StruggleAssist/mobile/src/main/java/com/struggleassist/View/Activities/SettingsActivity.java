@@ -2,6 +2,7 @@ package com.struggleassist.View.Activities;
 
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -266,4 +267,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
     }
+
 }
