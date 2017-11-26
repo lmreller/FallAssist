@@ -37,8 +37,7 @@ public class DatabaseController {
         this.context = ctx;
         DBHelper = new DatabaseHelper(context);
     }
-
-    //start
+    
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,7 +47,7 @@ public class DatabaseController {
         public void onCreate(SQLiteDatabase db) {
             try {
                 db.execSQL(CREATE_USER);
-                db.execSQL(CREATE_RECORDS);
+                //db.execSQL(CREATE_RECORDS);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -61,7 +60,6 @@ public class DatabaseController {
             onCreate(db);
         }
     }
-    //end
 
     //---opens the database--
     public DatabaseController open() throws SQLException {
@@ -74,6 +72,52 @@ public class DatabaseController {
         DBHelper.close();
     }
 
+    //USER OPERATIONS
+    //---insert a contact into the database--
+    public long insertUser(String fName, String lName, String dob, String contact) {
+        String id = fName + lName + dob;
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(KEY_UID, id);
+        initialValues.put(KEY_FIRSTNAME, fName);
+        initialValues.put(KEY_LASTNAME, lName);
+        initialValues.put(KEY_DOB, dob);
+        initialValues.put(KEY_EMERGENCY, contact);
+        return db.insert(DATABASE_TABLE, null, initialValues);
+    }
+
+    //---deletes a particular contact--
+    public boolean deleteUser(String id) {
+        return db.delete(DATABASE_TABLE, KEY_UID + "=" + id, null) > 0;
+    }
+
+    //---retrieves all the contacts--
+    public Cursor getAllUsers() {
+        return db.query(DATABASE_TABLE, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, null, null, null, null, null);
+    }
+
+    //---retrieves a particular contact--
+    public Cursor getUser(String id) throws SQLException {
+        Cursor mCursor = db.query(true, DATABASE_TABLE, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, KEY_UID + "=" + id, null, null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+    //---updates a contact--
+    public boolean updateUser(String id, String fName, String lName, String dob, String contact) {
+        ContentValues args = new ContentValues();
+        args.put(KEY_UID, id);
+        args.put(KEY_FIRSTNAME, fName);
+        args.put(KEY_LASTNAME, lName);
+        args.put(KEY_DOB, dob);
+        args.put(KEY_EMERGENCY, contact);
+        return db.update(DATABASE_TABLE, args, KEY_UID + "=" + id, null) > 0;
+    }
+
+/*
+
+    //RECORDS OPERATIONS
     //---insert a contact into the database--
     public long insertContact(String name, String email) {
         ContentValues initialValues = new ContentValues();
@@ -108,5 +152,8 @@ public class DatabaseController {
         args.put(KEY_EMAIL, email);
         return db.update(DATABASE_TABLE, args, KEY_UID + "=" + rowId, null) > 0;
     }
+
+    */
+
 }
 
