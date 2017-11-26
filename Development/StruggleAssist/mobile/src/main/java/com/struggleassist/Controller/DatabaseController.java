@@ -37,7 +37,7 @@ public class DatabaseController {
         this.context = ctx;
         DBHelper = new DatabaseHelper(context);
     }
-    
+
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,7 +56,7 @@ public class DatabaseController {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS contacts");
+            //db.execSQL("DROP TABLE IF EXISTS contacts");
             onCreate(db);
         }
     }
