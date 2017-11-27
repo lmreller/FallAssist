@@ -7,13 +7,26 @@
     tools:context="com.struggleassist.View.Activities.CreateProfileActivity">
 
     <EditText
-        android:id="@+id/etName"
+        android:id="@+id/etFirstName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Name"
+        android:inputType="textNoSuggestions|textVisiblePassword|textCapWords"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+        android:hint="First Name"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <EditText
+        android:id="@+id/etLastName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textNoSuggestions|textVisiblePassword|textCapWords"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+        android:hint="Last Name"
+        app:layout_constraintTop_toBottomOf="@id/etFirstName"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -23,10 +36,10 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="date"
-        android:hint="Date of Birth"
+        android:hint="Date of Birth (Month/Day/Year)"
         android:focusable="false"
         android:onClick="launchDatePicker"
-        app:layout_constraintTop_toBottomOf="@+id/etName"
+        app:layout_constraintTop_toBottomOf="@+id/etLastName"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -37,6 +50,8 @@
         android:ems="10"
         android:inputType="phone"
         android:hint="Emergency Contact Number"
+        android:focusable="false"
+        android:onClick="pickContact"
         app:layout_constraintTop_toBottomOf="@+id/etDateOfBirth"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

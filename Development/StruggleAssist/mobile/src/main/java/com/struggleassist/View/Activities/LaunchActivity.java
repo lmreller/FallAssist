@@ -18,7 +18,8 @@ public class LaunchActivity extends AppCompatActivity {
     TextView hifi;
     Button bCreateProfile;
 
-    String name;
+    String firstName;
+    String lastName;
     String dateOfBirth;
     String emergencyContact;
 
@@ -60,12 +61,14 @@ public class LaunchActivity extends AppCompatActivity {
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data){
 //        if(requestCode == 1){
 //            if(resultCode == RESULT_OK){
-//                name = data.getStringExtra("cpName");
+//                firstName = data.getStringExtra("cpFirstName");
+//                lastName = data.getStringExtra("cpLastName");
 //                dateOfBirth = data.getStringExtra("cpDateOfBirth");
 //                emergencyContact = data.getStringExtra("cpEmergencyContact");
 //
-//                Toast.makeText(getApplicationContext(), name + ", " + dateOfBirth + ", " +
-//                                emergencyContact, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), firstName + " " + lastName +
+//                                ", " + dateOfBirth + ", " + emergencyContact,
+//                                Toast.LENGTH_SHORT).show();
 //            }
 //        }
 //    }
