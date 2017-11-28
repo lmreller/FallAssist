@@ -28,26 +28,20 @@ public class LaunchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launch);
         ViewContext.setContext(this);
 
-        api = (TextView) findViewById(R.id.api);
-        hifi = (TextView) findViewById(R.id.hifi);
-
-        //Create Profile Button
-        bCreateProfile = (Button) findViewById(R.id.bCreateProfile);
-
-        int apiVal = CheckAPIandSensors.getAPINumber();
-        boolean hifiSensors = CheckAPIandSensors.highAccuracySensorSupport(this);
-
-        api.setText(Integer.toString(apiVal));
-        hifi.setText(String.valueOf(hifiSensors));
-
-
-        FallDetection.startDetection();
 
         Intent i = new Intent(getApplicationContext(),MainActivity.class);
         startActivityForResult(i, 1);
         finish();
     }
 
+    
+    public void checkSensorsandAPI(){
+        int apiVal = CheckAPIandSensors.getAPINumber();
+        boolean hifiSensors = CheckAPIandSensors.highAccuracySensorSupport(this);
+
+        api.setText(Integer.toString(apiVal));
+        hifi.setText(String.valueOf(hifiSensors));
+    }
 
 //    //Launch CreateProfileActivity (button click)
 //    public void createProfileLaunch(View v){
