@@ -14,6 +14,7 @@ import android.util.Log;
 
 public class DatabaseController {
     //user table
+    static final String TABLE_USER = "User";
     static final String KEY_UID = "uid";    //text
     static final String KEY_FIRSTNAME = "firstName";    //text
     static final String KEY_LASTNAME = "lastName";  //text
@@ -22,16 +23,17 @@ public class DatabaseController {
     static final String CREATE_USER = "create table User (uid text not null, firstName text not null, lastName text not null, dateOfBirth numeric not null, emergencyContact numeric not null, PRIMARY KEY (id));";
 
     //records table
-
+    static final String TABLE_RECORDS = "Records";
     static final String CREATE_RECORDS = "create table Records (_id integer primary key autoincrement, " + "name text not null, email text not null);";
 
     static final String TAG = "Database";
     static final String DATABASE_NAME = "StruggleAssist_DB";
-    static final String DATABASE_TABLE = "contacts";
+
     static final int DATABASE_VERSION = 1;
     final Context context;
     DatabaseHelper DBHelper;
     SQLiteDatabase db;
+    static boolean dbExists = true;
 
     public DatabaseController(Context ctx) {
         this.context = ctx;
@@ -48,8 +50,11 @@ public class DatabaseController {
             try {
                 db.execSQL(CREATE_USER);
                 //db.execSQL(CREATE_RECORDS);
+                //db.execSQL(CREATE_HOLDS);
+                dbExists = false;
             } catch (SQLException e) {
                 e.printStackTrace();
+                dbExists = true;
             }
         }
 
@@ -82,29 +87,29 @@ public class DatabaseController {
         initialValues.put(KEY_LASTNAME, lName);
         initialValues.put(KEY_DOB, dob);
         initialValues.put(KEY_EMERGENCY, contact);
-        return db.insert(DATABASE_TABLE, null, initialValues);
+        return db.insert(TABLE_USER, null, initialValues);
     }
 
-    //---deletes a particular contact--
+    //---deletes a particular user--(not used currently)
     public boolean deleteUser(String id) {
-        return db.delete(DATABASE_TABLE, KEY_UID + "=" + id, null) > 0;
+        return db.delete(TABLE_USER, KEY_UID + "=" + id, null) > 0;
     }
 
-    //---retrieves all the contacts--
+    //---retrieves all the users--
     public Cursor getAllUsers() {
-        return db.query(DATABASE_TABLE, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, null, null, null, null, null);
+        return db.query(TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, null, null, null, null, null);
     }
 
-    //---retrieves a particular contact--
+    //---retrieves a particular user--(not used currently)
     public Cursor getUser(String id) throws SQLException {
-        Cursor mCursor = db.query(true, DATABASE_TABLE, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, KEY_UID + "=" + id, null, null, null, null, null);
+        Cursor mCursor = db.query(true, TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, KEY_UID + "=" + id, null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
         return mCursor;
     }
 
-    //---updates a contact--
+    //---updates a user--
     public boolean updateUser(String id, String fName, String lName, String dob, String contact) {
         ContentValues args = new ContentValues();
         args.put(KEY_UID, id);
@@ -112,7 +117,7 @@ public class DatabaseController {
         args.put(KEY_LASTNAME, lName);
         args.put(KEY_DOB, dob);
         args.put(KEY_EMERGENCY, contact);
-        return db.update(DATABASE_TABLE, args, KEY_UID + "=" + id, null) > 0;
+        return db.update(TABLE_USER, args, KEY_UID + "=" + id, null) > 0;
     }
 
 /*
