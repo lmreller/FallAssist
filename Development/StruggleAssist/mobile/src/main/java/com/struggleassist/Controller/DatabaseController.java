@@ -90,17 +90,17 @@ public class DatabaseController {
         return db.insert(TABLE_USER, null, initialValues);
     }
 
-    //---deletes a particular contact--
+    //---deletes a particular user--(not used currently)
     public boolean deleteUser(String id) {
         return db.delete(TABLE_USER, KEY_UID + "=" + id, null) > 0;
     }
 
-    //---retrieves all the contacts--
+    //---retrieves all the users--
     public Cursor getAllUsers() {
         return db.query(TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, null, null, null, null, null);
     }
 
-    //---retrieves a particular contact--
+    //---retrieves a particular user--(not used currently)
     public Cursor getUser(String id) throws SQLException {
         Cursor mCursor = db.query(true, TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY}, KEY_UID + "=" + id, null, null, null, null, null);
         if (mCursor != null) {
@@ -109,7 +109,7 @@ public class DatabaseController {
         return mCursor;
     }
 
-    //---updates a contact--
+    //---updates a user--
     public boolean updateUser(String id, String fName, String lName, String dob, String contact) {
         ContentValues args = new ContentValues();
         args.put(KEY_UID, id);
