@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".View.Activities.CreateProfileActivity" />
+        <activity android:name=".View.Activities.Profile.CreateProfileActivity" />
 
         <activity
             android:name=".View.Activities.SettingsActivity"

@@ -3,15 +3,12 @@ package com.struggleassist.View.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
-import com.struggleassist.Controller.FallDetection.FallDetection;
 import com.struggleassist.Controller.Utilities.CheckAPIandSensors;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
+import com.struggleassist.View.Activities.Profile.CreateProfileActivity;
 
 public class LaunchActivity extends AppCompatActivity {
 
@@ -29,7 +26,7 @@ public class LaunchActivity extends AppCompatActivity {
             i = new Intent(getApplicationContext(), CreateProfileActivity.class);
         db.close();
 
-        startActivityForResult(i, 1);
+        startActivity(i);
         finish();
     }
 

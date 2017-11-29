@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.struggleassist.View.Activities.CreateProfileActivity">
+    tools:context="com.struggleassist.View.Activities.Profile.CreateProfileActivity">
 
     <EditText
         android:id="@+id/etFirstName"
@@ -61,7 +61,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:onClick="confirmCreateProfile"
+        android:onClick="create_onClick"
         android:text="Create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

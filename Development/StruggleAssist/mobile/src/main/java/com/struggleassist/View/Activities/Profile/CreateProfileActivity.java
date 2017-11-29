@@ -1,27 +1,25 @@
-package com.struggleassist.View.Activities;
+package com.struggleassist.View.Activities.Profile;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.icu.util.Calendar;
-import android.icu.util.TimeZone;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.R;
+import com.struggleassist.View.Activities.MainActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,30 +57,15 @@ public class CreateProfileActivity extends AppCompatActivity {
         bConfirm = (Button) findViewById(R.id.bConfirm);
     }
 
-    //Cancel Button Method
-    public void cancelCreateProfile(View v){
-        finish();
-    }
-
     //Confirm Button Method
-    public void confirmCreateProfile(View v){
-//        Intent intent = new Intent();
-//
+    public void create_onClick(View v){
         //Convert date formats
         try {
-            dateOfBirth = inputDateFormat.parse(etDateOfBirth.getText().toString());
+            dateOfBirth = storedDateFormat.parse(etDateOfBirth.getText().toString());
         }
         catch(Exception e){
             Log.d("dateOfBirthParse","Failed to parse dateOfBirth inputDateFormat");
         }
-//        //Send items in text fields back to previous activity
-//        intent.putExtra("cpFirstName",etFirstName.getText().toString());
-//        intent.putExtra("cpLastName",etLastName.getText().toString());
-//        intent.putExtra("cpDateOfBirth",storedDateFormat.format(dateOfBirth));
-//        intent.putExtra("cpEmergencyContact",etEmergencyContact.getText().toString());
-//
-//        setResult(RESULT_OK,intent);
-//        finish();
         DatabaseController db = new DatabaseController(this);
         db.open();
         db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), etDateOfBirth.getText().toString(), etEmergencyContact.getText().toString());
@@ -115,6 +98,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
     }
 
+    //needed for contact selector
     @Override
     public void onActivityResult(int reqCode,int resultCode, Intent data){
         if(reqCode == PICK_CONTACT_REQUEST){

@@ -15,6 +15,7 @@ import android.view.View;
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Controller.FallDetection.FallDetection;
 import com.struggleassist.R;
+import com.struggleassist.View.Activities.Profile.CreateProfileActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

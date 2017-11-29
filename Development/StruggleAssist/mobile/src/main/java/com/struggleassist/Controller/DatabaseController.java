@@ -82,7 +82,7 @@ public class DatabaseController {
         Cursor mcursor = db.rawQuery(count, null);
         mcursor.moveToFirst();
         int icount = mcursor.getInt(0);
-        boolean exists = icount>0;
+        boolean exists = icount > 0;
         Log.d("COUNT_USER", Integer.toString(icount));
         return exists;
     }
