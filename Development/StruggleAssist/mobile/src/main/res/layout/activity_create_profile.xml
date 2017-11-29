@@ -58,9 +58,8 @@
 
     <Button
         android:id="@+id/bConfirm"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="410dp"
+        android:layout_height="44dp"
         android:onClick="create_onClick"
         android:text="Create"
         app:layout_constraintBottom_toBottomOf="parent"
