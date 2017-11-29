@@ -20,7 +20,7 @@ public class DatabaseController {
     static final String KEY_LASTNAME = "lastName";  //text
     static final String KEY_DOB = "dateOfBirth";    //numeric
     static final String KEY_EMERGENCY = "emergencyContact"; //numeric
-    static final String CREATE_USER = "create table User (uid text not null, firstName text not null, lastName text not null, dateOfBirth numeric not null, emergencyContact numeric not null, PRIMARY KEY (id));";
+    static final String CREATE_USER = "CREATE TABLE IF NOT EXISTS User (uid text, firstName text, lastName text, dateOfBirth text, emergencyContact text, PRIMARY KEY (uid));";
 
     //records table
     static final String TABLE_RECORDS = "Records";
@@ -33,11 +33,13 @@ public class DatabaseController {
     final Context context;
     DatabaseHelper DBHelper;
     SQLiteDatabase db;
-    static boolean dbExists = true;
 
     public DatabaseController(Context ctx) {
         this.context = ctx;
         DBHelper = new DatabaseHelper(context);
+        open();
+        db.execSQL(CREATE_USER);
+        close();
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -51,10 +53,8 @@ public class DatabaseController {
                 db.execSQL(CREATE_USER);
                 //db.execSQL(CREATE_RECORDS);
                 //db.execSQL(CREATE_HOLDS);
-                dbExists = false;
             } catch (SQLException e) {
                 e.printStackTrace();
-                dbExists = true;
             }
         }
 
@@ -75,6 +75,21 @@ public class DatabaseController {
     //---closes the database--
     public void close() {
         DBHelper.close();
+    }
+
+    public boolean userExists(){
+        String count = "SELECT count(*) FROM " + TABLE_USER;
+        Cursor mcursor = db.rawQuery(count, null);
+        mcursor.moveToFirst();
+        int icount = mcursor.getInt(0);
+        boolean exists = icount>0;
+        Log.d("COUNT_USER", Integer.toString(icount));
+        return exists;
+    }
+
+    //dev purposes only
+    public void reset(){
+        db.execSQL("DROP TABLE "+TABLE_USER);
     }
 
     //USER OPERATIONS

@@ -8,7 +8,9 @@ import android.database.Cursor;
 import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.R;
 
 import java.text.DateFormat;
@@ -33,7 +36,6 @@ public class CreateProfileActivity extends AppCompatActivity {
     private EditText etEmergencyContact;
 
     private Button bConfirm;
-    private Button bCancel;
 
 
     DateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -55,7 +57,6 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         //Cancel and Confirm buttons
         bConfirm = (Button) findViewById(R.id.bConfirm);
-        bCancel = (Button) findViewById(R.id.bCancel);
     }
 
     //Cancel Button Method
@@ -65,8 +66,8 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     //Confirm Button Method
     public void confirmCreateProfile(View v){
-        Intent intent = new Intent();
-
+//        Intent intent = new Intent();
+//
         //Convert date formats
         try {
             dateOfBirth = inputDateFormat.parse(etDateOfBirth.getText().toString());
@@ -74,17 +75,24 @@ public class CreateProfileActivity extends AppCompatActivity {
         catch(Exception e){
             Log.d("dateOfBirthParse","Failed to parse dateOfBirth inputDateFormat");
         }
-        //Send items in text fields back to previous activity
-        intent.putExtra("cpFirstName",etFirstName.getText().toString());
-        intent.putExtra("cpLastName",etLastName.getText().toString());
-        intent.putExtra("cpDateOfBirth",storedDateFormat.format(dateOfBirth));
-        intent.putExtra("cpEmergencyContact",etEmergencyContact.getText().toString());
-
-        setResult(RESULT_OK,intent);
-        finish();
+//        //Send items in text fields back to previous activity
+//        intent.putExtra("cpFirstName",etFirstName.getText().toString());
+//        intent.putExtra("cpLastName",etLastName.getText().toString());
+//        intent.putExtra("cpDateOfBirth",storedDateFormat.format(dateOfBirth));
+//        intent.putExtra("cpEmergencyContact",etEmergencyContact.getText().toString());
+//
+//        setResult(RESULT_OK,intent);
+//        finish();
+        DatabaseController db = new DatabaseController(this);
+        db.open();
+        db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), etDateOfBirth.getText().toString(), etEmergencyContact.getText().toString());
+        db.close();
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 
     //Launch DatePickerDialog when selecting Date of Birth text field
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void launchDatePicker(View v){
         //To show current date in the datepicker
         Calendar mCurrentDate=Calendar.getInstance();

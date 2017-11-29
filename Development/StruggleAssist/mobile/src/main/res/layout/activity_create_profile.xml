@@ -57,23 +57,14 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/bCancel"
-        android:text="Cancel"
-        android:onClick="cancelCreateProfile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/bConfirm"/>
-
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:id="@+id/bConfirm"
-        android:text="Confirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:onClick="confirmCreateProfile"
+        android:text="Create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/bCancel"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -10,7 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Controller.FallDetection.FallDetection;
 import com.struggleassist.R;
 
@@ -90,4 +92,13 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void resetDB(View v){
+        DatabaseController db = new DatabaseController(this);
+
+        db.open();
+        db.reset();
+        db.close();
+    }
+
 }

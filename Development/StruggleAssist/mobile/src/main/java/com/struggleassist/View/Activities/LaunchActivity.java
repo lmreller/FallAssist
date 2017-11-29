@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Controller.FallDetection.FallDetection;
 import com.struggleassist.Controller.Utilities.CheckAPIandSensors;
 import com.struggleassist.Model.ViewContext;
@@ -14,34 +15,28 @@ import com.struggleassist.R;
 
 public class LaunchActivity extends AppCompatActivity {
 
-    TextView api;
-    TextView hifi;
-    Button bCreateProfile;
-
-    String firstName;
-    String lastName;
-    String dateOfBirth;
-    String emergencyContact;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
         ViewContext.setContext(this);
+        DatabaseController db = new DatabaseController(this);
+        Intent i;
+        db.open();
+        if (db.userExists())
+            i = new Intent(getApplicationContext(), MainActivity.class);
+        else
+            i = new Intent(getApplicationContext(), CreateProfileActivity.class);
+        db.close();
 
-
-        Intent i = new Intent(getApplicationContext(),MainActivity.class);
         startActivityForResult(i, 1);
         finish();
     }
 
-    
-    public void checkSensorsandAPI(){
+
+    public void checkSensorsandAPI() {
         int apiVal = CheckAPIandSensors.getAPINumber();
         boolean hifiSensors = CheckAPIandSensors.highAccuracySensorSupport(this);
-
-        api.setText(Integer.toString(apiVal));
-        hifi.setText(String.valueOf(hifiSensors));
     }
 
 //    //Launch CreateProfileActivity (button click)
