@@ -1,21 +1,16 @@
 package com.struggleassist.View.Notifications;
 
-import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.struggleassist.R;
-import com.struggleassist.View.Activities.LaunchActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
 
 /**
  * Created by Ryan on 10/20/2017.
@@ -45,8 +40,7 @@ public class Notification {
     public void Notify(String notificationTitle, String notificationMessage){
 
         RemoteViews remoteViews = new RemoteViews(nContext.getPackageName(),
-                R.layout.notification_layout);
-
+                R.layout.small_notification_layout);
 
         //Confirm action intent
         Intent confirmIntent = new Intent(nContext,NotificationReceiver.class)
@@ -60,8 +54,8 @@ public class Notification {
                 .putExtra("uniqueID",uniqueID);
         PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(nContext,0,cancelIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        remoteViews.setOnClickPendingIntent(R.id.notificationButtonConfirm, confirmPendingIntent);
-        remoteViews.setOnClickPendingIntent(R.id.notificationButtonCancel, cancelPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.smallNotificationButtonConfirm, confirmPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.smallNotificationButtonCancel, cancelPendingIntent);
 
         android.app.Notification notification = new NotificationCompat.Builder(nContext)
                 .setSmallIcon(R.mipmap.ic_launcher)
