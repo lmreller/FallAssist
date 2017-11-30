@@ -42,25 +42,4 @@ public class LaunchActivity extends AppCompatActivity {
 //        startActivityForResult(i, 1);
 //    }
 
-//    //Retrieve information from CreateProfile activity
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-//        if(requestCode == 1){
-//            if(resultCode == RESULT_OK){
-//                firstName = data.getStringExtra("cpFirstName");
-//                lastName = data.getStringExtra("cpLastName");
-//                dateOfBirth = data.getStringExtra("cpDateOfBirth");
-//                emergencyContact = data.getStringExtra("cpEmergencyContact");
-//
-//                Toast.makeText(getApplicationContext(), firstName + " " + lastName +
-//                                ", " + dateOfBirth + ", " + emergencyContact,
-//                                Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-
-//    public void settingsLaunch(View v){
-//        Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
-//        startActivity(i);
-//    }
 }
