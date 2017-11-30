@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    style="@android:style/TextAppearance.StatusBar.EventContent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:src="@mipmap/ic_launcher_round"
+        android:id="@+id/notificationImage"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:id="@+id/notificationTitle"
+        android:text="Fall Detected!"
+        android:textSize="15dp"
+        android:textColor="#000000"
+        android:layout_toRightOf="@id/notificationImage"
+        android:layout_alignTop="@id/notificationImage"/>
+
+    <LinearLayout
+        android:id="@+id/layoutConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:layout_below="@id/notificationTitle"
+        android:layout_toRightOf="@id/notificationImage"
+        >
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="0dp"
+            android:text="Confirm"
+            android:textColor="#000000"
+            android:id="@+id/notificationButtonConfirm"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_height="match_parent"
+            android:background="#000000"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="0dp"
+            android:text="Cancel"
+            android:textColor="#000000"
+            android:id="@+id/notificationButtonCancel"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+    </LinearLayout>
+</RelativeLayout>

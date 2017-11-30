@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.LaunchActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
 
 /**
  * Created by Ryan on 10/20/2017.
@@ -42,53 +44,43 @@ public class Notification {
 
     public void Notify(String notificationTitle, String notificationMessage){
 
-        //Cancel action intent
-        Intent cancelIntent = new Intent(nContext,NotificationReceiver.class)
-            .setAction(CANCEL_ACTION)
-            .putExtra("uniqueID",uniqueID);
-        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(nContext,0,cancelIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        RemoteViews remoteViews = new RemoteViews(nContext.getPackageName(),
+                R.layout.notification_layout);
 
-        //Cancel action's formatting
-        NotificationCompat.Action cancelAction
-                = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher_round,"Cancel",cancelPendingIntent).build();
 
         //Confirm action intent
         Intent confirmIntent = new Intent(nContext,NotificationReceiver.class)
-            .setAction(CONFIRM_ACTION)
-            .putExtra("uniqueID",uniqueID);
+                .setAction(CONFIRM_ACTION)
+                .putExtra("uniqueID",uniqueID);
         PendingIntent confirmPendingIntent = PendingIntent.getBroadcast(nContext, 0, confirmIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //Confirm action's formatting
-        NotificationCompat.Action confirmAction
-                = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher_round,"Confirm",confirmPendingIntent).build();
+        //Cancel action intent
+        Intent cancelIntent = new Intent(nContext,NotificationReceiver.class)
+                .setAction(CANCEL_ACTION)
+                .putExtra("uniqueID",uniqueID);
+        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(nContext,0,cancelIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        remoteViews.setOnClickPendingIntent(R.id.notificationButtonConfirm, confirmPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.notificationButtonCancel, cancelPendingIntent);
+
+        android.app.Notification notification = new NotificationCompat.Builder(nContext)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setContent(remoteViews)
+                .setCustomBigContentView(remoteViews)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) nContext.getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(uniqueID,notification);
+
 
         //Notification Timeout
         final Intent timeoutIntent = new Intent(nContext,NotificationReceiver.class)
-            .setAction(TIMEOUT_ACTION)
-            .putExtra("uniqueID",uniqueID);
-         final PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                .setAction(TIMEOUT_ACTION)
+                .putExtra("uniqueID",uniqueID);
+        final PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //Creates notification properties
-        notification = new NotificationCompat.Builder(nContext)
-            .setAutoCancel(true)                                  //Dismisses notification when tapped (does not dismiss when actions are pressed, see NotificationReceiver.java)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)  //Allows for lock screen interaction
-            .setSmallIcon(R.mipmap.ic_launcher)         //App icon
-            .setWhen(System.currentTimeMillis())        //Set current time
-            .setVibrate(new long[]{0,1000,500})         //Vibration pattern
-            .setLights(Color.WHITE,1,0)    //Notification light color/pattern
-            .setContentTitle(notificationTitle)         //Set notification title
-            .setContentText(notificationMessage)        //Set notification message
-            .addAction(cancelAction)                    //Cancel button
-            .addAction(confirmAction);                  //Confirm button
-
-        //Brings user to LaunchActivity upon selecting the notification
-        Intent launchIntent = new Intent(nContext, LaunchActivity.class);
-        final PendingIntent pendingIntent = PendingIntent.getActivity(nContext, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notification.setContentIntent(pendingIntent);
-
-        //Issues notification
-        NotificationManager notificationManager = (NotificationManager) nContext.getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(uniqueID,notification.build());
 
         new CountDownTimer(timeoutLength,tickLength){
             public void onTick(long millisUntilFinished){
