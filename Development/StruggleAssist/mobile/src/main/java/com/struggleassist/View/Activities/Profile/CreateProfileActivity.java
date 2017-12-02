@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +45,8 @@ public class CreateProfileActivity extends AppCompatActivity {
     private EditText etEmergencyContact;
 
     private Button bConfirm;
+    private CheckBox yesCheck;
+    private CheckBox noCheck;
 
     //Global variables for date of birth selection and storage
     DateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -66,6 +69,8 @@ public class CreateProfileActivity extends AppCompatActivity {
         etLastName = (EditText) findViewById(R.id.etLastName);
         etDateOfBirth = (EditText) findViewById(R.id.etDateOfBirth);
         etEmergencyContact = (EditText) findViewById(R.id.etEmergencyContact);
+        yesCheck = (CheckBox) findViewById(R.id.checkBoxYes);
+        noCheck = (CheckBox) findViewById(R.id.checkBoxNo);
 
         //Confirm button
         bConfirm = (Button) findViewById(R.id.bConfirm);
@@ -175,5 +180,13 @@ public class CreateProfileActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Emergency contact must have a phone number", Toast.LENGTH_LONG);
             }
         }
+    }
+
+    public void yesCheck(View v){
+        noCheck.setChecked(false);
+    }
+
+    public void noClick(View v){
+        yesCheck.setChecked(false);
     }
 }
