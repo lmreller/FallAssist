@@ -18,28 +18,35 @@ public class LaunchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launch);
         ViewContext.setContext(this);
         DatabaseController db = new DatabaseController(this);
-        Intent i;
+        boolean exists;
+
         db.open();
-        if (db.userExists())
-            i = new Intent(getApplicationContext(), MainActivity.class);
-        else
-            i = new Intent(getApplicationContext(), CreateProfileActivity.class);
+        exists = db.userExists();
         db.close();
 
-        startActivity(i);
+        if (exists)
+            launchMainActivity();
+        else
+            launchProfileActivity();
+
         finish();
     }
 
+    private void launchProfileActivity(){
+        Intent i;
+        i = new Intent(getApplicationContext(), CreateProfileActivity.class);
+        startActivity(i);
+    }
+
+    private void launchMainActivity(){
+        Intent i;
+        i = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(i);
+    }
 
     public void checkSensorsandAPI() {
         int apiVal = CheckAPIandSensors.getAPINumber();
         boolean hifiSensors = CheckAPIandSensors.highAccuracySensorSupport(this);
     }
-
-//    //Launch CreateProfileActivity (button click)
-//    public void createProfileLaunch(View v){
-//        Intent i = new Intent(getApplicationContext(),CreateProfileActivity.class);
-//        startActivityForResult(i, 1);
-//    }
 
 }
