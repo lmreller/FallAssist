@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.struggleassist.View.Activities.Profile.CreateProfileActivity">
+    tools:context="com.struggleassist.View.Activities.Profile.CreateProfileActivity"
+    tools:layout_editor_absoluteY="81dp">
 
     <EditText
         android:id="@+id/etFirstName"
@@ -12,15 +13,16 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="24dp"
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
         android:ems="10"
         android:hint="First Name"
         android:inputType="textNoSuggestions|textVisiblePassword|textCapWords"
         android:singleLine="true"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <EditText
         android:id="@+id/etLastName"
@@ -76,13 +78,13 @@
     <Button
         android:id="@+id/bConfirm"
         android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginBottom="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:onClick="create_onClick"
         android:text="Create Profile"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2" />
@@ -118,24 +120,41 @@
         android:id="@+id/checkBoxNo"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:onClick="noClick"
         android:text="No"
+        app:layout_constraintBottom_toTopOf="@+id/bConfirm"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxYes" />
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxYes"
+        app:layout_constraintVertical_bias="0.0" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="395dp" />
+        app:layout_constraintGuide_percent="0.04136253" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="395dp" />
+        app:layout_constraintGuide_percent="0.96107054" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.97" />
 
 </android.support.constraint.ConstraintLayout>
