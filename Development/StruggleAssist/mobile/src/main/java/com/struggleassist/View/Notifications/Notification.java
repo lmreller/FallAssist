@@ -19,6 +19,10 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  * NotificationReceiver.java is responsible for the outcomes of the actions (buttons) pressed
  */
 
+/**
+ * TODO: Notification Timeout Timer not resetting after each incident
+ */
+
 public class Notification {
 
     //Give notification context
@@ -27,7 +31,6 @@ public class Notification {
         this.nContext = nContext;
     }
 
-    NotificationCompat.Builder notification;
     private static final int uniqueID = 2112;
 
     public static final String CANCEL_ACTION = "com.struggleassist.View.Notifications.Notification.cancelAction";
@@ -39,24 +42,33 @@ public class Notification {
 
     public void Notify(String notificationTitle, String notificationMessage){
 
+        //Initialize notification layout
         RemoteViews remoteViews = new RemoteViews(nContext.getPackageName(),
                 R.layout.small_notification_layout);
 
-        //Confirm action intent
+
+        //Confirm button's intent
         Intent confirmIntent = new Intent(nContext,NotificationReceiver.class)
                 .setAction(CONFIRM_ACTION)
                 .putExtra("uniqueID",uniqueID);
         PendingIntent confirmPendingIntent = PendingIntent.getBroadcast(nContext, 0, confirmIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.smallNotificationButtonConfirm, confirmPendingIntent);
 
-        //Cancel action intent
+        //Cancel button's intent
         Intent cancelIntent = new Intent(nContext,NotificationReceiver.class)
                 .setAction(CANCEL_ACTION)
                 .putExtra("uniqueID",uniqueID);
         PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(nContext,0,cancelIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-        remoteViews.setOnClickPendingIntent(R.id.smallNotificationButtonConfirm, confirmPendingIntent);
         remoteViews.setOnClickPendingIntent(R.id.smallNotificationButtonCancel, cancelPendingIntent);
 
+        //Notification Timeout's intent
+        final Intent timeoutIntent = new Intent(nContext,NotificationReceiver.class)
+                .setAction(TIMEOUT_ACTION)
+                .putExtra("uniqueID",uniqueID);
+        final PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        //Create notification
         android.app.Notification notification = new NotificationCompat.Builder(nContext)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
@@ -65,16 +77,9 @@ public class Notification {
                 .setCustomBigContentView(remoteViews)
                 .build();
 
+        //Deploy notification
         NotificationManager notificationManager = (NotificationManager) nContext.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(uniqueID,notification);
-
-
-        //Notification Timeout
-        final Intent timeoutIntent = new Intent(nContext,NotificationReceiver.class)
-                .setAction(TIMEOUT_ACTION)
-                .putExtra("uniqueID",uniqueID);
-        final PendingIntent timeoutPendingIntent = PendingIntent.getBroadcast(nContext, 0, timeoutIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-
 
         new CountDownTimer(timeoutLength,tickLength){
             public void onTick(long millisUntilFinished){
