@@ -5,13 +5,16 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
+import com.struggleassist.Model.ViewContext;
 
 import static com.struggleassist.Model.ViewContext.getContext;
 
@@ -23,7 +26,6 @@ import static com.struggleassist.Model.ViewContext.getContext;
 
 /**
  * TODO: Check permissions for call
- * TODO: SMS and Calling are currently commented out for testing other aspects of the app unobtrusively
  */
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -36,14 +38,21 @@ public class NotificationReceiver extends BroadcastReceiver {
     public String ecNumber;
     public String userName;
 
+    private SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
+    private boolean texts;
+    private boolean calls;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         String action = intent.getAction();
 
+        texts = settings.getBoolean("texts", false);
+        calls = settings.getBoolean("calls", false);
+
         if (CANCEL_ACTION.equals(action)) {
-            //Toast.makeText(context, "Cancel Pressed", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Cancel Pressed", Toast.LENGTH_LONG).show();
         } else {
             DatabaseController db = new DatabaseController(context);
             db.open();
@@ -58,11 +67,17 @@ public class NotificationReceiver extends BroadcastReceiver {
             db.close();
 
             if (CONFIRM_ACTION.equals(action)) {
-                //Toast.makeText(getContext(), "Confirm pressed", Toast.LENGTH_LONG).show();
-//stubbed for testing                makeCall(ecNumber);
+                Toast.makeText(getContext(), "Confirm pressed", Toast.LENGTH_LONG).show();
+                if(texts)
+                    sendSMS(ecNumber);
+                if(calls)
+                    makeCall(ecNumber);
             } else if (TIMEOUT_ACTION.equals(action)) {
-                //Toast.makeText(getContext(), "Timed out", Toast.LENGTH_LONG).show();
-//stubbed for testing                sendSMS(ecNumber);
+                Toast.makeText(getContext(), "Timed out", Toast.LENGTH_LONG).show();
+                if(texts)
+                    sendSMS(ecNumber);
+                if(calls)
+                    makeCall(ecNumber);
             }
         }
         notificationManager.cancel(intent.getIntExtra("uniqueID", 0));
