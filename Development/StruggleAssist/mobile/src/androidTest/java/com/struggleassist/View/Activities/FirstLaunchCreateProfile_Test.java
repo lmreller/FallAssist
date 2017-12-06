@@ -1,4 +1,4 @@
-package com.struggleassist.View;
+package com.struggleassist.View.Activities;
 
 
 import android.support.test.espresso.ViewInteraction;
