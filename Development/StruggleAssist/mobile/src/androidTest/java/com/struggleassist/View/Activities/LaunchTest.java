@@ -20,80 +20,103 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class LaunchCreateProfile_Test {
+public class LaunchTest {
 
     @Rule
     public ActivityTestRule<LaunchActivity> mActivityTestRule = new ActivityTestRule<>(LaunchActivity.class);
 
     @Test
-    public void launchCreateUser_Test() {
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.bCreateProfile), withText("Create Profile"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatButton.perform(click());
-
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.etName), withText("Name"),
+    public void launchTest() {
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.etFirstName),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 0),
                         isDisplayed()));
-        editText.check(matches(isDisplayed()));
+        appCompatEditText.perform(click());
 
-        ViewInteraction editText2 = onView(
-                allOf(withId(R.id.etDateOfBirth), withText("Date of Birth"),
+        ViewInteraction appCompatEditText2 = onView(
+                allOf(withId(R.id.etFirstName),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        appCompatEditText2.perform(replaceText("test"), closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText3 = onView(
+                allOf(withId(R.id.etLastName),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 1),
                         isDisplayed()));
-        editText2.check(matches(isDisplayed()));
+        appCompatEditText3.perform(replaceText("test"), closeSoftKeyboard());
 
-        ViewInteraction editText3 = onView(
-                allOf(withId(R.id.etEmergencyContact), withText("Emergency Contact Number"),
+        ViewInteraction appCompatEditText4 = onView(
+                allOf(withId(R.id.etDateOfBirth),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 2),
                         isDisplayed()));
-        editText3.check(matches(isDisplayed()));
+        appCompatEditText4.perform(click());
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.bCancel),
+        ViewInteraction appCompatButton = onView(
+                allOf(withId(android.R.id.button1), withText("OK"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatButton.perform(click());
+
+        ViewInteraction appCompatEditText5 = onView(
+                allOf(withId(R.id.etEmergencyContact),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 3),
                         isDisplayed()));
-        button.check(matches(isDisplayed()));
+        appCompatEditText5.perform(click());
 
-        ViewInteraction button2 = onView(
-                allOf(withId(R.id.bConfirm),
+        ViewInteraction appCompatCheckBox = onView(
+                allOf(withId(R.id.checkBoxNo), withText("No"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                7),
+                        isDisplayed()));
+        appCompatCheckBox.perform(click());
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.bConfirm), withText("Create Profile"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 4),
                         isDisplayed()));
-        button2.check(matches(isDisplayed()));
+        appCompatButton2.perform(click());
 
     }
 

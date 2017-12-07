@@ -1,4 +1,4 @@
-package com.struggleassist;
+package com.struggleassist.View;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
