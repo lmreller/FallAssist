@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
@@ -59,9 +60,10 @@ public class NotificationReceiver extends BroadcastReceiver {
             Cursor cursor = db.getAllUsers();
             cursor.moveToFirst();
 
-            //Retrieve emergency contact number and user's first name
+            //Retrieve emergency contact number and user's first and last name
             ecNumber = cursor.getString(cursor.getColumnIndex("emergencyContactNumber"));
-            userName = cursor.getString(cursor.getColumnIndex("firstName"));
+            userName = cursor.getString(cursor.getColumnIndex("firstName")) + " "
+                + cursor.getString(cursor.getColumnIndex("lastName"));
 
             cursor.close();
             db.close();
@@ -76,8 +78,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 Toast.makeText(getContext(), "Timed out", Toast.LENGTH_LONG).show();
                 if(texts)
                     sendSMS(ecNumber);
-                if(calls)
-                    makeCall(ecNumber);
+                //if(calls)
+                //    makeCall(ecNumber);
             }
         }
         notificationManager.cancel(intent.getIntExtra("uniqueID", 0));
@@ -97,7 +99,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void makeCall(String ecNumber) {
         //Make call
         Uri call = Uri.parse("tel:" + ecNumber);
-        Intent surf = new Intent(Intent.ACTION_CALL, call);
-        getContext().startActivity(surf);
+        Intent makeCallIntent = new Intent(Intent.ACTION_CALL, call);
+        getContext().startActivity(makeCallIntent);
     }
 }
