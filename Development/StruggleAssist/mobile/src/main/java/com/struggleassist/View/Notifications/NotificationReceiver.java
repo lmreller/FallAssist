@@ -7,11 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
@@ -49,9 +47,11 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         String action = intent.getAction();
 
+        //Developer call and text settings
         texts = settings.getBoolean("texts", false);
         calls = settings.getBoolean("calls", false);
 
+        //Do nothing if cancel is pressed
         if (CANCEL_ACTION.equals(action)) {
             Toast.makeText(context, "Cancel Pressed", Toast.LENGTH_LONG).show();
         } else {
@@ -68,28 +68,32 @@ public class NotificationReceiver extends BroadcastReceiver {
             cursor.close();
             db.close();
 
+            //Confirm action
             if (CONFIRM_ACTION.equals(action)) {
                 Toast.makeText(getContext(), "Confirm pressed", Toast.LENGTH_LONG).show();
                 if(texts)
                     sendSMS(ecNumber);
                 if(calls)
                     makeCall(ecNumber);
-            } else if (TIMEOUT_ACTION.equals(action)) {
+            }
+            //Timeout Action
+            else if (TIMEOUT_ACTION.equals(action)) {
                 Toast.makeText(getContext(), "Timed out", Toast.LENGTH_LONG).show();
                 if(texts)
                     sendSMS(ecNumber);
-                //if(calls)
-                //    makeCall(ecNumber);
+                if(calls)
+                    makeCall(ecNumber);
             }
         }
+
+        //Remove notification from notification list
         notificationManager.cancel(intent.getIntExtra("uniqueID", 0));
     }
 
     public void sendSMS(String ecNumber) {
+        //Toast.makeText(getContext(),userName + ecNumber,Toast.LENGTH_LONG).show();
+
         SmsManager sms = SmsManager.getDefault();
-
-        Toast.makeText(getContext(),userName + ecNumber,Toast.LENGTH_LONG).show();
-
         //Send text message
         PendingIntent sentIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_SENT"),0);
         PendingIntent deliveredIntent = PendingIntent.getBroadcast(getContext(),0,new Intent("SMS_DELIVERED"),0);

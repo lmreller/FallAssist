@@ -1,7 +1,6 @@
 package com.struggleassist.View.Activities;
 
 import android.app.Fragment;
-import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,10 +17,8 @@ import android.widget.TextView;
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.R;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by Ryan on 12/6/2017.
@@ -50,13 +47,17 @@ public class EmergencyContactCardFragment extends Fragment {
         dbCursor.close();
         db.close();
 
+        //Default emergency contact photo
         Bitmap bp = BitmapFactory.decodeResource(getContext().getResources(),R.mipmap.ic_launcher);
+
         Cursor cursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 ContactsContract.CommonDataKinds.Phone._ID + " ='" + ecID +"'", null, null);
 
         if(cursor.moveToFirst()){
+            //Retrieve emergency contact photo
             String image_uri = cursor.getString(cursor.getColumnIndex(
                     ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
+            //If the emergency contact photo exists, set bp to photo
             if(image_uri != null){
                 try{
                     bp = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),
@@ -67,15 +68,14 @@ public class EmergencyContactCardFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+            //Set emergency contact photo
             ivEmergencyContact.setImageBitmap(bp);
 
-            //Retrieve Name
+            //Retrieve and Set Name
             tvEmergencyContactName.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-            //Retrieve Number
+            //Retrieve and Set Number
             tvEmergencyContactNumber.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
         }
-
         return view;
     }
-
 }
