@@ -47,6 +47,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         String action = intent.getAction();
 
+        Notification notification = Notification.getInstance();
+
         //Developer call and text settings
         texts = settings.getBoolean("texts", false);
         calls = settings.getBoolean("calls", false);
@@ -54,6 +56,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         //Do nothing if cancel is pressed
         if (CANCEL_ACTION.equals(action)) {
             Toast.makeText(context, "Cancel Pressed", Toast.LENGTH_LONG).show();
+            notification.cancelTimer();
         } else {
             DatabaseController db = new DatabaseController(context);
             db.open();
@@ -75,6 +78,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     sendSMS(ecNumber);
                 if(calls)
                     makeCall(ecNumber);
+                notification.cancelTimer();
             }
             //Timeout Action
             else if (TIMEOUT_ACTION.equals(action)) {
