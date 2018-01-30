@@ -1,10 +1,12 @@
 package com.struggleassist.View.Activities.Profile;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -143,9 +146,13 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     //Launch contacts (intent) when selecting emergency contact
     public void pickContact(View v) {
-        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
-        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+            pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+            startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+        } else {
+            Toast.makeText(this,"Please grant Contact Permission in Application Settings to continue",Toast.LENGTH_LONG).show();
+        }
     }
 
     //Grab emergency contact information from intent

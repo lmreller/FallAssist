@@ -1,14 +1,17 @@
 package com.struggleassist.View.Notifications;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
@@ -66,7 +69,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             //Retrieve emergency contact number and user's first and last name
             ecNumber = cursor.getString(cursor.getColumnIndex("emergencyContactNumber"));
             userName = cursor.getString(cursor.getColumnIndex("firstName")) + " "
-                + cursor.getString(cursor.getColumnIndex("lastName"));
+                    + cursor.getString(cursor.getColumnIndex("lastName"));
 
             cursor.close();
             db.close();
@@ -74,18 +77,18 @@ public class NotificationReceiver extends BroadcastReceiver {
             //Confirm action
             if (CONFIRM_ACTION.equals(action)) {
                 Toast.makeText(getContext(), "Confirm pressed", Toast.LENGTH_LONG).show();
-                if(texts)
+                if (texts)
                     sendSMS(ecNumber);
-                if(calls)
+                if (calls)
                     makeCall(ecNumber);
                 notification.cancelTimer();
             }
             //Timeout Action
             else if (TIMEOUT_ACTION.equals(action)) {
                 Toast.makeText(getContext(), "Timed out", Toast.LENGTH_LONG).show();
-                if(texts)
+                if (texts)
                     sendSMS(ecNumber);
-                if(calls)
+                if (calls)
                     makeCall(ecNumber);
             }
         }
@@ -96,18 +99,26 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     public void sendSMS(String ecNumber) {
         //Toast.makeText(getContext(),userName + ecNumber,Toast.LENGTH_LONG).show();
+        if (ContextCompat.checkSelfPermission(getContext(),Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
 
-        SmsManager sms = SmsManager.getDefault();
-        //Send text message
-        PendingIntent sentIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_SENT"),0);
-        PendingIntent deliveredIntent = PendingIntent.getBroadcast(getContext(),0,new Intent("SMS_DELIVERED"),0);
-        sms.sendTextMessage(ecNumber, null,userName + MESSAGE,sentIntent,deliveredIntent);
+            SmsManager sms = SmsManager.getDefault();
+            //Send text message
+            PendingIntent sentIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_SENT"), 0);
+            PendingIntent deliveredIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_DELIVERED"), 0);
+            sms.sendTextMessage(ecNumber, null, userName + MESSAGE, sentIntent, deliveredIntent);
+        } else {
+            Toast.makeText(getContext(), "UNABLE TO SEND SMS DUE TO RESTRICTED PERMISSIONS SETTINGS", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void makeCall(String ecNumber) {
-        //Make call
-        Uri call = Uri.parse("tel:" + ecNumber);
-        Intent makeCallIntent = new Intent(Intent.ACTION_CALL, call);
-        getContext().startActivity(makeCallIntent);
+        if (ContextCompat.checkSelfPermission(getContext(),Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            //Make call
+            Uri call = Uri.parse("tel:" + ecNumber);
+            Intent makeCallIntent = new Intent(Intent.ACTION_CALL, call);
+            getContext().startActivity(makeCallIntent);
+        } else {
+            Toast.makeText(getContext(),"UNABLE TO MAKE CALL DUE TO RESTRICTED PERMISSIONS SETTINGS", Toast.LENGTH_SHORT).show();
+        }
     }
 }
