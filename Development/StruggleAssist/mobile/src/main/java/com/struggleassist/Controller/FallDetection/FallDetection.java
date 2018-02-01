@@ -1,12 +1,19 @@
 package com.struggleassist.Controller.FallDetection;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Intent;
 import android.os.CountDownTimer;
+import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
 
 import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
 import com.struggleassist.Model.ViewContext;
+import com.struggleassist.R;
+import com.struggleassist.View.Activities.LaunchActivity;
 import com.struggleassist.View.Notifications.Notification;
 import com.struggleassist.View.Notifications.ToastController;
 
@@ -17,7 +24,7 @@ import java.util.Collections;
  * Created by lucas on 9/14/2017.
  */
 
-public class FallDetection {
+public class FallDetection extends Service {
     private static final int timerLength = 1000;
     private static final int tickLength = 50;
 
@@ -40,6 +47,38 @@ public class FallDetection {
     private static float max;
     private static float avg;
     private static float incidentScore;
+
+    //Start fall detection
+    @Override
+    public void onCreate(){
+        startDetection();
+    }
+
+    //Create service as a background service (sticky)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
+        super.onStartCommand(intent,flags,startId);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Intent bIntent = new Intent(FallDetection.this, LaunchActivity.class);
+        PendingIntent pbIntent = PendingIntent.getActivity(FallDetection.this,0,bIntent,0);
+        NotificationCompat.Builder bBuilder =
+                new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Fall Detection")
+                .setAutoCancel(true)
+                .setOngoing(true)
+                .setContentIntent(pbIntent);
+        this.startForeground(1,bBuilder.build());
+
+        return Service.START_STICKY;
+    }
+
+    //Needs to be overridden for Service
+    @Override
+    public IBinder onBind(Intent intent){
+        return null;
+    }
+
 
     public static void startDetection() {
         Log.d("START", "Start start()");

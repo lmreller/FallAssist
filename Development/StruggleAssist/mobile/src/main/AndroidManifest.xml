@@ -17,6 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service
+            android:name=".Controller.FallDetection.FallDetection"
+            android:exported="false"
+            />
+
         <receiver android:name=".View.Notifications.NotificationReceiver">
             <intent-filter>
                 <action android:name="com.struggleassist.View.Notifications.Notification.cancelAction" />

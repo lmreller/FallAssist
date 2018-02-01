@@ -36,7 +36,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FallDetection.startDetection();
+
+        //Activate fall detection as a background service
+        Intent serviceIntent = new Intent(this, FallDetection.class);
+        startService(serviceIntent);
     }
 
     @Override
