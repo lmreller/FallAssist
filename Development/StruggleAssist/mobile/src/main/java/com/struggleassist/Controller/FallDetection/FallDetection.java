@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
+import com.struggleassist.Model.Record;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.LaunchActivity;
@@ -47,6 +48,7 @@ public class FallDetection extends Service {
     private static float max;
     private static float avg;
     private static float incidentScore;
+    private static boolean incident;
 
     //Start fall detection
     @Override
@@ -139,9 +141,14 @@ public class FallDetection extends Service {
 
                 if (incidentScore > 3) {
                     notification.Notify("Fall detected!", ""); //Notify user of fall (Title, description)
+                    incident = true;
                     //fallDetected.showToastLong(); //debugging purposes only
-                } else
+                } else {
                     falseAlarm.showToastLong();//debugging purposes only
+                    incident = false;
+                }
+                Record record = new Record(incident,incidentScore);     //Create record object
+
                 accel.stopSensor();
                 grav.stopSensor();
                 startDetection();
