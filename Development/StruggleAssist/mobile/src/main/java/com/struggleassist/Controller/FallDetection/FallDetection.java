@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.struggleassist.Controller.FallDetection.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
+import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Model.Record;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
@@ -39,6 +40,7 @@ public class FallDetection extends Service {
     private static ToastController fallDetected;
     private static ToastController potentialFall;
     private static ToastController falseAlarm;
+    private static RecordingController recording;
 
     private static Notification notification;
 
@@ -95,6 +97,9 @@ public class FallDetection extends Service {
         grav = new GravityController(ViewContext.getContext());
         accel.start();
         grav.start();
+
+        recording = new RecordingController();
+        recording.startRecording();
 
         potentialFall = new ToastController("Potential Fall!");
         fallDetected = new ToastController("Fall Detected!");
