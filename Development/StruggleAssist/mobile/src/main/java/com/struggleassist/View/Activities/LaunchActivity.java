@@ -37,7 +37,8 @@ public class LaunchActivity extends AppCompatActivity {
     //List of permissions required
     final static String[] PERMISSIONS = {Manifest.permission.READ_SMS,
                                          Manifest.permission.READ_PHONE_STATE,
-                                         Manifest.permission.READ_CONTACTS};
+                                         Manifest.permission.READ_CONTACTS,
+                                         Manifest.permission.ACCESS_FINE_LOCATION};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

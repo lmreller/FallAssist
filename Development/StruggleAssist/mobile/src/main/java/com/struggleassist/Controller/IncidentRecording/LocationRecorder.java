@@ -5,4 +5,12 @@ package com.struggleassist.Controller.IncidentRecording;
  */
 
 public class LocationRecorder {
+
+    public LocationRecorder(){
+
+    }
+
+    public void getLocation(){
+
+    }
 }

@@ -86,5 +86,6 @@ public class Record {
 
     public String generateId(){
         id = idFormat.format(dateOfIncident) + Float.toString(incidentScore);
+        return id;
     }
 }
