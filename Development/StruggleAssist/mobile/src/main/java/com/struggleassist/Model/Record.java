@@ -20,17 +20,23 @@ public class Record {
     private MediaStore.Video incidentVideo;
     private String incidentNotes;
     float incidentScore;
+    private String id;
 
-    SimpleDateFormat ft =
+    SimpleDateFormat outputFormat =
             new SimpleDateFormat("E yyyy/MM/dd hh:mm");
+
+    SimpleDateFormat idFormat =
+            new SimpleDateFormat("yyyyMMddhhmmss");
 
     public Record(boolean incident, float incidentScore){
         this.incident = incident;
         this.incidentScore = incidentScore;
         dateOfIncident = new Date();
 
+        id = generateId();
+
         Toast.makeText(ViewContext.getContext(),Boolean.toString(incident) + ":"
-                + ft.format(dateOfIncident) + ":" + Float.toString(incidentScore),Toast.LENGTH_LONG).show();
+                + outputFormat.format(dateOfIncident) + ":" + Float.toString(incidentScore),Toast.LENGTH_LONG).show();
     }
 
     public boolean getIncident(){
@@ -73,5 +79,12 @@ public class Record {
     }
     public void setIncidentScore(float incidentScore){
         this.incidentScore = incidentScore;
+    }
+    public String getId(){
+        return id;
+    }
+
+    public String generateId(){
+        id = idFormat.format(dateOfIncident) + Float.toString(incidentScore);
     }
 }
