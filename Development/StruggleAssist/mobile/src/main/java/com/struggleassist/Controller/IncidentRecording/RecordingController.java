@@ -1,11 +1,23 @@
 package com.struggleassist.Controller.IncidentRecording;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.Camera;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.struggleassist.Model.Record;
+import com.struggleassist.Model.RecordingData;
 import com.struggleassist.Model.ViewContext;
 
 import java.io.IOException;
@@ -16,15 +28,28 @@ import java.util.Locale;
  * Created by Lucas on 2/14/2018.
  */
 
-public class RecordingController {
+/**
+ * NOTES: -The filepath to the video [videoUri] is not being picked up by Record or RecordData.
+ *        -The filepath is being properly stored in videoUri at the beginning of the fall detection
+ *        -We should be able to delete this file programmatically if we need to
+ * TODO: Get reference of filepath into record
+ * TODO: Stop MultimediaRecorder after false alarm, cancel notification (maybe after confirm/timeout?)
+ * TODO:            -Done via stopRecording(){ ... stopIntent(intent) ... }
+ */
+
+public class RecordingController{
 
     private LocationRecorder location;
     private MultimediaRecorder multimedia;
 
     private String address;
+    private Uri videoUri;
 
     public RecordingController(){
         location = new LocationRecorder();
+        multimedia = new MultimediaRecorder();
+        LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(bReceiver,
+                new IntentFilter("MultimediaRecorderBroadcast"));
     }
 
     public void startRecording(){
@@ -43,7 +68,17 @@ public class RecordingController {
         };
         location = new LocationRecorder();
         location.getLocation(ViewContext.getContext(), locationResult);
+
+        Intent i = new Intent(ViewContext.getContext(),MultimediaRecorder.class);
+        ViewContext.getContext().startService(i);
     }
+
+    private BroadcastReceiver bReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            videoUri = intent.getParcelableExtra("videoUri");
+        }
+    };
 
     public void stopRecording(){
 
@@ -109,5 +144,12 @@ public class RecordingController {
         public String getKnownName() {
             return knownName;
         }
+
     }
+
+    public Uri getVideoUri()
+    {
+        return videoUri;
+    }
+
 }

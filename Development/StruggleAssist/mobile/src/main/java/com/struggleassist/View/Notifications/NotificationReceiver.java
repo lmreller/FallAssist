@@ -14,8 +14,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.struggleassist.Controller.DatabaseController;
+import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Model.RecordingData;
 import com.struggleassist.Model.ViewContext;
 
@@ -92,6 +94,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     sendSMS(ecNumber);
                 if (calls)
                     makeCall(ecNumber);
+
             }
         }
 

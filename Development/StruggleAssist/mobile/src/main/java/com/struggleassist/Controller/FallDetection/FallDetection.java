@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -54,6 +55,7 @@ public class FallDetection extends Service {
     private static boolean incident;
 
     private static String address;
+    private static Uri videoUri;
 
     //Start fall detection
     @Override
@@ -101,9 +103,6 @@ public class FallDetection extends Service {
         accel.start();
         grav.start();
 
-        recording = new RecordingController();
-        recording.startRecording();
-
         potentialFall = new ToastController("Potential Fall!");
         fallDetected = new ToastController("Fall Detected!");
         falseAlarm = new ToastController("False Alarm!");
@@ -130,6 +129,9 @@ public class FallDetection extends Service {
             }
 
             public void onFinish() {
+                recording = new RecordingController();
+                recording.startRecording();
+
                 Collections.sort(fallData);
                 address = recording.stopAndGetLocation();
                 RecordingData.setAddress(address);
@@ -157,7 +159,6 @@ public class FallDetection extends Service {
                     falseAlarm.showToastLong();//debugging purposes only
                     incident = false;
                 }
-                Record record = new Record(incident,incidentScore);     //Create record object
 
                 accel.stopSensor();
                 grav.stopSensor();

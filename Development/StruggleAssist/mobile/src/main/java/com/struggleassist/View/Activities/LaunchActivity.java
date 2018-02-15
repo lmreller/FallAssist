@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -33,12 +35,17 @@ public class LaunchActivity extends AppCompatActivity {
     TextView tvLaunch;
 
     final static int PERMISSION_ALL = 1;    //Permissions request code, used for onRequestPermissionsResult()
+    final static int OVERLAY_CODE = 2;
 
     //List of permissions required
     final static String[] PERMISSIONS = {Manifest.permission.READ_SMS,
                                          Manifest.permission.READ_PHONE_STATE,
                                          Manifest.permission.READ_CONTACTS,
-                                         Manifest.permission.ACCESS_FINE_LOCATION};
+                                         Manifest.permission.ACCESS_FINE_LOCATION,
+                                         Manifest.permission.CAMERA,
+                                         Manifest.permission.RECORD_AUDIO,
+                                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                         Manifest.permission.SYSTEM_ALERT_WINDOW};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +55,34 @@ public class LaunchActivity extends AppCompatActivity {
 
         tvLaunch = (TextView) findViewById(R.id.tvLaunch);
 
+        if(!Settings.canDrawOverlays(this)){
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:"+getPackageName()));
+            startActivityForResult(intent,OVERLAY_CODE);
+        }
+
         //Request permissions (will launch main activity after permissions are granted or if they are already granted on launch)
         if(!hasPermissions(this,PERMISSIONS))
             requestPermissions();
         else {
             launchNextActivity();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == OVERLAY_CODE){
+            if(Settings.canDrawOverlays(this)){
+
+            }
+            else{
+                //We need to request permission for overlay capabilities to allow us to record video in the background of the app
+                //This will allow the user to use the device and application as needed during an incident while the phone still records
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:"+getPackageName()));
+                startActivityForResult(intent,OVERLAY_CODE);
+            }
+
         }
     }
 

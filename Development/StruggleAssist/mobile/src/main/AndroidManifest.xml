@@ -13,6 +13,18 @@
     <!--SMS Permissions-->
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
+    <!--Camera Permissions-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!--Microphone Permissions-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!--Storage Permissions-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--Alert Window Permissions-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <uses-feature android:name="android.hardware.camera"
+                  android:required="true"/>
 
     <application
         android:allowBackup="true"
@@ -24,6 +36,10 @@
 
         <service
             android:name=".Controller.FallDetection.FallDetection"
+            android:exported="false"
+            />
+        <service
+            android:name=".Controller.IncidentRecording.MultimediaRecorder"
             android:exported="false"
             />
 

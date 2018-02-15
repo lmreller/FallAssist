@@ -34,9 +34,6 @@ public class Record {
         dateOfIncident = new Date();
 
         id = generateId();
-
-        Toast.makeText(ViewContext.getContext(),Boolean.toString(incident) + ":"
-                + outputFormat.format(dateOfIncident) + ":" + Float.toString(incidentScore),Toast.LENGTH_LONG).show();
     }
 
     public boolean getIncident(){
