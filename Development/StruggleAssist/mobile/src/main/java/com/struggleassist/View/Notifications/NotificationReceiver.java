@@ -16,6 +16,7 @@ import android.telephony.SmsManager;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
+import com.struggleassist.Model.RecordingData;
 import com.struggleassist.Model.ViewContext;
 
 import static com.struggleassist.Model.ViewContext.getContext;
@@ -36,7 +37,8 @@ public class NotificationReceiver extends BroadcastReceiver {
     public static final String CONFIRM_ACTION = "com.struggleassist.View.Notifications.Notification.confirmAction";
     public static final String TIMEOUT_ACTION = "com.struggleassist.View.Notifications.Notification.timeoutAction";
 
-    public static final String MESSAGE = " may have experienced a fall.";
+    public static final String MESSAGE = " may have experienced a fall";
+    public static final String ADDRESS = RecordingData.getAddress();
     public String ecNumber;
     public String userName;
 
@@ -105,7 +107,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             //Send text message
             PendingIntent sentIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_SENT"), 0);
             PendingIntent deliveredIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_DELIVERED"), 0);
-            sms.sendTextMessage(ecNumber, null, userName + MESSAGE, sentIntent, deliveredIntent);
+            sms.sendTextMessage(ecNumber, null, userName + MESSAGE + " @ " + ADDRESS, sentIntent, deliveredIntent);
         } else {
             Toast.makeText(getContext(), "UNABLE TO SEND SMS DUE TO RESTRICTED PERMISSIONS SETTINGS", Toast.LENGTH_SHORT).show();
         }

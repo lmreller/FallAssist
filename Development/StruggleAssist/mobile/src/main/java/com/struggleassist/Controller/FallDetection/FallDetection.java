@@ -13,6 +13,7 @@ import com.struggleassist.Controller.FallDetection.SensorControllers.Acceleratio
 import com.struggleassist.Controller.FallDetection.SensorControllers.GravityController;
 import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Model.Record;
+import com.struggleassist.Model.RecordingData;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.LaunchActivity;
@@ -51,6 +52,8 @@ public class FallDetection extends Service {
     private static float avg;
     private static float incidentScore;
     private static boolean incident;
+
+    private static String address;
 
     //Start fall detection
     @Override
@@ -128,6 +131,8 @@ public class FallDetection extends Service {
 
             public void onFinish() {
                 Collections.sort(fallData);
+                address = recording.stopAndGetLocation();
+                RecordingData.setAddress(address);
 
                 Q1 = findQ1();
                 med = findMed();
