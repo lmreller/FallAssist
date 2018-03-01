@@ -129,12 +129,8 @@ public class FallDetection extends Service {
             }
 
             public void onFinish() {
-                recording = new RecordingController();
-                recording.startRecording();
 
                 Collections.sort(fallData);
-                address = recording.stopAndGetLocation();
-                RecordingData.setAddress(address);
 
                 Q1 = findQ1();
                 med = findMed();
@@ -159,6 +155,12 @@ public class FallDetection extends Service {
                     falseAlarm.showToastLong();//debugging purposes only
                     incident = false;
                 }
+
+                recording = new RecordingController(incident,incidentScore);
+                recording.startRecording();
+                address = recording.stopAndGetLocation();
+                RecordingData.setAddress(address);
+
 
                 accel.stopSensor();
                 grav.stopSensor();

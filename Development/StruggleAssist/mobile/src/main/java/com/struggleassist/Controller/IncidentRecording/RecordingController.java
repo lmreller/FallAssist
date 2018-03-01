@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.hardware.Camera;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,6 +17,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Model.Record;
 import com.struggleassist.Model.RecordingData;
 import com.struggleassist.Model.ViewContext;
@@ -39,15 +41,26 @@ import java.util.Locale;
 
 public class RecordingController{
 
+    private Record record;
+
     private LocationRecorder location;
     private MultimediaRecorder multimedia;
 
     private String address;
     private Uri videoUri;
 
-    public RecordingController(){
+    private boolean incident;
+    private float incidentScore;
+
+    public RecordingController(boolean incident, float incidentScore){
+        record = new Record(incident,incidentScore);
+
         location = new LocationRecorder();
         multimedia = new MultimediaRecorder();
+
+        this.incident=incident;
+        this.incidentScore=incidentScore;
+
         LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(bReceiver,
                 new IntentFilter("MultimediaRecorderBroadcast"));
     }
@@ -63,7 +76,8 @@ public class RecordingController{
                 Log.d("GPSL", Double.toString(longitude));
 
                 ReverseGeocoder geo = new ReverseGeocoder(latitude, longitude);
-                RecordingController.this.address = geo.getAddress();
+                setAddress(geo.getAddress());
+                record.setIncidentLocation(geo.getAddress());
             }
         };
         location = new LocationRecorder();
@@ -77,6 +91,8 @@ public class RecordingController{
         @Override
         public void onReceive(Context context, Intent intent) {
             videoUri = intent.getParcelableExtra("videoUri");
+
+            createRecord();
         }
     };
 
@@ -89,8 +105,33 @@ public class RecordingController{
         return address;
     }
 
-    public Record createRecord(){
-        return null;
+    public void createRecord(){
+        if(videoUri!=null){
+            record.setIncidentVideo(videoUri.toString());
+        }
+
+        DatabaseController db = new DatabaseController(ViewContext.getContext());
+        db.open();
+        db.insertRecord(record);
+
+        Cursor dbCursor = db.getAllRecords();
+        dbCursor.moveToFirst();
+        String rID = dbCursor.getString(dbCursor.getColumnIndex("rid"));
+        String doi = dbCursor.getString(dbCursor.getColumnIndex("dateOfIncident"));
+        String iL = dbCursor.getString(dbCursor.getColumnIndex("incidentLocation"));
+        String iV = dbCursor.getString(dbCursor.getColumnIndex("incidentVideo"));
+        String iN = dbCursor.getString(dbCursor.getColumnIndex("incidentNotes"));
+        String iS = dbCursor.getString(dbCursor.getColumnIndex("incidentScore"));
+        dbCursor.close();
+
+        Toast.makeText(ViewContext.getContext(),rID,Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewContext.getContext(),doi,Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewContext.getContext(),iL ,Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewContext.getContext(),iV ,Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewContext.getContext(),iN ,Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewContext.getContext(),iS ,Toast.LENGTH_SHORT).show();
+
+        db.close();
     }
 
     private static class ReverseGeocoder{
@@ -145,6 +186,11 @@ public class RecordingController{
             return knownName;
         }
 
+    }
+
+
+    public void setAddress(String adr){
+        this.address = adr;
     }
 
     public Uri getVideoUri()

@@ -14,10 +14,12 @@ import java.util.Date;
 
 public class Record {
 
+    private Date date;
+
     private boolean incident;
-    private Date dateOfIncident;
-    private Location incidentLocation;
-    private MediaStore.Video incidentVideo;
+    private String dateOfIncident;
+    private String incidentLocation;
+    private String incidentVideo;
     private String incidentNotes;
     float incidentScore;
     private String id;
@@ -29,9 +31,14 @@ public class Record {
             new SimpleDateFormat("yyyyMMddhhmmss");
 
     public Record(boolean incident, float incidentScore){
+        date = new Date();
+
         this.incident = incident;
+        dateOfIncident = outputFormat.format(date);
+        incidentLocation = "";
+        incidentVideo = "";
+        incidentNotes = "";
         this.incidentScore = incidentScore;
-        dateOfIncident = new Date();
 
         id = generateId();
     }
@@ -43,24 +50,24 @@ public class Record {
         this.incident = incident;
     }
 
-    public Date getDateOfIncident(){
+    public String getDateOfIncident(){
         return dateOfIncident;
     }
-    public void setDateOfIncident(Date dateOfIncident){
+    public void setDateOfIncident(String dateOfIncident){
         this.dateOfIncident = dateOfIncident;
     }
 
-    public Location getIncidentLocation(){
+    public String getIncidentLocation(){
         return incidentLocation;
     }
-    public void setIncidentLocation(Location incidentLocation){
+    public void setIncidentLocation(String incidentLocation){
         this.incidentLocation = incidentLocation;
     }
 
-    public MediaStore.Video getIncidentVideo() {
+    public String getIncidentVideo() {
         return incidentVideo;
     }
-    public void setIncidentVideo(MediaStore.Video incidentVideo){
+    public void setIncidentVideo(String incidentVideo){
         this.incidentVideo = incidentVideo;
     }
 
@@ -82,7 +89,7 @@ public class Record {
     }
 
     public String generateId(){
-        id = idFormat.format(dateOfIncident) + Float.toString(incidentScore);
+        id = idFormat.format(date) + Float.toString(incidentScore);
         return id;
     }
 }
