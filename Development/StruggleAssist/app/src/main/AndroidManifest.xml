@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.struggleassist">
+
+    <!--Location Permissions-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--Contact Permissions-->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!--Phone Permissions-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <!--SMS Permissions-->
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <!--Camera Permissions-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!--Microphone Permissions-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!--Storage Permissions-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--Alert Window Permissions-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/struggleassist_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/struggleassist_icon"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
+        <service
+            android:name=".View.Notifications.NotificationController"
+            android:label="NotificationController" />
+
+        <activity android:name=".View.Activities.LaunchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".View.Activities.MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".View.Activities.CreateProfileActivity"
+            android:label="@string/title_activity_create_profile"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+    </application>
+
+</manifest>

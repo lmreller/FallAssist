@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="preferencescreen"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <CheckBoxPreference
+        android:key="pref_enable_phone"
+        android:title="Enable Phone Calls"
+        android:summary="Dev Setting: Enables phone calling"
+        android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:key="pref_enable_sms"
+        android:title="Enable SMS"
+        android:summary="Dev Setting: Enables SMS messaging"
+        android:defaultValue="true" />
+
+
+</PreferenceScreen>

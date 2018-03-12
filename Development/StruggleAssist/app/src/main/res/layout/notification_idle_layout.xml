@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    style="@android:style/TextAppearance.StatusBar.EventContent">
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="5dp"
+        android:src="@mipmap/struggleassist_icon"
+        android:id="@+id/notificationImage"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:id="@+id/activeNotificationTitle"
+        android:text="Fall Detection"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:layout_toRightOf="@id/notificationImage"
+        android:layout_centerVertical="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="0dp"
+        android:drawableLeft="@mipmap/ic_launcher_round"
+        android:drawablePadding="5dp"
+        android:text="Close"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:id="@+id/idleNotificationButtonClose"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
+
+    <LinearLayout
+        android:id="@+id/layoutConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:layout_toRightOf="@id/notificationImage"
+        >
+
+
+    </LinearLayout>
+</RelativeLayout>
