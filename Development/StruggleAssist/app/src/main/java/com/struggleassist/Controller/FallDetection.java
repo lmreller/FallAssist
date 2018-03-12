@@ -43,6 +43,9 @@ public class FallDetection{
 
     public FallDetection(){
         startDetection();
+        startNotification(NotificationController.START_ACTION);
+        LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver,
+                new IntentFilter("NotificationControllerBroadcast"));
     }
 
     //-----Starting and Stopping Actions-----//
@@ -51,10 +54,6 @@ public class FallDetection{
         Log.d("START", "Start start()");
         accel = new AccelerationController(ViewContext.getContext(), true);
         accel.start();
-        if (!detectionInitialized) {
-            startNotification(NotificationController.START_ACTION);
-            detectionInitialized=true;
-        }
     }
 
     public static void stopDetection(){
@@ -206,15 +205,14 @@ public class FallDetection{
                 }
             }
         };
-        //Create only one localbroadcast listener
-        if(!notificationInitialized) {
-            LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver,
-                    new IntentFilter("NotificationControllerBroadcast"));
-            notificationInitialized = true;
-        }
+
         Intent notificationIntent = new Intent(ViewContext.getContext(),NotificationController.class);
         notificationIntent.setAction(action);
         ViewContext.getContext().startService(notificationIntent);
+    }
+
+    private static boolean isNotificationInitialized() {
+        return notificationInitialized;
     }
 
     private static void stopNotification(){
