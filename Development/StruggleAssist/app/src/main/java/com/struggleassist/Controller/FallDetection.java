@@ -24,6 +24,13 @@ import java.util.Collections;
  */
 
 public class FallDetection{
+
+    //for unit testing
+    protected static float getFallThreshold() {
+        return FALL_THRESHOLD;
+    }
+    private static final float FALL_THRESHOLD = 3;
+
     private static boolean detectionInitialized = false;
     private static boolean notificationInitialized = false;
 
@@ -35,9 +42,21 @@ public class FallDetection{
 
     private static ArrayList<Float> fallData = new ArrayList<>();
 
+    //for unit tests
+    protected static float getIncidentScore() {
+        return incidentScore;
+    }
+    protected static void setIncidentScore(float incidentScore) {
+        FallDetection.incidentScore = incidentScore;
+    }
     private static float incidentScore;
 
+    //for unit tests
+    protected static boolean getIsIncident() {
+        return isIncident;
+    }
     private static boolean isIncident;
+
     private static BroadcastReceiver notificationReceiver;
     private static String userResponse;
 
@@ -51,7 +70,7 @@ public class FallDetection{
     //-----Starting and Stopping Actions-----//
 
     public static void startDetection() {
-        Log.d("START", "Start start()");
+        //Log.d("START", "Start start()");
         accel = new AccelerationController(ViewContext.getContext(), true);
         accel.start();
     }
@@ -65,15 +84,24 @@ public class FallDetection{
         return detectionInitialized;
     }
 
-    public static void runAlgorithm(){
-        Log.d("RUN", "Start runAlgorithm()");
+    //pass t as 1 if testing, otherwise leave blank
+    public static void runAlgorithm(boolean... t){
+        //Log.d("RUN", "Start runAlgorithm()");
+        //for unit test
+        final boolean[] test = new boolean[1];
+        if(t != null)
+             test[0] = t[0];
+        else
+            test[0] = false;
 
-        accel = new AccelerationController(ViewContext.getContext(), false);
-        grav = new GravityController(ViewContext.getContext());
-        accel.start();
-        grav.start();
+        if(!test[0]) {
+            accel = new AccelerationController(ViewContext.getContext(), false);
+            grav = new GravityController(ViewContext.getContext());
+            accel.start();
+            grav.start();
+        }
 
-        new CountDownTimer(timerLength,tickLength){
+        CountDownTimer timer = new CountDownTimer(timerLength,tickLength){
 
             public void onTick(long millisUntilFinished){
                 int direction = grav.findFallDirection();
@@ -81,21 +109,28 @@ public class FallDetection{
             }
 
             public void onFinish(){
-                incidentScore = findIncidentScore();
-                if(incidentScore > 3){
+                if(!test[0])
+                    incidentScore = findIncidentScore();
+                if(incidentScore > FALL_THRESHOLD){
                     //Fall has been detected
                     isIncident = true;
-                    startNotification(NotificationController.ALERT_ACTION);
+                    if(!test[0])
+                        startNotification(NotificationController.ALERT_ACTION);
                 } else {
                     //Fall has not been detected
                     isIncident = false;
                 }
-
-                accel.stopSensor();
-                grav.stopSensor();
-                startDetection();
+                if(!test[0]) {
+                    accel.stopSensor();
+                    grav.stopSensor();
+                    startDetection();
+                }
             }
-        }.start();
+        };
+        if(!test[0])
+            timer.start();
+        else
+            timer.onFinish();
     }
 
     //-----Fall Calculations-----//
