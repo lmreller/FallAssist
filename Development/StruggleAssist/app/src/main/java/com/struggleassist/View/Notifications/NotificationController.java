@@ -43,7 +43,6 @@ public class NotificationController extends Service {
     private static CountDownTimer notificationTimer = new CountDownTimer(timerLength,timerTicks){
         public void onTick(long millisUntilFinished){
             //what to do every tick
-            Toast.makeText(ViewContext.getContext(),millisUntilFinished/1000 + " seconds left",Toast.LENGTH_SHORT).show();
         }
         public void onFinish(){
             Intent timeoutIntent = new Intent(ViewContext.getContext(),NotificationController.class);
@@ -79,7 +78,7 @@ public class NotificationController extends Service {
         userResponse = intent.getAction();
 
         //Cases where the system updates the notification (Start, Idle, or Alert
-        if(userResponse.equals(START_ACTION) || userResponse.equals(IDLE_ACTION) || userResponse.equals(ALERT_ACTION)){
+        if(userResponse.equals(IDLE_ACTION) || userResponse.equals(ALERT_ACTION)){
             showNotification(userResponse);
         } else
         //If the user responds to an alert (Confirms, Cancels, or Timeout occurs), send that response to FallDetection

@@ -11,6 +11,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.struggleassist.Controller.IncidentRecording.LocationRecorder;
+import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Controller.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.SensorControllers.GravityController;
 import com.struggleassist.Model.ViewContext;
@@ -24,15 +26,10 @@ import java.util.Collections;
  */
 
 public class FallDetection{
-
-    //for unit testing
-    protected static float getFallThreshold() {
-        return FALL_THRESHOLD;
-    }
-    private static final float FALL_THRESHOLD = 3;
-
     private static boolean detectionInitialized = false;
     private static boolean notificationInitialized = false;
+
+    private static RecordingController recordingController;
 
     private static final int timerLength = 1000;
     private static final int tickLength = 50;
@@ -42,27 +39,17 @@ public class FallDetection{
 
     private static ArrayList<Float> fallData = new ArrayList<>();
 
-    //for unit tests
-    protected static float getIncidentScore() {
-        return incidentScore;
-    }
-    protected static void setIncidentScore(float incidentScore) {
-        FallDetection.incidentScore = incidentScore;
-    }
     private static float incidentScore;
 
-    //for unit tests
-    protected static boolean getIsIncident() {
-        return isIncident;
-    }
     private static boolean isIncident;
-
     private static BroadcastReceiver notificationReceiver;
     private static String userResponse;
 
+    private static String address;
+
     public FallDetection(){
         startDetection();
-        startNotification(NotificationController.START_ACTION);
+        startNotification(NotificationController.IDLE_ACTION);
         LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver,
                 new IntentFilter("NotificationControllerBroadcast"));
     }
@@ -70,7 +57,7 @@ public class FallDetection{
     //-----Starting and Stopping Actions-----//
 
     public static void startDetection() {
-        //Log.d("START", "Start start()");
+        Log.d("START", "Start start()");
         accel = new AccelerationController(ViewContext.getContext(), true);
         accel.start();
     }
@@ -84,24 +71,17 @@ public class FallDetection{
         return detectionInitialized;
     }
 
-    //pass t as 1 if testing, otherwise leave blank
-    public static void runAlgorithm(boolean... t){
-        //Log.d("RUN", "Start runAlgorithm()");
-        //for unit test
-        final boolean[] test = new boolean[1];
-        if(t != null)
-             test[0] = t[0];
-        else
-            test[0] = false;
+    public static void runAlgorithm(){
+        Log.d("RUN", "Start runAlgorithm()");
 
-        if(!test[0]) {
-            accel = new AccelerationController(ViewContext.getContext(), false);
-            grav = new GravityController(ViewContext.getContext());
-            accel.start();
-            grav.start();
-        }
 
-        CountDownTimer timer = new CountDownTimer(timerLength,tickLength){
+        accel = new AccelerationController(ViewContext.getContext(), false);
+        grav = new GravityController(ViewContext.getContext());
+        accel.start();
+        grav.start();
+
+
+        new CountDownTimer(timerLength,tickLength){
 
             public void onTick(long millisUntilFinished){
                 int direction = grav.findFallDirection();
@@ -109,28 +89,23 @@ public class FallDetection{
             }
 
             public void onFinish(){
-                if(!test[0])
-                    incidentScore = findIncidentScore();
-                if(incidentScore > FALL_THRESHOLD){
+                incidentScore = findIncidentScore();
+                if(incidentScore > 4){
                     //Fall has been detected
                     isIncident = true;
-                    if(!test[0])
-                        startNotification(NotificationController.ALERT_ACTION);
+                    recordingController = new RecordingController();
+                    recordingController.startRecording();
+                    address = recordingController.getAddress();
+                    startNotification(NotificationController.ALERT_ACTION);
                 } else {
                     //Fall has not been detected
                     isIncident = false;
                 }
-                if(!test[0]) {
-                    accel.stopSensor();
-                    grav.stopSensor();
-                    startDetection();
-                }
+                accel.stopSensor();
+                grav.stopSensor();
+                startDetection();
             }
-        };
-        if(!test[0])
-            timer.start();
-        else
-            timer.onFinish();
+        }.start();
     }
 
     //-----Fall Calculations-----//
@@ -142,7 +117,7 @@ public class FallDetection{
         float Q1Weight = 0.1f;
         float medWeight = 0.1f;
         float Q3Weight = 0.1f;
-        float maxWeight = 0.2f;
+        float maxWeight = 0.1f;
         float avgWeight = 0.6f;
 
         float Q1  = findQ1();
@@ -151,14 +126,15 @@ public class FallDetection{
         float max = findMax();
         float avg = findAvg();
 
+        float score = (Q1Weight*Q1) + (Q3Weight * Q3) + (maxWeight * max) + (avgWeight * avg);
+
         Log.d("Q1", Float.toString(Q1));
         Log.d("MED", Float.toString(med));
         Log.d("Q3", Float.toString(Q3));
         Log.d("MAX", Float.toString(max));
         Log.d("AVG", Float.toString(avg));
-        Log.d("SCORE", Float.toString(incidentScore));
+        Log.d("SCORE", Float.toString(score));
 
-        float score = (Q1Weight*Q1) + (Q3Weight * Q3) + (maxWeight * max) + (avgWeight * avg);
         return score;
     }
 
@@ -212,11 +188,11 @@ public class FallDetection{
             public void onReceive(Context context, Intent intent) {
                 //This is where we handle the user response
                 userResponse = intent.getStringExtra("userResponse");
-                Toast.makeText(ViewContext.getContext(),userResponse,Toast.LENGTH_SHORT).show();
 
                 PhoneController phone = new PhoneController();
                 String userName = getUserName();
                 String ecNumber = getEmergencyContactNumber();
+                recordingController = new RecordingController();
 
                 switch(userResponse){
                     case NotificationController.STOP_ACTION:                    //Stop = stop detection
@@ -225,13 +201,9 @@ public class FallDetection{
                         break;
                     case NotificationController.CONFIRM_ACTION:                 //Confirm = call, text, and return to idle
                         phone.makeCall(ecNumber);
-                        phone.sendSMS(userName,ecNumber);
-                        startNotification(NotificationController.IDLE_ACTION);
-                        break;
                     case NotificationController.TIMEOUT_ACTION:                 //Timeout = text, and return to idle
-                        phone.sendSMS(userName,ecNumber);
-                        startNotification(NotificationController.IDLE_ACTION);
-                        break;
+                        address = recordingController.getAddress();
+                        phone.sendSMS(userName,ecNumber,address);
                     case NotificationController.CANCEL_ACTION:                  //Cancel = return to idle
                         startNotification(NotificationController.IDLE_ACTION);
                         break;

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -24,7 +25,6 @@ import static com.struggleassist.Model.ViewContext.getContext;
 public class PhoneController {
 
     public static final String MESSAGE = " may have experienced a fall";
-    public static final String ADDRESS = "ADDRESS_PLACEHOLDER";
 
     private SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
     private boolean texts;
@@ -32,7 +32,7 @@ public class PhoneController {
 
     public PhoneController(){    }
 
-    public void sendSMS(String userName, String ecNumber){
+    public void sendSMS(String userName, String ecNumber,String address){
         //Dev settings, if texts are off, don't send sms
         texts = settings.getBoolean("pref_enable_sms",false);
         //Check for permissions
@@ -43,7 +43,12 @@ public class PhoneController {
                 //Send text message
                 PendingIntent sentIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_SENT"), 0);
                 PendingIntent deliveredIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent("SMS_DELIVERED"), 0);
-                sms.sendTextMessage(ecNumber, null, userName + MESSAGE + " @ " + ADDRESS, sentIntent, deliveredIntent);
+                if (address != null){
+                    sms.sendTextMessage(ecNumber, null, userName + MESSAGE + " @ " + address, sentIntent, deliveredIntent);
+                }
+                else{
+                    sms.sendTextMessage(ecNumber, null, userName + MESSAGE, sentIntent, deliveredIntent);
+                }
             } else {
                 Toast.makeText(getContext(), "UNABLE TO SEND SMS DUE TO RESTRICTED PERMISSIONS SETTINGS", Toast.LENGTH_SHORT).show();
             }
