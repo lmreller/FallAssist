@@ -89,7 +89,8 @@ public class Record {
     }
 
     public String generateId(){
-        id = idFormat.format(date) + Float.toString(incidentScore);
+        float time = System.nanoTime();
+        id = idFormat.format(date) + Float.toString(incidentScore) + time;
         return id;
     }
 }

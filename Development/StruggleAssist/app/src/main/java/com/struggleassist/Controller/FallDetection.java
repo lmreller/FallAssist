@@ -8,9 +8,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.IncidentRecording.LocationRecorder;
@@ -44,6 +46,8 @@ public class FallDetection{
     private static float incidentScore;
 
     private static boolean isIncident;
+
+    private static IntentFilter filter;
     private static BroadcastReceiver notificationReceiver;
     private static String userResponse;
 
@@ -54,8 +58,9 @@ public class FallDetection{
 
 
     public FallDetection(){
-            startDetection();
-            startNotification(NotificationController.IDLE_ACTION);
+        filter = new IntentFilter("NotificationControllerBroadcast");
+        startDetection();
+        startNotification(NotificationController.IDLE_ACTION);
     }
 
     //-----Starting and Stopping Actions-----//
@@ -81,7 +86,6 @@ public class FallDetection{
     public static void runAlgorithm(){
         Log.d("RUN", "Start runAlgorithm()");
 
-
         accel = new AccelerationController(ViewContext.getContext(), false);
         grav = new GravityController(ViewContext.getContext());
         accel.start();
@@ -98,7 +102,7 @@ public class FallDetection{
             public void onFinish(){
                 incidentScore = findIncidentScore();
                 fallData.clear();
-                if(incidentScore > 4){
+                if(incidentScore > 2.3){
                     //Fall has been detected
                     isIncident = true;
                     recordingController = new RecordingController();
@@ -190,53 +194,44 @@ public class FallDetection{
     //-----Notification Actions-----//
 
     private static void startNotification(String action) {
-        if (fallDetectionPref) {
-            notificationReceiver = new BroadcastReceiver() {
+        notificationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //This is where we handle the user response
+                userResponse = intent.getStringExtra("userResponse");
 
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    //This is where we handle the user response
-                    userResponse = intent.getStringExtra("userResponse");
+                PhoneController phone = new PhoneController();
+                String userName = getUserName();
+                String ecNumber = getEmergencyContactNumber();
+                recordingController = new RecordingController();
 
-                    PhoneController phone = new PhoneController();
-                    String userName = getUserName();
-                    String ecNumber = getEmergencyContactNumber();
-                    recordingController = new RecordingController();
-
-                    switch (userResponse) {
-                        case NotificationController.STOP_ACTION:                    //Stop = stop detection
-                            stopDetection();
-                            stopNotification();
-                            break;
-                        case NotificationController.CONFIRM_ACTION:                 //Confirm = call, text, and return to idle
-                            phone.makeCall(ecNumber);
-                        case NotificationController.TIMEOUT_ACTION:                 //Timeout = text, and return to idle
-                            address = recordingController.getAddress();
-                            phone.sendSMS(userName, ecNumber, address);
-                        case NotificationController.CANCEL_ACTION:                  //Cancel = return to idle
-                            recordingController.stopRecording(userResponse, incidentScore);
-                            startNotification(NotificationController.IDLE_ACTION);
-                            break;
-                        default:
-                            break;
-                    }
+                switch (userResponse) {
+                    case NotificationController.STOP_ACTION:                    //Stop = stop detection
+                        stopDetection();
+                        stopNotification();
+                        break;
+                    case NotificationController.CONFIRM_ACTION:                 //Confirm = call, text, and return to idle
+                        phone.makeCall(ecNumber);
+                    case NotificationController.TIMEOUT_ACTION:                 //Timeout = text, and return to idle
+                        address = recordingController.getAddress();
+                        phone.sendSMS(userName, ecNumber, address);
+                    case NotificationController.CANCEL_ACTION:                  //Cancel = return to idle
+                        recordingController.stopRecording(userResponse, incidentScore);
+                        startNotification(NotificationController.IDLE_ACTION);
+                        break;
+                    default:
+                        break;
                 }
-            };
-
-            if (!isNotificationInitialized()) {
-                LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver,
-                        new IntentFilter("NotificationControllerBroadcast"));
-                notificationInitialized = true;
             }
+        };
 
-            Intent notificationIntent = new Intent(ViewContext.getContext(), NotificationController.class);
-            notificationIntent.setAction(action);
-            ViewContext.getContext().startService(notificationIntent);
+        if(!notificationInitialized) {
+            LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver, filter);
+            notificationInitialized = true;
         }
-    }
-
-    private static boolean isNotificationInitialized() {
-        return notificationInitialized;
+        Intent notificationIntent = new Intent(ViewContext.getContext(), NotificationController.class);
+        notificationIntent.setAction(action);
+        ViewContext.getContext().startService(notificationIntent);
     }
 
     private static void stopNotification(){

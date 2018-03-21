@@ -75,6 +75,7 @@ public class RecordingController {
             record.setIncidentLocation(address);
         if(videoPath != null)
             record.setIncidentVideo(videoPath);
+        Log.d("RecordingController: ","Insert Record");
         db.open();
         db.insertRecord(record);
         db.close();

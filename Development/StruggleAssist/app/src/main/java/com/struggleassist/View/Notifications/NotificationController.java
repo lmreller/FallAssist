@@ -1,12 +1,15 @@
 package com.struggleassist.View.Notifications;
 
-import android.app.Notification;
+import android.app.NotificationManager;
+import android.support.v4.app.NotificationCompat;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -46,7 +49,7 @@ public class NotificationController extends Service {
         }
         public void onFinish(){
             Intent timeoutIntent = new Intent(ViewContext.getContext(),NotificationController.class);
-            timeoutIntent.setAction(TIMEOUT_ACTION);
+            timeoutIntent.setAction(TIMEOUT_ACTION).putExtra("uniqueID",uniqueID);;
             ViewContext.getContext().startService(timeoutIntent);
 
             PendingIntent pTimeoutIntent = PendingIntent.getService(ViewContext.getContext(),0,timeoutIntent,0);
@@ -55,7 +58,7 @@ public class NotificationController extends Service {
 
     private static RemoteViews idleView;
     private static RemoteViews alertView;
-    private static Notification builder;
+    private static NotificationManager notificationManger;
 
     @Override
     public void onCreate(){
@@ -75,73 +78,81 @@ public class NotificationController extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
+        Log.d("NotificationController: ", "onStartCommand()");
+
         userResponse = intent.getAction();
 
+
         //Cases where the system updates the notification (Start, Idle, or Alert
-        if(userResponse.equals(IDLE_ACTION) || userResponse.equals(ALERT_ACTION)){
-            showNotification(userResponse);
-        } else
-        //If the user responds to an alert (Confirms, Cancels, or Timeout occurs), send that response to FallDetection
-            if(userResponse.equals(CONFIRM_ACTION) || userResponse.equals(CANCEL_ACTION) || userResponse.equals(TIMEOUT_ACTION)){
-            sendMessage();
-        } else
-        //If the user responds by pressing close (in the idle notification), send response to FallDetection and close notification
-            if(userResponse.equals(STOP_ACTION)){
-            sendMessage();
-            stopForeground(true);
-            stopSelf();
-        }
+        Intent mIntent = new Intent(ViewContext.getContext(), LaunchActivity.class);
+        mIntent.setAction(MAIN_ACTION);
+        mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pIntent = PendingIntent.getActivity(ViewContext.getContext(), 0, mIntent, 0);
 
-        return Service.START_STICKY;
-    }
 
-    //Initialize and build the application
-    private void showNotification(String notificationStatus){
-        builder = new Notification.Builder(ViewContext.getContext()).build();
+        if (userResponse.equals(IDLE_ACTION)) {
+            idleView = new RemoteViews("com.struggleassist", R.layout.notification_idle_layout);
 
-        if(notificationStatus.equals(ALERT_ACTION)){
-            alertView = new RemoteViews("com.struggleassist",R.layout.notification_alert_layout);
+            Intent stopIntent = new Intent(ViewContext.getContext(), NotificationController.class);
+            stopIntent.setAction(STOP_ACTION);
+            PendingIntent pStopIntent = PendingIntent.getService(ViewContext.getContext(), 0, stopIntent, 0);
 
-            Intent confirmIntent = new Intent(ViewContext.getContext(),NotificationController.class);
-            confirmIntent.setAction(CONFIRM_ACTION);
-            PendingIntent pConfirmIntent = PendingIntent.getService(ViewContext.getContext(),0,confirmIntent,0);
+            idleView.setOnClickPendingIntent(R.id.idleNotificationButtonClose, pStopIntent);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext());
+            builder.setContent(idleView)
+                    .setSmallIcon(R.mipmap.struggleassist_icon)
+                    .setAutoCancel(true)
+                    .setOngoing(true)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setCustomBigContentView(idleView)
+                    .setContentIntent(pIntent);
 
-            Intent cancelIntent = new Intent(ViewContext.getContext(),NotificationController.class);
-            cancelIntent.setAction(CANCEL_ACTION);
-            PendingIntent pCancelIntent = PendingIntent.getService(ViewContext.getContext(),0,cancelIntent,0);
+            NotificationManager notificationManager = (NotificationManager) ViewContext.getContext().getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(uniqueID, builder.build());
 
-            alertView.setOnClickPendingIntent(R.id.alertNotificationButtonConfirm,pConfirmIntent);
+        } else if (userResponse.equals(ALERT_ACTION)) {
+            alertView = new RemoteViews("com.struggleassist", R.layout.notification_alert_layout);
+
+            Intent confirmIntent = new Intent(ViewContext.getContext(), NotificationController.class);
+            confirmIntent.setAction(CONFIRM_ACTION).putExtra("uniqueID", uniqueID);
+            PendingIntent pConfirmIntent = PendingIntent.getService(ViewContext.getContext(), 0, confirmIntent, 0);
+
+            Intent cancelIntent = new Intent(ViewContext.getContext(), NotificationController.class);
+            cancelIntent.setAction(CANCEL_ACTION).putExtra("uniqueID", uniqueID);
+            PendingIntent pCancelIntent = PendingIntent.getService(ViewContext.getContext(), 0, cancelIntent, 0);
+
+            alertView.setOnClickPendingIntent(R.id.alertNotificationButtonConfirm, pConfirmIntent);
             alertView.setOnClickPendingIntent(R.id.alertNotificationButtonCancel, pCancelIntent);
 
-            builder.contentView = alertView;    //Small alert notification view
-            //builder.contentView = ...;        //Expanded alert notification view
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext());
+            builder.setContent(alertView)
+                    .setSmallIcon(R.mipmap.struggleassist_icon)
+                    .setAutoCancel(true)
+                    .setOngoing(true)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setCustomBigContentView(alertView)
+                    .setContentIntent(pIntent);
 
-            startNotificationTimer();
-        }
-        else {
-            idleView = new RemoteViews("com.struggleassist",R.layout.notification_idle_layout);
+            NotificationManager notificationManager = (NotificationManager) ViewContext.getContext().getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(uniqueID, builder.build());
 
-            Intent stopIntent = new Intent(ViewContext.getContext(),NotificationController.class);
-            stopIntent.setAction(STOP_ACTION);
-            PendingIntent pStopIntent = PendingIntent.getService(ViewContext.getContext(),0,stopIntent,0);
+            notificationTimer.start();
+        } else
+            //If the user responds to an alert (Confirms, Cancels, or Timeout occurs), send that response to FallDetection
+            if (userResponse.equals(CONFIRM_ACTION) || userResponse.equals(CANCEL_ACTION) ) {
+                notificationTimer.cancel();
+                sendMessage();
+            } else if(userResponse.equals(TIMEOUT_ACTION)) {
+                sendMessage();
+            } else if (userResponse.equals(STOP_ACTION)) {
+                NotificationManager notificationManager = (NotificationManager) ViewContext.getContext().getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.cancel(uniqueID);
+                sendMessage();
+                stopForeground(true);
+                stopSelf();
+            }
 
-            idleView.setOnClickPendingIntent(R.id.idleNotificationButtonClose,pStopIntent);
-
-            builder.contentView = idleView; //Small idle notification view
-            //builder.bigContentView = ...; //Expanded idle notification view
-        }
-
-        Intent intent = new Intent(ViewContext.getContext(),LaunchActivity.class);
-        intent.setAction(MAIN_ACTION);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(ViewContext.getContext(),0,intent,0);
-
-        builder.contentIntent = pIntent;
-        builder.flags = Notification.FLAG_ONGOING_EVENT;
-        builder.icon = R.mipmap.struggleassist_icon;
-
-
-        startForeground(uniqueID,builder);
+        return Service.START_STICKY;
     }
 
     //Send the user response to FallDetection, FallDetection will decide what to do with the response
@@ -152,7 +163,4 @@ public class NotificationController extends Service {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    private void startNotificationTimer(){
-        notificationTimer.start();
-    }
 }
