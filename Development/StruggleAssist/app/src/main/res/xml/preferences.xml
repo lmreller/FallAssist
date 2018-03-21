@@ -4,6 +4,12 @@
     >
 
     <android.support.v7.preference.SwitchPreferenceCompat
+        android:key="pref_enable_fall_detection"
+        android:title="Enable Fall Detection"
+        android:summary="Turn fall detection on or off"
+        android:defaultValue="true"/>
+
+    <android.support.v7.preference.SwitchPreferenceCompat
         android:key="pref_enable_phone"
         android:title="Enable Phone Calls"
         android:summary="Dev Setting: Enables phone calling"
@@ -14,6 +20,5 @@
         android:title="Enable SMS"
         android:summary="Dev Setting: Enables SMS messaging"
         android:defaultValue="true" />
-
 
 </android.support.v7.preference.PreferenceScreen>

@@ -16,13 +16,12 @@ public class Record {
 
     private Date date;
 
-    private boolean incident;
     private String dateOfIncident;
     private String incidentLocation;
     private String incidentVideo;
     private String incidentNotes;
     private String userResponse;
-    float incidentScore;
+    private float incidentScore;
     private String id;
 
     SimpleDateFormat outputFormat =
@@ -31,10 +30,10 @@ public class Record {
     SimpleDateFormat idFormat =
             new SimpleDateFormat("yyyyMMddhhmmss");
 
-    public Record(boolean incident, float incidentScore){
+    public Record(String userResponse, float incidentScore){
         date = new Date();
 
-        this.incident = incident;
+        this.userResponse = userResponse;
         dateOfIncident = outputFormat.format(date);
         incidentLocation = "";
         incidentVideo = "";
@@ -44,11 +43,11 @@ public class Record {
         id = generateId();
     }
 
-    public boolean getIncident(){
-        return incident;
+    public String getUserResponse(){
+        return userResponse;
     }
-    public void setIncident(boolean incident){
-        this.incident = incident;
+    public void setUserResponse(String userResponse){
+        this.userResponse = userResponse;
     }
 
     public String getDateOfIncident(){
