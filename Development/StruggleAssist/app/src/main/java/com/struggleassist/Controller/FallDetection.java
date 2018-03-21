@@ -5,11 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.CountDownTimer;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -49,24 +47,19 @@ public class FallDetection{
 
     private static String address;
 
-    private static SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
-    private static boolean fallDetectionPref = settings.getBoolean("pref_enable_fall_detection",false);
-
-
     public FallDetection(){
-            startDetection();
-            startNotification(NotificationController.IDLE_ACTION);
+        startDetection();
+        startNotification(NotificationController.IDLE_ACTION);
+        LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver,
+                new IntentFilter("NotificationControllerBroadcast"));
     }
 
     //-----Starting and Stopping Actions-----//
 
     public static void startDetection() {
-        if (fallDetectionPref) {
-            Log.d("START", "Start start()");
-            accel = new AccelerationController(ViewContext.getContext(), true);
-            accel.start();
-            detectionInitialized = true;
-        }
+        Log.d("START", "Start start()");
+        accel = new AccelerationController(ViewContext.getContext(), true);
+        accel.start();
     }
 
     public static void stopDetection(){
@@ -97,7 +90,6 @@ public class FallDetection{
 
             public void onFinish(){
                 incidentScore = findIncidentScore();
-                fallData.clear();
                 if(incidentScore > 4){
                     //Fall has been detected
                     isIncident = true;
@@ -189,50 +181,41 @@ public class FallDetection{
 
     //-----Notification Actions-----//
 
-    private static void startNotification(String action) {
-        if (fallDetectionPref) {
-            notificationReceiver = new BroadcastReceiver() {
+    private static void startNotification(String action){
+        notificationReceiver = new BroadcastReceiver() {
 
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    //This is where we handle the user response
-                    userResponse = intent.getStringExtra("userResponse");
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //This is where we handle the user response
+                userResponse = intent.getStringExtra("userResponse");
 
-                    PhoneController phone = new PhoneController();
-                    String userName = getUserName();
-                    String ecNumber = getEmergencyContactNumber();
-                    recordingController = new RecordingController();
+                PhoneController phone = new PhoneController();
+                String userName = getUserName();
+                String ecNumber = getEmergencyContactNumber();
+                recordingController = new RecordingController();
 
-                    switch (userResponse) {
-                        case NotificationController.STOP_ACTION:                    //Stop = stop detection
-                            stopDetection();
-                            stopNotification();
-                            break;
-                        case NotificationController.CONFIRM_ACTION:                 //Confirm = call, text, and return to idle
-                            phone.makeCall(ecNumber);
-                        case NotificationController.TIMEOUT_ACTION:                 //Timeout = text, and return to idle
-                            address = recordingController.getAddress();
-                            phone.sendSMS(userName, ecNumber, address);
-                        case NotificationController.CANCEL_ACTION:                  //Cancel = return to idle
-                            recordingController.stopRecording(userResponse, incidentScore);
-                            startNotification(NotificationController.IDLE_ACTION);
-                            break;
-                        default:
-                            break;
-                    }
+                switch(userResponse){
+                    case NotificationController.STOP_ACTION:                    //Stop = stop detection
+                        stopDetection();
+                        stopNotification();
+                        break;
+                    case NotificationController.CONFIRM_ACTION:                 //Confirm = call, text, and return to idle
+                        phone.makeCall(ecNumber);
+                    case NotificationController.TIMEOUT_ACTION:                 //Timeout = text, and return to idle
+                        address = recordingController.getAddress();
+                        phone.sendSMS(userName,ecNumber,address);
+                    case NotificationController.CANCEL_ACTION:                  //Cancel = return to idle
+                        startNotification(NotificationController.IDLE_ACTION);
+                        break;
+                    default:
+                        break;
                 }
-            };
-
-            if (!isNotificationInitialized()) {
-                LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver,
-                        new IntentFilter("NotificationControllerBroadcast"));
-                notificationInitialized = true;
             }
+        };
 
-            Intent notificationIntent = new Intent(ViewContext.getContext(), NotificationController.class);
-            notificationIntent.setAction(action);
-            ViewContext.getContext().startService(notificationIntent);
-        }
+        Intent notificationIntent = new Intent(ViewContext.getContext(),NotificationController.class);
+        notificationIntent.setAction(action);
+        ViewContext.getContext().startService(notificationIntent);
     }
 
     private static boolean isNotificationInitialized() {
@@ -244,8 +227,6 @@ public class FallDetection{
 
         Intent notificationIntent = new Intent(ViewContext.getContext(),NotificationController.class);
         ViewContext.getContext().stopService(notificationIntent);
-
-        notificationInitialized = false;
     }
 
     private static String getUserName(){

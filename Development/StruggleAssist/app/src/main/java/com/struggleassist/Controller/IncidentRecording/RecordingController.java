@@ -1,19 +1,11 @@
 package com.struggleassist.Controller.IncidentRecording;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.struggleassist.Controller.DatabaseController;
-import com.struggleassist.Model.Record;
 import com.struggleassist.Model.ViewContext;
 
 import java.io.IOException;
@@ -29,13 +21,12 @@ public class RecordingController {
     private LocationRecorder location;
     private MultimediaRecorder multimedia;
 
-    private String address = null;
-    private String videoPath = null;
+    private String address;
+    private String videoPath;
 
     public RecordingController() {
         location = new LocationRecorder();
         multimedia = new MultimediaRecorder();
-
     }
 
     public void startRecording() {
@@ -56,28 +47,10 @@ public class RecordingController {
         };
         location = new LocationRecorder();
         location.getLocation(ViewContext.getContext(), locationResult);
-
     }
 
-    private BroadcastReceiver bReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            videoPath = intent.getParcelableExtra("videoUri");
-            Toast.makeText(ViewContext.getContext(),videoPath,Toast.LENGTH_SHORT).show();
-        }
-    };
+    public void stopRecording() {
 
-    public void stopRecording(String userResponse, float incidentScore) {
-        DatabaseController db = new DatabaseController(ViewContext.getContext());
-        Record record = new Record(userResponse,incidentScore);
-
-        if(address != null)
-            record.setIncidentLocation(address);
-        if(videoPath != null)
-            record.setIncidentVideo(videoPath);
-        db.open();
-        db.insertRecord(record);
-        db.close();
     }
 
 
