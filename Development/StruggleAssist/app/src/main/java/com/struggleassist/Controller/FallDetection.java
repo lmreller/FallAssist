@@ -1,25 +1,28 @@
 package com.struggleassist.Controller;
 
 
-import android.content.BroadcastReceiver;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.IncidentRecording.LocationRecorder;
 import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Controller.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.SensorControllers.GravityController;
+import com.struggleassist.Controller.SensorControllers.SensorController;
 import com.struggleassist.Model.ViewContext;
+import com.struggleassist.R;
+import com.struggleassist.View.Activities.LaunchActivity;
 import com.struggleassist.View.Notifications.NotificationController;
 
 import java.util.ArrayList;
@@ -29,66 +32,172 @@ import java.util.Collections;
  * Created by Ryan on 2/28/2018.
  */
 
-public class FallDetection{
-    private static boolean detectionInitialized = false;
-    private static boolean notificationInitialized = false;
-
-    private static RecordingController recordingController;
+public class FallDetection extends Service {
 
     private static final int timerLength = 1000;
     private static final int tickLength = 50;
 
-    private static AccelerationController accel;
-    private static GravityController grav;
+    private static final int notificationTimerLength = 30000;
+    private static final int notificationTickLength = 1000;
+
+    private static AccelerationController accel = null;
+    private static GravityController grav = null;
 
     private static ArrayList<Float> fallData = new ArrayList<>();
 
     private static float incidentScore;
 
-    private static boolean isIncident;
-
-    private static IntentFilter filter;
-    private static BroadcastReceiver notificationReceiver;
-    private static String userResponse;
-
     private static String address;
+    private static int uniqueID = 2112;
 
-    private static SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
-    private static boolean fallDetectionPref = settings.getBoolean("pref_enable_fall_detection",false);
+    private static SharedPreferences settings;
+    private static boolean fallDetectionPref;
+
+    private static FallDetection mFallDetection = null;
+
+    public FallDetection(){ }
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        mFallDetection = this;
+
+        if(intent != null) {
+            if (NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
+                stopDetection();
+
+                Intent serviceIntent = new Intent(this, FallDetection.class);
+                stopService(serviceIntent);
+            }
 
 
-    public FallDetection(){
-        filter = new IntentFilter("NotificationControllerBroadcast");
-        startDetection();
-        startNotification(NotificationController.IDLE_ACTION);
+            settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
+            fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", false);
+            if (fallDetectionPref) {
+
+        /*----------------BEGIN BUILDING THE SERVICE NOTIFICATION----------------*/
+                Intent mIntent = new Intent(ViewContext.getContext(), LaunchActivity.class);
+                mIntent.setAction(NotificationController.MAIN_ACTION);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pIntent = PendingIntent.getActivity(ViewContext.getContext(), 0, mIntent, 0);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext());
+
+                if (NotificationController.ALERT_ACTION.equalsIgnoreCase(intent.getAction())) {
+
+                    RecordingController.startRecording();
+
+                    RemoteViews alertView = new RemoteViews("com.struggleassist", R.layout.notification_alert_layout);
+
+                    Intent confirmIntent = new Intent(this, FallDetection.class);
+                    confirmIntent.setAction(NotificationController.CONFIRM_ACTION);
+                    PendingIntent pConfirmIntent = PendingIntent.getService(this, 0, confirmIntent, 0);
+
+                    Intent cancelIntent = new Intent(this, FallDetection.class);
+                    cancelIntent.setAction(NotificationController.CANCEL_ACTION);
+                    PendingIntent pCancelIntent = PendingIntent.getService(this, 0, cancelIntent, 0);
+
+                    alertView.setOnClickPendingIntent(R.id.alertNotificationButtonConfirm, pConfirmIntent);
+                    alertView.setOnClickPendingIntent(R.id.alertNotificationButtonCancel, pCancelIntent);
+
+                    builder = new NotificationCompat.Builder(ViewContext.getContext());
+                    builder.setContent(alertView)
+                            .setSmallIcon(R.mipmap.struggleassist_icon)
+                            .setAutoCancel(true)
+                            .setOngoing(true)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setCustomBigContentView(alertView)
+                            .setContentIntent(pIntent);
+
+                    notificationTimer.start();
+
+                } else {                //NotificationController.IDLE_ACTION -- default to this
+
+                    RemoteViews idleView = new RemoteViews("com.struggleassist", R.layout.notification_idle_layout);
+
+                    Intent stopIntent = new Intent(this, FallDetection.class);
+                    stopIntent.setAction(NotificationController.STOP_ACTION);
+                    PendingIntent pStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
+
+                    idleView.setOnClickPendingIntent(R.id.idleNotificationButtonClose, pStopIntent);
+                    builder.setContent(idleView)
+                            .setSmallIcon(R.mipmap.struggleassist_icon)
+                            .setAutoCancel(true)
+                            .setOngoing(true)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setCustomBigContentView(idleView)
+                            .setContentIntent(pIntent);
+                }
+
+                startForeground(uniqueID, builder.build());
+        /*-----------------END BUILDING THE SERVICE NOTIFICATION-----------------*/
+
+        /*----------------BEGIN HANDLING THE SERVICE NOTIFICATION----------------*/
+
+                if (!NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
+                    startDetection();
+
+                    PhoneController phoneController = new PhoneController();
+                    String userName = getUserName();
+                    String ecNumber = getEmergencyContactNumber();
+                    switch (intent.getAction()) {
+
+                        case NotificationController.CONFIRM_ACTION:                 //Confirm: Make call, get address, sendSMS, stop recording
+                            phoneController.makeCall(ecNumber);                         //makeCall
+
+                        case NotificationController.TIMEOUT_ACTION:                 //Timeout: Get address, send SMS, stop recording
+                            address = RecordingController.getAddress();                 //Get address
+                            phoneController.sendSMS(userName, ecNumber, address);       //sendSMS
+
+                        case NotificationController.CANCEL_ACTION:                  //Cancel: Stop recording
+                            RecordingController.stopRecording(intent.getAction(), incidentScore);    //Stop recording
+                            notificationTimer.cancel();                             //cancel timer (already finished on timeout)
+                            break;
+                        default:
+                            break;
+                    }
+                }
+        /*-----------------END HANDLING THE SERVICE NOTIFICATION-----------------*/
+
+            }
+        }
+        return Service.START_STICKY;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent){ return null; }
+
+    @Override
+    public void onDestroy(){
+        stopDetection();
+        super.onDestroy();
     }
 
     //-----Starting and Stopping Actions-----//
 
     public static void startDetection() {
-        if (fallDetectionPref) {
-            Log.d("START", "Start start()");
-            accel = new AccelerationController(ViewContext.getContext(), true);
-            accel.start();
-            detectionInitialized = true;
-        }
+        accel = AccelerationController.getInstance(ViewContext.getContext());
+        Log.d("START", "Start start()");
+        accel.setType(true);
+        accel.start();
     }
 
     public static void stopDetection(){
-        accel.stopSensor();
-        detectionInitialized=false;
+        if(accel!=null)
+            accel.stopSensor();
     }
 
-    public boolean isDetectionInitialized(){
-        return detectionInitialized;
-    }
-
-    public static void runAlgorithm(){
+    public void runAlgorithm(){
         Log.d("RUN", "Start runAlgorithm()");
 
-        accel = new AccelerationController(ViewContext.getContext(), false);
         grav = new GravityController(ViewContext.getContext());
-        accel.start();
+        accel.setType(false);
         grav.start();
 
 
@@ -100,22 +209,20 @@ public class FallDetection{
             }
 
             public void onFinish(){
+                grav.stopSensor();
+                accel.stopSensor();
+
                 incidentScore = findIncidentScore();
-                fallData.clear();
-                if(incidentScore > 2.3){
+
+                if(incidentScore > 1.6){
                     //Fall has been detected
-                    isIncident = true;
-                    recordingController = new RecordingController();
-                    recordingController.startRecording();
-                    address = recordingController.getAddress();
-                    startNotification(NotificationController.ALERT_ACTION);
+                    Intent startIntent = new Intent(ViewContext.getContext(), FallDetection.class);
+                    startIntent.setAction(NotificationController.ALERT_ACTION);
+                    ViewContext.getContext().startService(startIntent);
                 } else {
                     //Fall has not been detected
-                    isIncident = false;
+                    startDetection();
                 }
-                accel.stopSensor();
-                grav.stopSensor();
-                startDetection();
             }
         }.start();
     }
@@ -191,65 +298,30 @@ public class FallDetection{
         return total / fallData.size();
     }
 
-    //-----Notification Actions-----//
+    //-----Notification-----//
 
-    private static void startNotification(String action) {
-        notificationReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                //This is where we handle the user response
-                userResponse = intent.getStringExtra("userResponse");
-
-                PhoneController phone = new PhoneController();
-                String userName = getUserName();
-                String ecNumber = getEmergencyContactNumber();
-                recordingController = new RecordingController();
-
-                switch (userResponse) {
-                    case NotificationController.STOP_ACTION:                    //Stop = stop detection
-                        stopDetection();
-                        stopNotification();
-                        break;
-                    case NotificationController.CONFIRM_ACTION:                 //Confirm = call, text, and return to idle
-                        phone.makeCall(ecNumber);
-                    case NotificationController.TIMEOUT_ACTION:                 //Timeout = text, and return to idle
-                        address = recordingController.getAddress();
-                        phone.sendSMS(userName, ecNumber, address);
-                    case NotificationController.CANCEL_ACTION:                  //Cancel = return to idle
-                        recordingController.stopRecording(userResponse, incidentScore);
-                        startNotification(NotificationController.IDLE_ACTION);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        if(!notificationInitialized) {
-            LocalBroadcastManager.getInstance(ViewContext.getContext()).registerReceiver(notificationReceiver, filter);
-            notificationInitialized = true;
+    private  CountDownTimer notificationTimer = new CountDownTimer(notificationTimerLength,notificationTickLength){
+        public void onTick(long millisUntilFinished){
+            //what to do every tick (progress bar, maybe?)
         }
-        Intent notificationIntent = new Intent(ViewContext.getContext(), NotificationController.class);
-        notificationIntent.setAction(action);
-        ViewContext.getContext().startService(notificationIntent);
-    }
+        public void onFinish(){
+            Intent timeoutIntent = new Intent(ViewContext.getContext(),FallDetection.class);
+            timeoutIntent.setAction(NotificationController.TIMEOUT_ACTION);
+            ViewContext.getContext().startService(timeoutIntent);
+        }
+    };
 
-    private static void stopNotification(){
-        LocalBroadcastManager.getInstance(ViewContext.getContext()).unregisterReceiver(notificationReceiver);
-
-        Intent notificationIntent = new Intent(ViewContext.getContext(),NotificationController.class);
-        ViewContext.getContext().stopService(notificationIntent);
-
-        notificationInitialized = false;
-    }
+    //-----Getters-----//
 
     private static String getUserName(){
         DatabaseController db = new DatabaseController(ViewContext.getContext());
         db.open();
         Cursor cursor = db.getAllUsers();
         cursor.moveToFirst();
-        return (cursor.getString(cursor.getColumnIndex("firstName")) + " "
-                + cursor.getString(cursor.getColumnIndex("lastName")));
+        String name = cursor.getString(cursor.getColumnIndex("firstName")) + " "
+                + cursor.getString(cursor.getColumnIndex("lastName"));
+        db.close();
+        return name;
     }
 
     private static String getEmergencyContactNumber(){
@@ -257,7 +329,13 @@ public class FallDetection{
         db.open();
         Cursor cursor = db.getAllUsers();
         cursor.moveToFirst();
-        return cursor.getString(cursor.getColumnIndex("emergencyContactNumber"));
+        String number = cursor.getString(cursor.getColumnIndex("emergencyContactNumber"));
+        db.close();
+        return number;
+    }
+
+    public static FallDetection getInstance(){
+        return mFallDetection;
     }
 
 }

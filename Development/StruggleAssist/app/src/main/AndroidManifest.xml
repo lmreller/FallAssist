@@ -34,8 +34,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <service
-            android:name=".View.Notifications.NotificationController"
-            android:label="NotificationController" />
+            android:name=".Controller.FallDetection"
+            android:label="FallDetection" />
 
         <activity android:name=".View.Activities.LaunchActivity">
             <intent-filter>

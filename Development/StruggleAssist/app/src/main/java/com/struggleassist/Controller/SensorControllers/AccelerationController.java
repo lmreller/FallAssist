@@ -6,12 +6,17 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 
 import com.struggleassist.Controller.FallDetection;
+
+import java.util.ArrayList;
+
 /**
  * Created by lucas on 9/14/2017.
  * Purpose: Will control the low level interactions with the devices linear accelerometer (no gravity)
  */
 
 public class AccelerationController extends SensorController {
+
+    private static AccelerationController INSTANCE = null;
 
     //Constants for the low-pass filters
     private float timeConstant = 0.18f;
@@ -30,7 +35,7 @@ public class AccelerationController extends SensorController {
 
     private int count = 0;
 
-    private final static int startThreshold = 5;
+    private final static float startThreshold = 4;
     private boolean type;
     private boolean triggered;
 
@@ -43,11 +48,18 @@ public class AccelerationController extends SensorController {
     //Result: a new sensor setup is configured and registered with a listener for the linear
     //        acceleration sensor in the device
     //**********************************************************************************************
-    public AccelerationController(Context context, boolean type) {
+    private AccelerationController(Context context) {
         super(context);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         this.type = type;
         triggered = false;
+    }
+
+    public static AccelerationController getInstance(Context context){
+        if(INSTANCE == null){
+            INSTANCE = new AccelerationController(context);
+        }
+        return INSTANCE;
     }
 
     //**********************************************************************************************
@@ -71,18 +83,27 @@ public class AccelerationController extends SensorController {
         gravity[1] = alpha * gravity[1] + (1 - alpha) * input[1];
         gravity[2] = alpha * gravity[2] + (1 - alpha) * input[2];
 
-        xValue = input[0] - gravity[0]; //x-axis (wide)
-        yValue = input[1] - gravity[1]; //y-axis (tall)
-        zValue = input[2] - gravity[2]; //z-axis (screen)
+        linearAcceleration[0] = input[0] - gravity[0]; //x-axis (wide)
+        linearAcceleration[1] = input[1] - gravity[1]; //y-axis (tall)
+        linearAcceleration[2] = input[2] - gravity[2]; //z-axis (screen)
+
+        xValue = linearAcceleration[0];
+        yValue = linearAcceleration[1];
+        zValue = linearAcceleration[2];
+
+        double trueAccel = Math.sqrt((xValue*xValue)+(yValue*yValue)+(zValue*zValue));
+
+//        Log.d("Accel: ",type+ " trueAccel: " + trueAccel + " X:"+ xValue +"| Y:"+yValue +"| Z:"+zValue);
 
         if (type) {
             //trigger fall detection class somewhere in here based on conditionals
-            //Log.d("Accel: ","X:"+xValue +"| Y:"+yValue +"| Z:"+zValue);
-            if ((Math.abs(xValue) > startThreshold || Math.abs(yValue) > startThreshold || Math.abs(zValue) > startThreshold) && !triggered) {
-                triggered = true;
+            if ((trueAccel > startThreshold)) {
                 Log.d("FALL", "Potential Fall");
-                stopSensor();
-                FallDetection.runAlgorithm();
+                FallDetection fallDetection = FallDetection.getInstance();
+                fallDetection.runAlgorithm();
+                linearAcceleration[0] = 0;
+                linearAcceleration[1] = 0;
+                linearAcceleration[2] = 0;
             }
         }
     }
@@ -93,6 +114,10 @@ public class AccelerationController extends SensorController {
         accelData[2] = Math.abs(getzValue());
 
         return(accelData[direction]);
+    }
+
+    public void setType(boolean t){
+        type = t;
     }
 
 }

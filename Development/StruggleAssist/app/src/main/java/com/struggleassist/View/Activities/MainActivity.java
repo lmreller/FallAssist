@@ -1,5 +1,7 @@
 package com.struggleassist.View.Activities;
 
+import android.app.ActivityManager;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,12 +22,12 @@ import com.struggleassist.View.Contents.HomeContent;
 import com.struggleassist.View.Contents.IncidentReportContent;
 import com.struggleassist.View.Contents.SettingsContent;
 import com.struggleassist.View.Contents.ViewProfileContent;
+import com.struggleassist.View.Notifications.NotificationController;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String BACK_STACK_ROOT_TAG = "root_fragment";
 
-    private FallDetection fallDetection;
     private DrawerLayout drawerLayout;
     private FrameLayout frameLayout;
     private Fragment fragment;
@@ -49,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_contentFrame,fragment)
                 .commit();
 
-        fallDetection = new FallDetection();
         drawerLayout = findViewById(R.id.drawer_layout);
         frameLayout = findViewById(R.id.main_contentFrame);
 
+        Intent startIntent = new Intent(MainActivity.this, FallDetection.class);
+        startIntent.setAction(NotificationController.IDLE_ACTION);
+        startService(startIntent);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -105,10 +109,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        //If the fall detection isn't initialized, do so
-        if(!fallDetection.isDetectionInitialized()){
-            fallDetection.startDetection();
-        }
     }
 
     @Override
@@ -119,5 +119,15 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isFallDetectionActive() {
+        ActivityManager manager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("FallDetection.class".equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

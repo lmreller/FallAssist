@@ -12,8 +12,8 @@ import android.hardware.SensorManager;
 
 public class SensorController implements SensorEventListener{
 
-    protected SensorManager mSensorManager;
-    protected Sensor mSensor;
+    protected static SensorManager mSensorManager;
+    protected static Sensor mSensor;
 
     protected float xValue;
     protected float yValue;

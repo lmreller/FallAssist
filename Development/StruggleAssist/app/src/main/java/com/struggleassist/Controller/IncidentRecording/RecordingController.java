@@ -26,11 +26,11 @@ import java.util.Locale;
 
 public class RecordingController {
 
-    private LocationRecorder location;
-    private MultimediaRecorder multimedia;
+    private static LocationRecorder location;
+    private static MultimediaRecorder multimedia;
 
-    private String address = null;
-    private String videoPath = null;
+    private static String address = null;
+    private static String videoPath = null;
 
     public RecordingController() {
         location = new LocationRecorder();
@@ -38,8 +38,7 @@ public class RecordingController {
 
     }
 
-    public void startRecording() {
-
+    public static void startRecording() {
         //Get Address
         LocationRecorder.LocationResult locationResult = new LocationRecorder.LocationResult() {
             @Override
@@ -56,7 +55,6 @@ public class RecordingController {
         };
         location = new LocationRecorder();
         location.getLocation(ViewContext.getContext(), locationResult);
-
     }
 
     private BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -67,7 +65,7 @@ public class RecordingController {
         }
     };
 
-    public void stopRecording(String userResponse, float incidentScore) {
+    public static void stopRecording(String userResponse, float incidentScore) {
         DatabaseController db = new DatabaseController(ViewContext.getContext());
         Record record = new Record(userResponse,incidentScore);
 
@@ -115,8 +113,9 @@ public class RecordingController {
 
     }
 
-    public void setAddress(String adr) {
-            this.address = adr;
-        }
-    public String getAddress(){return address;}
+    public static void setAddress(String adr) {
+            address = adr;
+    }
+
+    public static String getAddress(){return address;}
 }
