@@ -2,21 +2,26 @@ package com.struggleassist.View.Activities;
 
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.struggleassist.Controller.FallDetection;
+import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.View.Contents.HomeContent;
 import com.struggleassist.View.Contents.IncidentReportContent;
@@ -32,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private Fragment fragment;
     private FragmentManager fragmentManager;
+
+    private static SharedPreferences settings;
+    private static boolean fallDetectionPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +64,13 @@ public class MainActivity extends AppCompatActivity {
 
         Intent startIntent = new Intent(MainActivity.this, FallDetection.class);
         startIntent.setAction(NotificationController.IDLE_ACTION);
-        startService(startIntent);
+
+
+        settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
+        fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", false);
+        if (fallDetectionPref)
+            ContextCompat.startForegroundService(this,startIntent);
+
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 

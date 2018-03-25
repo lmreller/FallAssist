@@ -1,12 +1,16 @@
 package com.struggleassist.Controller;
 
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -37,9 +41,6 @@ public class FallDetection extends Service {
     private static final int timerLength = 1000;
     private static final int tickLength = 50;
 
-    private static final int notificationTimerLength = 30000;
-    private static final int notificationTickLength = 1000;
-
     private static AccelerationController accel = null;
     private static GravityController grav = null;
 
@@ -60,6 +61,15 @@ public class FallDetection extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
+
+        Log.d("Fall Detection: ","onCreate()");
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationController.createChannel();
+        }
+        this.startForeground(uniqueID,
+                NotificationController.getNotificationBuilder(NotificationController.IDLE_ACTION).build());
+
     }
 
     @Override
@@ -68,7 +78,15 @@ public class FallDetection extends Service {
 
         mFallDetection = this;
 
+        /*----------------BEGIN BUILDING THE SERVICE NOTIFICATION----------------*/
+                this.startForeground(uniqueID,
+                        NotificationController.getNotificationBuilder(intent.getAction()).build());
+        /*-----------------END BUILDING THE SERVICE NOTIFICATION-----------------*/
+
+        /*----------------BEGIN HANDLING THE SERVICE NOTIFICATION----------------*/
+
         if(intent != null) {
+
             if (NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
                 stopDetection();
 
@@ -76,97 +94,33 @@ public class FallDetection extends Service {
                 stopService(serviceIntent);
             }
 
+            if (!NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
+                startDetection();
 
-            settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
-            fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", false);
-            if (fallDetectionPref) {
+                PhoneController phoneController = new PhoneController();
+                String userName = getUserName();
+                String ecNumber = getEmergencyContactNumber();
+                switch (intent.getAction()) {
 
-        /*----------------BEGIN BUILDING THE SERVICE NOTIFICATION----------------*/
-                Intent mIntent = new Intent(ViewContext.getContext(), LaunchActivity.class);
-                mIntent.setAction(NotificationController.MAIN_ACTION);
-                mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pIntent = PendingIntent.getActivity(ViewContext.getContext(), 0, mIntent, 0);
+                    case NotificationController.CONFIRM_ACTION:                 //Confirm: Make call, get address, sendSMS, stop recording
+                        phoneController.makeCall(ecNumber);                         //makeCall
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext());
+                    case NotificationController.TIMEOUT_ACTION:                 //Timeout: Get address, send SMS, stop recording
+                        address = RecordingController.getAddress();                 //Get address
+                        phoneController.sendSMS(userName, ecNumber, address);       //sendSMS
 
-                if (NotificationController.ALERT_ACTION.equalsIgnoreCase(intent.getAction())) {
-
-                    RecordingController.startRecording();
-
-                    RemoteViews alertView = new RemoteViews("com.struggleassist", R.layout.notification_alert_layout);
-
-                    Intent confirmIntent = new Intent(this, FallDetection.class);
-                    confirmIntent.setAction(NotificationController.CONFIRM_ACTION);
-                    PendingIntent pConfirmIntent = PendingIntent.getService(this, 0, confirmIntent, 0);
-
-                    Intent cancelIntent = new Intent(this, FallDetection.class);
-                    cancelIntent.setAction(NotificationController.CANCEL_ACTION);
-                    PendingIntent pCancelIntent = PendingIntent.getService(this, 0, cancelIntent, 0);
-
-                    alertView.setOnClickPendingIntent(R.id.alertNotificationButtonConfirm, pConfirmIntent);
-                    alertView.setOnClickPendingIntent(R.id.alertNotificationButtonCancel, pCancelIntent);
-
-                    builder = new NotificationCompat.Builder(ViewContext.getContext());
-                    builder.setContent(alertView)
-                            .setSmallIcon(R.mipmap.struggleassist_icon)
-                            .setAutoCancel(true)
-                            .setOngoing(true)
-                            .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setCustomBigContentView(alertView)
-                            .setContentIntent(pIntent);
-
-                    notificationTimer.start();
-
-                } else {                //NotificationController.IDLE_ACTION -- default to this
-
-                    RemoteViews idleView = new RemoteViews("com.struggleassist", R.layout.notification_idle_layout);
-
-                    Intent stopIntent = new Intent(this, FallDetection.class);
-                    stopIntent.setAction(NotificationController.STOP_ACTION);
-                    PendingIntent pStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
-
-                    idleView.setOnClickPendingIntent(R.id.idleNotificationButtonClose, pStopIntent);
-                    builder.setContent(idleView)
-                            .setSmallIcon(R.mipmap.struggleassist_icon)
-                            .setAutoCancel(true)
-                            .setOngoing(true)
-                            .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setCustomBigContentView(idleView)
-                            .setContentIntent(pIntent);
+                    case NotificationController.CANCEL_ACTION:                  //Cancel: Stop recording
+                        RecordingController.stopRecording(intent.getAction(), incidentScore);    //Stop recording
+                        NotificationController.notificationTimer.cancel();                             //cancel timer (already finished on timeout)
+                        break;
+                    default:
+                        break;
                 }
-
-                startForeground(uniqueID, builder.build());
-        /*-----------------END BUILDING THE SERVICE NOTIFICATION-----------------*/
-
-        /*----------------BEGIN HANDLING THE SERVICE NOTIFICATION----------------*/
-
-                if (!NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
-                    startDetection();
-
-                    PhoneController phoneController = new PhoneController();
-                    String userName = getUserName();
-                    String ecNumber = getEmergencyContactNumber();
-                    switch (intent.getAction()) {
-
-                        case NotificationController.CONFIRM_ACTION:                 //Confirm: Make call, get address, sendSMS, stop recording
-                            phoneController.makeCall(ecNumber);                         //makeCall
-
-                        case NotificationController.TIMEOUT_ACTION:                 //Timeout: Get address, send SMS, stop recording
-                            address = RecordingController.getAddress();                 //Get address
-                            phoneController.sendSMS(userName, ecNumber, address);       //sendSMS
-
-                        case NotificationController.CANCEL_ACTION:                  //Cancel: Stop recording
-                            RecordingController.stopRecording(intent.getAction(), incidentScore);    //Stop recording
-                            notificationTimer.cancel();                             //cancel timer (already finished on timeout)
-                            break;
-                        default:
-                            break;
-                    }
-                }
+            }
         /*-----------------END HANDLING THE SERVICE NOTIFICATION-----------------*/
 
-            }
-        }
+
+    }
         return Service.START_STICKY;
     }
 
@@ -299,17 +253,6 @@ public class FallDetection extends Service {
     }
 
     //-----Notification-----//
-
-    private  CountDownTimer notificationTimer = new CountDownTimer(notificationTimerLength,notificationTickLength){
-        public void onTick(long millisUntilFinished){
-            //what to do every tick (progress bar, maybe?)
-        }
-        public void onFinish(){
-            Intent timeoutIntent = new Intent(ViewContext.getContext(),FallDetection.class);
-            timeoutIntent.setAction(NotificationController.TIMEOUT_ACTION);
-            ViewContext.getContext().startService(timeoutIntent);
-        }
-    };
 
     //-----Getters-----//
 
