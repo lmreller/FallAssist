@@ -2,7 +2,6 @@ package com.struggleassist.Controller;
 
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -64,9 +63,9 @@ public class FallDetection extends Service {
 
         Log.d("Fall Detection: ","onCreate()");
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationController.createChannel();
-        }
+//        if(Build.VERSION.SDK_INT >= 26){
+//            NotificationController.createChannel();
+//        }
         this.startForeground(uniqueID,
                 NotificationController.getNotificationBuilder(NotificationController.IDLE_ACTION).build());
 

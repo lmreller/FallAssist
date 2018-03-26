@@ -1,7 +1,6 @@
 package com.struggleassist.View.Notifications;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
@@ -42,7 +41,6 @@ public class NotificationController {
     private static final int notificationTickLength = 1000;
 
     private static final String CHANNEL_ID = "fall_detection_channel";
-
     public static CountDownTimer notificationTimer = new CountDownTimer(notificationTimerLength,notificationTickLength){
         public void onTick(long millisUntilFinished){
             //what to do every tick (progress bar, maybe?)
@@ -54,28 +52,30 @@ public class NotificationController {
         }
     };
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    public static void createChannel(){
-        NotificationManager notificationManager = (NotificationManager) ViewContext.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        String id = CHANNEL_ID;
-        CharSequence name = "Struggle Assist";
-        String description = "Fall Detection";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        NotificationChannel notificationChannel = new NotificationChannel(id, name, importance);
-        notificationChannel.setDescription(description);
-        notificationChannel.setShowBadge(true);
-        notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-
-        notificationManager.createNotificationChannel(notificationChannel);
-    }
+///NotificationChannels required for Oreo (API26)
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    public static void createChannel(){
+//        NotificationManager notificationManager = (NotificationManager) ViewContext.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        String id = CHANNEL_ID;
+//        CharSequence name = "Struggle Assist";
+//        String description = "Fall Detection";
+//        int importance = NotificationManager.IMPORTANCE_HIGH;
+//
+//        NotificationChannel notificationChannel = new NotificationChannel(id, name, importance);
+//        notificationChannel.setDescription(description);
+//        notificationChannel.setShowBadge(true);
+//        notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+//
+//        notificationManager.createNotificationChannel(notificationChannel);
+//    }
 
     public static NotificationCompat.Builder getNotificationBuilder(String action){
 
         Log.d("NotificationController","getNotificationBuilder");   
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext(),CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext());
 
         Intent mIntent = new Intent(ViewContext.getContext(), LaunchActivity.class);
         mIntent.setAction(NotificationController.MAIN_ACTION);

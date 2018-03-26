@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_contentFrame,fragment)
                 .commit();
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        frameLayout = findViewById(R.id.main_contentFrame);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        frameLayout = (FrameLayout) findViewById(R.id.main_contentFrame);
 
         Intent startIntent = new Intent(MainActivity.this, FallDetection.class);
         startIntent.setAction(NotificationController.IDLE_ACTION);
@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
         settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
         fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", false);
         if (fallDetectionPref)
-            ContextCompat.startForegroundService(this,startIntent);
+            startService(startIntent);
 
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         //Listen for items selected
         navigationView.setNavigationItemSelectedListener(
