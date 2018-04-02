@@ -27,13 +27,14 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Button
+        android:id="@+id/bResetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="resetDB"
         android:text="Reset DB"
-        android:id="@+id/bResetButton"
-        app:layout_constraintTop_toBottomOf="@id/content_home_tv"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/content_home_tv" />
 
 </android.support.constraint.ConstraintLayout>
