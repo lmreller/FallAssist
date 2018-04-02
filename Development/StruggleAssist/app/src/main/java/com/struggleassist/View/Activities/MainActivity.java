@@ -18,8 +18,10 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
+import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Controller.FallDetection;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
@@ -144,4 +146,10 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    public void resetDB(View v){
+        DatabaseController db = new DatabaseController(ViewContext.context);
+        db.reset();
+    }
+
 }
