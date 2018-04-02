@@ -23,6 +23,7 @@ public class Record {
     private String userResponse;
     private float incidentScore;
     private String id;
+    protected boolean isInitialized;
 
     SimpleDateFormat outputFormat =
             new SimpleDateFormat("E yyyy/MM/dd hh:mm");
@@ -41,6 +42,8 @@ public class Record {
         this.incidentScore = incidentScore;
 
         id = generateId();
+
+        isInitialized = true;
     }
 
     public String getUserResponse(){
