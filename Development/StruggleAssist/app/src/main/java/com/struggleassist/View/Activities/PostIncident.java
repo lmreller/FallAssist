@@ -2,6 +2,7 @@ package com.struggleassist.View.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -77,6 +78,7 @@ public class PostIncident extends AppCompatActivity {
         firstCt = 0;
         secondCt = 1;
 
+        responses = new ArrayList<>();
         questions = new ArrayList<>();
         //page #1
         questions.add(new Tuple<>("Did you feel the fall coming?", 0));
@@ -100,7 +102,7 @@ public class PostIncident extends AppCompatActivity {
             freeResponse.setVisibility(View.INVISIBLE);
             firstCt +=2;
             secondCt +=2;
-            pageCt++;
+            Log.d("Symptoms:", "set" + pageCt);
         }
         else{
             topQuestion.setText(questions.get(firstCt).getQuestion().toString());
@@ -110,6 +112,7 @@ public class PostIncident extends AppCompatActivity {
                 bottomQuestion.setVisibility(View.INVISIBLE);
                 bottomYes.setVisibility(View.INVISIBLE);
                 bottomNo.setVisibility(View.INVISIBLE);
+                Log.d("Symptoms:", "set" + pageCt);
             }
             else{
                 freeResponse.setVisibility(View.VISIBLE);
@@ -120,13 +123,80 @@ public class PostIncident extends AppCompatActivity {
                 bottomYes.setVisibility(View.INVISIBLE);
                 bottomNo.setVisibility(View.INVISIBLE);
                 button.setText("Submit");
+                Log.d("Symptoms:", "set" + pageCt);
             }
             firstCt++;
-            pageCt++;
         }
+        pageCt++;
     }
 
     public void button_onClick(View v){
-        setQuestions();
+        Log.d("Symptoms:", "onClick: " + pageCt);
+        boolean topYesSelected = topYes.isChecked();
+        boolean bottomYesSelected = bottomYes.isChecked();
+        boolean topNoSelected = topNo.isChecked();
+        boolean bottomNoSelected = bottomNo.isChecked();
+        String fr = freeResponse.getText().toString();
+        String bfr = bFreeResponse.getText().toString();
+
+        switch (pageCt-1){
+            case 1:
+                if(topYesSelected){
+                    responses.add("Felt the fall coming");
+                }
+                else if (topNoSelected){
+                    responses.add("Did not feel the fall coming");
+                }
+                if(bottomYesSelected){
+                    responses.add("Had a headache prior to the fall");
+                }
+                else if(bottomNoSelected){
+                    responses.add("Did not have a headache prior to the fall");
+                }
+                break;
+
+            case 2:
+                if(topYesSelected){
+                    responses.add("Experienced chest pains and/or shortness of breath");
+                }
+                else if (topNoSelected){
+                    responses.add("Did not experience chest pains and/or shortness of breath");
+                }
+                if(bottomYesSelected){
+                    responses.add("Was unconscious as some point in time around the fall");
+                }
+                else if(bottomNoSelected){
+                    responses.add("Was never unconscious");
+                }
+                break;
+
+            case 3:
+                if(topYesSelected){
+                    responses.add("The environment contributed to the fall: " + bfr);
+                }
+                break;
+
+            case 4:
+                responses.add(fr);
+                break;
+
+            default:
+                Log.d("Symptoms:", Integer.toString(pageCt));
+                break;
+        }
+        if(pageCt < 5)
+            setQuestions();
+        else
+            Log.d("Symptoms:", "Why: " + getResponsesAsString());
+    }
+
+    public String getResponsesAsString(){
+        StringBuilder result = new StringBuilder("");
+
+        for(int i = 0; i < responses.size(); i++){
+            result.append(responses.get(i) + ", ");
+        }
+        //result.delete(result.length() - 2, result.length());//removes last ", "
+        return result.toString();
     }
 }
