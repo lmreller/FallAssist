@@ -3,6 +3,7 @@ package com.struggleassist.View.Activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,41 +55,78 @@ public class PostIncident extends AppCompatActivity {
     EditText bFreeResponse;
     EditText freeResponse;
 
+    Button button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_incident);
 
-        topQuestion = findViewById(R.id.topQuestion);
-        topYes = findViewById(R.id.topYes);
-        topNo = findViewById(R.id.topNo);
-        bottomQuestion = findViewById(R.id.bottomQuestion);
-        bottomYes = findViewById(R.id.bottomYes);
-        bottomNo = findViewById(R.id.bottomNo);
-        bFreeResponse = findViewById(R.id.binaryFreeResponse);
-        freeResponse = findViewById(R.id.freeResponse);
+        topQuestion = (TextView) findViewById(R.id.topQuestion);
+        topYes = (CheckBox) findViewById(R.id.topYes);
+        topNo = (CheckBox) findViewById(R.id.topNo);
+        bottomQuestion = (TextView) findViewById(R.id.bottomQuestion);
+        bottomYes = (CheckBox) findViewById(R.id.bottomYes);
+        bottomNo =(CheckBox) findViewById(R.id.bottomNo);
+        bFreeResponse = (EditText) findViewById(R.id.binaryFreeResponse);
+        freeResponse = (EditText) findViewById(R.id.freeResponse);
+        button = (Button)findViewById(R.id.button);
 
-        pageCt = 0;
+
+        pageCt = 1;
         firstCt = 0;
         secondCt = 1;
 
-        questions = new ArrayList<Tuple>();
+        questions = new ArrayList<>();
         //page #1
-        questions.add(new Tuple<String, Integer>("Did you feel the fall coming?", 0));
-        questions.add(new Tuple<String, Integer>("Did you have a headache leading into the fall?", 0));
+        questions.add(new Tuple<>("Did you feel the fall coming?", 0));
+        questions.add(new Tuple<>("Did you have a headache leading into the fall?", 0));
         //page #2
-        questions.add(new Tuple<String, Integer>("Did you have any chest pains or shortness of breathe before or after the fall?", 0));
-        questions.add(new Tuple<String, Integer>("Were you unconscious at any point before, during, or after the fall?", 0));
+        questions.add(new Tuple<>("Did you have any chest pains or shortness of breathe before or after the fall?", 0));
+        questions.add(new Tuple<>("Were you unconscious at any point before, during, or after the fall?", 0));
         //page #3
-        questions.add(new Tuple<String, Integer>("Did something in the environment around you contribute to the fall? If so please explain", 2));
+        questions.add(new Tuple<>("Did something in the environment around you contribute to the fall? If so please explain", 2));
         //page #4
-        questions.add(new Tuple<String, Integer>("Do you have any other symptoms or notes you would like to record?", 1));
+        questions.add(new Tuple<>("Do you have any other symptoms or notes you would like to record?", 1));
 
-        topQuestion.setText(questions.get(firstCt).getQuestion().toString());
-        topQuestion.setText(questions.get(secondCt).getQuestion().toString());
+        setQuestions();
+    }
+
+    private void setQuestions(){
+        if(pageCt < 3) {
+            topQuestion.setText(questions.get(firstCt).getQuestion().toString());
+            bottomQuestion.setText(questions.get(secondCt).getQuestion().toString());
+            bFreeResponse.setVisibility(View.INVISIBLE);
+            freeResponse.setVisibility(View.INVISIBLE);
+            firstCt +=2;
+            secondCt +=2;
+            pageCt++;
+        }
+        else{
+            topQuestion.setText(questions.get(firstCt).getQuestion().toString());
+            if(pageCt == 3){
+                bFreeResponse.setVisibility(View.VISIBLE);
+                freeResponse.setVisibility(View.INVISIBLE);
+                bottomQuestion.setVisibility(View.INVISIBLE);
+                bottomYes.setVisibility(View.INVISIBLE);
+                bottomNo.setVisibility(View.INVISIBLE);
+            }
+            else{
+                freeResponse.setVisibility(View.VISIBLE);
+                bFreeResponse.setVisibility(View.INVISIBLE);
+                bottomQuestion.setVisibility(View.INVISIBLE);
+                topYes.setVisibility(View.INVISIBLE);
+                topNo.setVisibility(View.INVISIBLE);
+                bottomYes.setVisibility(View.INVISIBLE);
+                bottomNo.setVisibility(View.INVISIBLE);
+                button.setText("Submit");
+            }
+            firstCt++;
+            pageCt++;
+        }
     }
 
     public void button_onClick(View v){
-
+        setQuestions();
     }
 }
