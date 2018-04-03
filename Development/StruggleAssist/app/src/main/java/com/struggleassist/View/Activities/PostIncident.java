@@ -141,31 +141,31 @@ public class PostIncident extends AppCompatActivity {
 
         switch (pageCt-1){
             case 1:
-                if(topYesSelected){
+                if(topYesSelected && !topNoSelected){
                     responses.add("Felt the fall coming");
                 }
-                else if (topNoSelected){
+                else if (topNoSelected && ! topYesSelected){
                     responses.add("Did not feel the fall coming");
                 }
-                if(bottomYesSelected){
+                if(bottomYesSelected && !bottomNoSelected){
                     responses.add("Had a headache prior to the fall");
                 }
-                else if(bottomNoSelected){
+                else if(bottomNoSelected && !bottomYesSelected){
                     responses.add("Did not have a headache prior to the fall");
                 }
                 break;
 
             case 2:
-                if(topYesSelected){
+                if(topYesSelected && !topNoSelected){
                     responses.add("Experienced chest pains and/or shortness of breath");
                 }
-                else if (topNoSelected){
+                else if (topNoSelected && ! topYesSelected){
                     responses.add("Did not experience chest pains and/or shortness of breath");
                 }
-                if(bottomYesSelected){
+                if(bottomYesSelected && !bottomNoSelected){
                     responses.add("Was unconscious as some point in time around the fall");
                 }
-                else if(bottomNoSelected){
+                else if(bottomNoSelected && !bottomYesSelected){
                     responses.add("Was never unconscious");
                 }
                 break;
