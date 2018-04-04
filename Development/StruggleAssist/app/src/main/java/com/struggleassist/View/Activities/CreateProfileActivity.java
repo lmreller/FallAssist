@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -47,6 +48,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     DateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     DateFormat storedDateFormat = new SimpleDateFormat("yyyy/MM/dd");
     Date dateOfBirth;
+    String dateOfBirthString;
 
     //Global variables for selecting an emergency contact
     static final int PICK_CONTACT_REQUEST = 1;
@@ -97,17 +99,12 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         //If there are no empty fields, insert user into database
         if(emptyField==false){
-            //Convert date formats
-            try {
-                dateOfBirth = storedDateFormat.parse(etDateOfBirth.getText().toString());
-            } catch (Exception e) {
-                Log.d("dateOfBirthParse", "Failed to parse dateOfBirth inputDateFormat");
-            }
             DatabaseController db = new DatabaseController(this);
             db.open();
-            db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirth.toString(), ecID, ecNumber);
+            db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirthString, ecID, ecNumber);
             db.close();
             Intent i = new Intent(this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         }
     }
@@ -126,7 +123,8 @@ public class CreateProfileActivity extends AppCompatActivity {
                 AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                 //Set etDateOfBirth text field to selected date
-                etDateOfBirth.setText((++selectedmonth) + "/" + selectedday + "/" + selectedyear);
+                dateOfBirthString = (++selectedmonth) + "/" + selectedday + "/" + selectedyear;
+                etDateOfBirth.setText(dateOfBirthString);
                 //Remove any errors in the edittext
                 etDateOfBirth.setError(null);
             }

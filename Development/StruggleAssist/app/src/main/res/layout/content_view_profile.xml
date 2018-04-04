@@ -6,12 +6,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/tvViewProfileUserName"
+        android:text="User Name"
+        android:textSize = "25dp"
+        android:layout_margin="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View Profile Content"
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/tvViewProfileBirthDate"
+        android:text="Birthdate"
+        android:textSize="25dp"
+        android:layout_margin="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvViewProfileUserName"/>
+
+
+    <fragment
+        android:id="@+id/viewProfileEmergencyContactFragment"
+        android:name="com.struggleassist.View.Activities.EmergencyContactCardFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvViewProfileBirthDate"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Edit Profile"
+        android:id="@+id/bEditProfile"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
