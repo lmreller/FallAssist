@@ -31,12 +31,26 @@ import java.io.IOException;
 
 public class EmergencyContactCardFragment extends Fragment {
 
+    private View view;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
         //Inflate the emergency contact card fragment
-        View view = inflater.inflate(R.layout.fragment_emergency_contact_card, container, false);
+        view = inflater.inflate(R.layout.fragment_emergency_contact_card, container, false);
 
+        setFields();
+
+        return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        setFields();
+    }
+
+    private void setFields(){
         //Initialize emergency contact fields
         ImageView ivEmergencyContact = (ImageView) view.findViewById(R.id.ivEmergencyContact);
         TextView tvEmergencyContactName = (TextView) view.findViewById(R.id.tvEmergencyContactName);
@@ -86,6 +100,5 @@ public class EmergencyContactCardFragment extends Fragment {
             tvEmergencyContactName.setText("Unable to access contacts");
             tvEmergencyContactNumber.setText("Please give permissions to read contacts");
         }
-        return view;
     }
 }

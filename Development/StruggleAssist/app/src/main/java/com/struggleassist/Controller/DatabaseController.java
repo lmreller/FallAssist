@@ -110,7 +110,7 @@ public class DatabaseController {
     //USER OPERATIONS
     //---insert a contact into the database--
     public long insertUser(String fName, String lName, String dob, String contactID, String contactNumber) {
-        String id = fName + lName + dob;
+        String id = fName + lName;
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_UID, id);
         initialValues.put(KEY_FIRSTNAME, fName);
@@ -141,15 +141,14 @@ public class DatabaseController {
     }
 
     //---updates a user--
-    public boolean updateUser(String id, String fName, String lName, String dob, String contact) {
+    public boolean updateUser(String id, String fName, String lName, String dob, String contactID, String contactNumber) {
         ContentValues args = new ContentValues();
-        args.put(KEY_UID, id);
         args.put(KEY_FIRSTNAME, fName);
         args.put(KEY_LASTNAME, lName);
         args.put(KEY_DOB, dob);
-        args.put(KEY_EMERGENCY_ID, contact);
-        args.put(KEY_EMERGENCY_NUMBER, contact);
-        return db.update(TABLE_USER, args, KEY_UID + "=" + id, null) > 0;
+        args.put(KEY_EMERGENCY_ID, contactID);
+        args.put(KEY_EMERGENCY_NUMBER, contactNumber);
+        return db.update(TABLE_USER, args, KEY_UID + "=?", new String[]{id}) > 0;
     }
 
 

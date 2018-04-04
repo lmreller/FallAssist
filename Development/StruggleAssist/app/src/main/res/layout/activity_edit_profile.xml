@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.struggleassist.View.Activities.EditProfileActivity"
+    tools:layout_editor_absoluteY="81dp">
+
+    <EditText
+        android:id="@+id/etEditFirstName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+        android:ems="10"
+        android:hint="First Name"
+        android:inputType="textNoSuggestions|textVisiblePassword|textCapWords"
+        android:singleLine="true"
+        app:layout_constraintEnd_toStartOf="@+id/editGuideline5"
+        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintStart_toStartOf="@id/editGuideline2"
+        app:layout_constraintTop_toTopOf="@id/editGuideline" />
+
+    <EditText
+        android:id="@+id/etEditLastName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+        android:ems="10"
+        android:hint="Last Name"
+        android:inputType="textNoSuggestions|textVisiblePassword|textCapWords"
+        android:singleLine="true"
+        app:layout_constraintEnd_toStartOf="@+id/editGuideline5"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/editGuideline2"
+        app:layout_constraintTop_toBottomOf="@id/etEditFirstName" />
+
+    <EditText
+        android:id="@+id/etEditDateOfBirth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="Date of Birth (Select)"
+        android:inputType="date"
+        android:onClick="launchDatePicker"
+        app:layout_constraintEnd_toStartOf="@+id/editGuideline5"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/editGuideline2"
+        app:layout_constraintTop_toBottomOf="@id/etEditLastName" />
+
+    <EditText
+        android:id="@+id/etEditEmergencyContact"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="Emergency Contact Number (Select)"
+        android:inputType="phone"
+        android:onClick="pickContact"
+        app:layout_constraintEnd_toStartOf="@+id/editGuideline5"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/editGuideline2"
+        app:layout_constraintTop_toBottomOf="@id/etEditDateOfBirth" />
+
+    <Button
+        android:id="@+id/bEditConfirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="create_onClick"
+        android:text="Edit Profile"
+        app:layout_constraintBottom_toTopOf="@id/editGuideline3"
+        app:layout_constraintEnd_toStartOf="@id/editGuideline5"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@id/editGuideline2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/editGuideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04136253" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/editGuideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96107054" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/editGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/editGuideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.97" />
+
+</android.support.constraint.ConstraintLayout>

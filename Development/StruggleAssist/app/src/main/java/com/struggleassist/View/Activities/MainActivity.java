@@ -159,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
     public void resetDB(View v){
         DatabaseController db = new DatabaseController(ViewContext.context);
         db.reset();
+        ViewContext.getContext().deleteDatabase("User");
+        ViewContext.getContext().deleteDatabase("Records");
     }
 
 }

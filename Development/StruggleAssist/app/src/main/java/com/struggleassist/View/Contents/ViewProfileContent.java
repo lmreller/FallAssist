@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.CreateProfileActivity;
+import com.struggleassist.View.Activities.EditProfileActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,6 +32,10 @@ public class ViewProfileContent extends Fragment {
 
     private static View view;
 
+    private TextView tvUserName;
+    private TextView tvUserBirthdate;
+    private Button bEditProfile;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         getActivity().setTitle(R.string.action_profile);
@@ -46,16 +51,31 @@ public class ViewProfileContent extends Fragment {
             //Return view as is
         }
 
-        TextView tvUserName = (TextView) view.findViewById(R.id.tvViewProfileUserName);
-        TextView tvUserBirthdate = (TextView) view.findViewById(R.id.tvViewProfileBirthDate);
+        tvUserName = (TextView) view.findViewById(R.id.tvViewProfileUserName);
+        tvUserBirthdate = (TextView) view.findViewById(R.id.tvViewProfileBirthDate);
 
-        Button bEditProfile = (Button) view.findViewById(R.id.bEditProfile);
+        bEditProfile = (Button) view.findViewById(R.id.bEditProfile);
         bEditProfile.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 launchEditProfile();
             }
         });
+
+        setFields();
+
+        return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        getActivity().setTitle(R.string.action_profile);
+
+        setFields();
+    }
+
+    private void setFields(){
 
         DatabaseController db = new DatabaseController(view.getContext());
         db.open();
@@ -69,14 +89,11 @@ public class ViewProfileContent extends Fragment {
 
         tvUserName.setText(userFName+" "+userLName);
         tvUserBirthdate.setText("Age: " + getAge(userBirthdate));
-
-        return view;
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        getActivity().setTitle(R.string.action_profile);
+    public void launchEditProfile(){
+        Intent i = new Intent(getContext(), EditProfileActivity.class);       //Currently launching create profile activity, will need to change to edit profile activity
+        startActivityForResult(i,123);
     }
 
     private int getAge(String userBirthdate){
@@ -101,11 +118,6 @@ public class ViewProfileContent extends Fragment {
             Log.d("ViewProfileContent","Unable to parse date");
         }
         return age;
-    }
-
-    public void launchEditProfile(){
-        Intent i = new Intent(getContext(), CreateProfileActivity.class);       //Currently launching create profile activity, will need to change to edit profile activity
-        startActivity(i);
     }
 }
 
