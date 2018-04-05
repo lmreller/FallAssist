@@ -31,6 +31,8 @@ public class Record {
     SimpleDateFormat idFormat =
             new SimpleDateFormat("yyyyMMddhhmmss");
 
+    public Record(){};
+
     public Record(String userResponse, float incidentScore){
         date = new Date();
 
@@ -87,9 +89,11 @@ public class Record {
     public void setIncidentScore(float incidentScore){
         this.incidentScore = incidentScore;
     }
+
     public String getId(){
         return id;
     }
+    public void setId(String id){this.id = id;}
 
     public String generateId(){
         float time = System.nanoTime();
