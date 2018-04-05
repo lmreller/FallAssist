@@ -1,8 +1,10 @@
 package com.struggleassist.View.Contents;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +18,22 @@ import com.struggleassist.Model.Record;
 import com.struggleassist.Model.RecordAdapter;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
+import com.struggleassist.View.Activities.PostIncident;
+import com.struggleassist.View.Activities.ViewRecordActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Ryan on 3/9/2018.
  */
 
 public class IncidentReportContent extends Fragment {
-    private RecordAdapter adapter;
+
+    ListView listView;
+    SwipeRefreshLayout swipeRefreshLayout;
+    RecordAdapter adapter;
+    ArrayList<Record> recordList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -32,8 +41,8 @@ public class IncidentReportContent extends Fragment {
 
         View rootView = inflater.inflate(R.layout.content_incident_reports,container,false);
 
-        ListView listView = (ListView) rootView.findViewById(R.id.recordList);
-        ArrayList<Record> recordList = populateRecordList();
+        listView = (ListView) rootView.findViewById(R.id.recordList);
+        recordList = populateRecordList();
 
         adapter = new RecordAdapter(getActivity(), 0, recordList);
 
@@ -44,7 +53,20 @@ public class IncidentReportContent extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Record record = adapter.getItem(position);
 
-                Toast.makeText(ViewContext.getContext(),record.getId(),Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getContext(),ViewRecordActivity.class);
+                i.putExtra("Record",record);
+                startActivityForResult(i,0);
+                }
+        });
+
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.content_incident_reports);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recordList = populateRecordList();
+                adapter = new RecordAdapter(getActivity(), 0, recordList);
+                listView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -55,6 +77,10 @@ public class IncidentReportContent extends Fragment {
     public void onResume(){
         super.onResume();
         getActivity().setTitle(R.string.action_incident_reports);
+        recordList = populateRecordList();
+        adapter = new RecordAdapter(getActivity(), 0, recordList);
+        listView.setAdapter(adapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private ArrayList<Record> populateRecordList(){
@@ -92,6 +118,8 @@ public class IncidentReportContent extends Fragment {
         }
         c.close();
         db.close();
+
+        Collections.reverse(list);
 
         return list;
     }

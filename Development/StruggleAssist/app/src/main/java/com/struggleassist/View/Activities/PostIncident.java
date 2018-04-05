@@ -1,5 +1,7 @@
 package com.struggleassist.View.Activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -130,7 +132,13 @@ public class PostIncident extends AppCompatActivity {
         pageCt++;
     }
 
-    public void button_onClick(View v){
+    public void cancelQuiz_onClick(View v){
+        Intent i = new Intent();
+        setResult(Activity.RESULT_CANCELED, i);
+        finish();
+    }
+
+    public void button_onClick(View v) {
         Log.d("Symptoms:", "onClick: " + pageCt);
         boolean topYesSelected = topYes.isChecked();
         boolean bottomYesSelected = bottomYes.isChecked();
@@ -139,39 +147,35 @@ public class PostIncident extends AppCompatActivity {
         String fr = freeResponse.getText().toString();
         String bfr = bFreeResponse.getText().toString();
 
-        switch (pageCt-1){
+        switch (pageCt - 1) {
             case 1:
-                if(topYesSelected && !topNoSelected){
+                if (topYesSelected && !topNoSelected) {
                     responses.add("Felt the fall coming");
-                }
-                else if (topNoSelected && ! topYesSelected){
+                } else if (topNoSelected && !topYesSelected) {
                     responses.add("Did not feel the fall coming");
                 }
-                if(bottomYesSelected && !bottomNoSelected){
+                if (bottomYesSelected && !bottomNoSelected) {
                     responses.add("Had a headache prior to the fall");
-                }
-                else if(bottomNoSelected && !bottomYesSelected){
+                } else if (bottomNoSelected && !bottomYesSelected) {
                     responses.add("Did not have a headache prior to the fall");
                 }
                 break;
 
             case 2:
-                if(topYesSelected && !topNoSelected){
+                if (topYesSelected && !topNoSelected) {
                     responses.add("Experienced chest pains and/or shortness of breath");
-                }
-                else if (topNoSelected && ! topYesSelected){
+                } else if (topNoSelected && !topYesSelected) {
                     responses.add("Did not experience chest pains and/or shortness of breath");
                 }
-                if(bottomYesSelected && !bottomNoSelected){
+                if (bottomYesSelected && !bottomNoSelected) {
                     responses.add("Was unconscious as some point in time around the fall");
-                }
-                else if(bottomNoSelected && !bottomYesSelected){
+                } else if (bottomNoSelected && !bottomYesSelected) {
                     responses.add("Was never unconscious");
                 }
                 break;
 
             case 3:
-                if(topYesSelected){
+                if (topYesSelected) {
                     responses.add("The environment contributed to the fall: " + bfr);
                 }
                 break;
@@ -184,17 +188,23 @@ public class PostIncident extends AppCompatActivity {
                 Log.d("Symptoms:", Integer.toString(pageCt));
                 break;
         }
-        if(pageCt < 5)
+        if (pageCt < 5)
             setQuestions();
-        else
+        else {
+
+            Intent i = new Intent();
+            i.putExtra("NotesString",getResponsesAsString());
             Log.d("Symptoms:", "Why: " + getResponsesAsString());
+            setResult(Activity.RESULT_OK, i);
+            finish();
+        }
     }
 
     public String getResponsesAsString(){
         StringBuilder result = new StringBuilder("");
 
         for(int i = 0; i < responses.size(); i++){
-            result.append(responses.get(i) + ", ");
+            result.append("-" + responses.get(i) + "\n");
         }
         //result.delete(result.length() - 2, result.length());//removes last ", "
         return result.toString();

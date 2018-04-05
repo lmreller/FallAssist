@@ -179,7 +179,8 @@ public class DatabaseController {
         args.put(KEY_NOTES,     record.getIncidentNotes());
         args.put(KEY_SCORE,     record.getIncidentScore());
         args.put(KEY_RESPONSE,  record.getUserResponse());
-        return db.update(TABLE_RECORDS, args, KEY_RID + "=" + record.getId(), null) > 0;
+        Log.d("DBUpdateRecord:",record.getIncidentNotes());
+        return db.update(TABLE_RECORDS, args, KEY_RID + "=?", new String[]{record.getId()}) > 0;
     }
 
     //---remove record

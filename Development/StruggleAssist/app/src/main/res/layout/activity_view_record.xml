@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/editRecordToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEditRecordDateTitle"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:text="Date:"
+        app:layout_constraintTop_toBottomOf="@id/editRecordToolbar"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEditRecordDate"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:text="dateHolder"
+        app:layout_constraintBaseline_toBaselineOf="@id/tvEditRecordDateTitle"
+        app:layout_constraintLeft_toRightOf="@id/tvEditRecordDateTitle"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEditRecordResponseTitle"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:text="Response:"
+        app:layout_constraintTop_toBottomOf="@id/tvEditRecordDateTitle"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/tvEditRecordResponse"
+        android:textSize="20dp"
+        android:text="responseHolder"
+        app:layout_constraintLeft_toRightOf="@id/tvEditRecordResponseTitle"
+        app:layout_constraintBaseline_toBaselineOf="@id/tvEditRecordResponseTitle"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEditRecordLocationTitle"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:text="Location:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEditRecordResponseTitle"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEditRecordLocation"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:text="Incident Location"
+        app:layout_constraintLeft_toRightOf="@id/tvEditRecordLocationTitle"
+        app:layout_constraintBaseline_toBaselineOf="@id/tvEditRecordLocationTitle"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEditRecordNotesTitle"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:text="Notes"
+        app:layout_constraintTop_toBottomOf="@id/tvEditRecordLocationTitle"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/tvRecordNotes"
+        android:layout_margin="10dp"
+        android:inputType="text|textMultiLine"
+        android:gravity="start|top"
+        app:layout_constraintTop_toBottomOf="@id/tvEditRecordNotesTitle"
+        app:layout_constraintBottom_toTopOf="@id/bAddNotes"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/bRecordBack"
+        android:textSize="20dp"
+        android:text="Back"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/bAddNotes"/>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/bAddNotes"
+        android:textSize="20dp"
+        android:text="Add Notes"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/bRecordBack"/>
+
+
+</android.support.constraint.ConstraintLayout>

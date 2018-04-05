@@ -4,6 +4,7 @@ import android.location.Location;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,7 +13,7 @@ import java.util.Date;
  * Data type to hold incident records
  */
 
-public class Record {
+public class Record implements Serializable {
 
     private Date date;
 

@@ -62,6 +62,8 @@ public class ViewProfileContent extends Fragment {
             }
         });
 
+
+
         setFields();
 
         return view;

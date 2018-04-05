@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Model.ViewContext;
@@ -61,6 +62,8 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.editProfileToolbar);
+        toolbar.setTitle("Edit Profile");
 
         //EditText Fields
         etEditFirstName = (EditText) findViewById(R.id.etEditFirstName);
@@ -96,6 +99,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //Confirm button
         bEditConfirm = (Button) findViewById(R.id.bEditConfirm);
+    }
+
+    public void cancel_onClick(View v){
+        Intent i = new Intent();
+        setResult(Activity.RESULT_CANCELED, i);
+        finish();
     }
 
     //Confirm Button Method
