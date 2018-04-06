@@ -99,13 +99,15 @@ public class FallDetection extends Service {
                 PhoneController phoneController = new PhoneController();
                 String userName = getUserName();
                 String ecNumber = getEmergencyContactNumber();
+
                 switch (intent.getAction()) {
 
                     case NotificationController.CONFIRM_ACTION:                 //Confirm: Make call, get address, sendSMS, stop recording
                         phoneController.makeCall(ecNumber);                         //makeCall
+                        address = RecordingController.getAddress();                 //Get address
+
 
                     case NotificationController.TIMEOUT_ACTION:                 //Timeout: Get address, send SMS, stop recording
-                        address = RecordingController.getAddress();                 //Get address
                         phoneController.sendSMS(userName, ecNumber, address);       //sendSMS
 
                     case NotificationController.CANCEL_ACTION:                  //Cancel: Stop recording
@@ -171,6 +173,7 @@ public class FallDetection extends Service {
                     //Fall has been detected
                     Intent startIntent = new Intent(ViewContext.getContext(), FallDetection.class);
                     startIntent.setAction(NotificationController.ALERT_ACTION);
+                    RecordingController.startRecording();
                     ViewContext.getContext().startService(startIntent);
                 } else {
                     //Fall has not been detected
