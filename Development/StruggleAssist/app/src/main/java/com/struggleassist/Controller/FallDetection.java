@@ -1,31 +1,18 @@
 package com.struggleassist.Controller;
 
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.RemoteViews;
-import android.widget.Toast;
 
-import com.struggleassist.Controller.IncidentRecording.LocationRecorder;
 import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Controller.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.SensorControllers.GravityController;
-import com.struggleassist.Controller.SensorControllers.SensorController;
 import com.struggleassist.Model.ViewContext;
-import com.struggleassist.R;
-import com.struggleassist.View.Activities.LaunchActivity;
 import com.struggleassist.View.Notifications.NotificationController;
 
 import java.util.ArrayList;
