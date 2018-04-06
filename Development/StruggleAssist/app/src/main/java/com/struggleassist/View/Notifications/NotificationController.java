@@ -1,13 +1,24 @@
 package com.struggleassist.View.Notifications;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.struggleassist.Controller.FallDetection;
+import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.LaunchActivity;
@@ -62,7 +73,7 @@ public class NotificationController {
 
     public static NotificationCompat.Builder getNotificationBuilder(String action){
 
-        Log.d("NotificationController","getNotificationBuilder");
+        Log.d("NotificationController","getNotificationBuilder");   
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext());
 
