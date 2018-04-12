@@ -57,6 +57,7 @@ public class EditProfileActivity extends AppCompatActivity {
     String userFName;
     String userLName;
     String userBirthdate;
+    String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class EditProfileActivity extends AppCompatActivity {
         userBirthdate = dbCursor.getString(dbCursor.getColumnIndex("dateOfBirth"));
         ecNumber = dbCursor.getString(dbCursor.getColumnIndex("emergencyContactNumber"));
         ecID = dbCursor.getString(dbCursor.getColumnIndex("emergencyContactID"));
+        userType = dbCursor.getString(dbCursor.getColumnIndex("userType"));
         dbCursor.close();
         db.close();
 
@@ -135,7 +137,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if(emptyField==false){
             DatabaseController db = new DatabaseController(this);
             db.open();
-            db.updateUser(userID, etEditFirstName.getText().toString(), etEditLastName.getText().toString(), userBirthdate, ecID, ecNumber);
+            db.updateUser(userID, etEditFirstName.getText().toString(), etEditLastName.getText().toString(), userBirthdate, ecID, ecNumber, userType);
             db.close();
             Intent i = new Intent();
             setResult(Activity.RESULT_OK, i);

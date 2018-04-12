@@ -25,7 +25,8 @@ public class DatabaseController {
     static final String KEY_DOB = "dateOfBirth";    //numeric
     static final String KEY_EMERGENCY_ID = "emergencyContactID"; //numeric
     static final String KEY_EMERGENCY_NUMBER = "emergencyContactNumber"; //numeric
-    static final String CREATE_USER = "CREATE TABLE IF NOT EXISTS User (uid text, firstName text, lastName text, dateOfBirth text, emergencyContactID text, emergencyContactNumber text, PRIMARY KEY (uid));";
+    static final String KEY_USER_TYPE = "userType"; //text
+    static final String CREATE_USER = "CREATE TABLE IF NOT EXISTS User (uid text, firstName text, lastName text, dateOfBirth text, emergencyContactID text, emergencyContactNumber text, userType text, PRIMARY KEY (uid));";
 
     //Records table
     static final String TABLE_RECORDS = "Records";
@@ -109,7 +110,7 @@ public class DatabaseController {
 
     //USER OPERATIONS
     //---insert a contact into the database--
-    public long insertUser(String fName, String lName, String dob, String contactID, String contactNumber) {
+    public long insertUser(String fName, String lName, String dob, String contactID, String contactNumber, String userType) {
         String id = fName + lName;
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_UID, id);
@@ -118,6 +119,7 @@ public class DatabaseController {
         initialValues.put(KEY_DOB, dob);
         initialValues.put(KEY_EMERGENCY_ID, contactID);
         initialValues.put(KEY_EMERGENCY_NUMBER, contactNumber);
+        initialValues.put(KEY_USER_TYPE, userType);
         return db.insert(TABLE_USER, null, initialValues);
     }
 
@@ -128,12 +130,12 @@ public class DatabaseController {
 
     //---retrieves all the users--
     public Cursor getAllUsers() {
-        return db.query(TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY_ID, KEY_EMERGENCY_NUMBER}, null, null, null, null, null);
+        return db.query(TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY_ID, KEY_EMERGENCY_NUMBER, KEY_USER_TYPE}, null, null, null, null, null);
     }
 
     //---retrieves a particular user--(not used currently)
     public Cursor getUser(String id) throws SQLException {
-        Cursor mCursor = db.query(true, TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY_ID, KEY_EMERGENCY_NUMBER}, KEY_UID + "=" + id, null, null, null, null, null);
+        Cursor mCursor = db.query(true, TABLE_USER, new String[]{KEY_UID, KEY_FIRSTNAME, KEY_LASTNAME, KEY_DOB, KEY_EMERGENCY_ID, KEY_EMERGENCY_NUMBER, KEY_USER_TYPE}, KEY_UID + "=" + id, null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -141,13 +143,14 @@ public class DatabaseController {
     }
 
     //---updates a user--
-    public boolean updateUser(String id, String fName, String lName, String dob, String contactID, String contactNumber) {
+    public boolean updateUser(String id, String fName, String lName, String dob, String contactID, String contactNumber, String userType) {
         ContentValues args = new ContentValues();
         args.put(KEY_FIRSTNAME, fName);
         args.put(KEY_LASTNAME, lName);
         args.put(KEY_DOB, dob);
         args.put(KEY_EMERGENCY_ID, contactID);
         args.put(KEY_EMERGENCY_NUMBER, contactNumber);
+        args.put(KEY_USER_TYPE, userType);
         return db.update(TABLE_USER, args, KEY_UID + "=?", new String[]{id}) > 0;
     }
 

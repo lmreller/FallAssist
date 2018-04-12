@@ -3,6 +3,7 @@ package com.struggleassist.View.Activities;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
@@ -20,9 +21,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Controller.FallDetection;
+import com.struggleassist.Controller.MessageListener;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.View.Contents.HomeContent;
@@ -64,15 +67,14 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         frameLayout = (FrameLayout) findViewById(R.id.main_contentFrame);
 
+        settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
+        fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", false);
+
         Intent startIntent = new Intent(MainActivity.this, FallDetection.class);
         startIntent.setAction(NotificationController.IDLE_ACTION);
 
-
-        settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
-        fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", false);
         if (fallDetectionPref)
             startService(startIntent);
-
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 

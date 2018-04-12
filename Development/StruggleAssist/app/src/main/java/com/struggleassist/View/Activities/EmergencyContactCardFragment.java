@@ -67,7 +67,7 @@ public class EmergencyContactCardFragment extends Fragment {
             db.close();
 
             //Default emergency contact photo
-            Bitmap bp = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_launcher);
+            Bitmap bp = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.struggleassist_icon);
 
             Cursor cursor = ViewContext.getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                     ContactsContract.CommonDataKinds.Phone._ID + " ='" + ecID + "'", null, null);
