@@ -1,6 +1,7 @@
 package com.struggleassist.View.Activities;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -44,12 +45,18 @@ public class LaunchActivity extends AppCompatActivity {
 
         tvLaunch = (TextView) findViewById(R.id.tvLaunch);
         launchActivityIcon = (ImageView) findViewById(R.id.launchActivityIcon);
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         if(!Settings.canDrawOverlays(this)){
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:"+getPackageName()));
             startActivityForResult(intent,OVERLAY_CODE);
         }
+
+        if(Build.VERSION.SDK_INT >= 23)
+            if(!nm.isNotificationPolicyAccessGranted()){
+                startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+            }
 
         //Request permissions (will launch main activity after permissions are granted or if they are already granted on launch)
         if(!hasPermissions(this,PERMISSIONS))

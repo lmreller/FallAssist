@@ -66,8 +66,11 @@ public class FallDetection extends Service {
 //        if(Build.VERSION.SDK_INT >= 26){
 //            NotificationController.createChannel();
 //        }
-        this.startForeground(uniqueID,
-                NotificationController.getNotificationBuilder(NotificationController.IDLE_ACTION).build());
+
+        Notification notification = NotificationController.getNotificationBuilder(NotificationController.IDLE_ACTION).build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        this.startForeground(uniqueID,notification);
 
     }
 
@@ -78,8 +81,10 @@ public class FallDetection extends Service {
         mFallDetection = this;
 
         /*----------------BEGIN BUILDING THE SERVICE NOTIFICATION----------------*/
-                this.startForeground(uniqueID,
-                        NotificationController.getNotificationBuilder(intent.getAction()).build());
+        Notification notification = NotificationController.getNotificationBuilder(intent.getAction()).build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        this.startForeground(uniqueID,notification);
         /*-----------------END BUILDING THE SERVICE NOTIFICATION-----------------*/
 
         /*----------------BEGIN HANDLING THE SERVICE NOTIFICATION----------------*/

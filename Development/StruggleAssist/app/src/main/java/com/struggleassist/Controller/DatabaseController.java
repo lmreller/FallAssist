@@ -42,7 +42,7 @@ public class DatabaseController {
     static final String TAG = "Database";
     static final String DATABASE_NAME = "StruggleAssist_DB";
 
-    static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 2;
     final Context context;
     DatabaseHelper DBHelper;
     SQLiteDatabase db;

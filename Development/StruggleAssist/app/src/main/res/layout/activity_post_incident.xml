@@ -14,6 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="20dp"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,12 +31,12 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="20dp"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topNo"
         app:layout_constraintVertical_bias="0.439" />
 
     <CheckBox
@@ -48,12 +49,13 @@
         android:layout_marginTop="8dp"
         android:checked="false"
         android:duplicateParentState="false"
+        android:textSize="20dp"
         android:text="Yes"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="topYes_Click"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.123"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topQuestion"
         app:layout_constraintVertical_bias="0.232" />
 
     <CheckBox
@@ -64,12 +66,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="20dp"
         android:text="No"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="topNo_Click"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topYes"
         app:layout_constraintVertical_bias="0.283" />
 
     <CheckBox
@@ -80,12 +83,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="20dp"
         android:text="Yes"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="bottomYes_Click"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.123"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottomQuestion"
         app:layout_constraintVertical_bias="0.499" />
 
     <CheckBox
@@ -95,8 +99,9 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:textSize="20dp"
         android:text="No"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="bottomNo_Click"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,8 +110,8 @@
 
     <EditText
         android:id="@+id/binaryFreeResponse"
-        android:layout_width="351dp"
-        android:layout_height="252dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -114,10 +119,11 @@
         android:ems="10"
         android:inputType="textMultiLine"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@id/bQuizCancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottomNo"
         app:layout_constraintVertical_bias="0.549" />
 
     <EditText
@@ -133,6 +139,7 @@
         android:selectAllOnFocus="false"
         android:singleLine="false"
         android:visibility="invisible"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -145,6 +152,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:onClick="button_onClick"
+        android:textSize="20dp"
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -156,6 +164,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:onClick="cancelQuiz_onClick"
+        android:textSize="20dp"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
