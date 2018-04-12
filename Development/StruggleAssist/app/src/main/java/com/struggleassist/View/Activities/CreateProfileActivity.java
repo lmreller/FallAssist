@@ -43,6 +43,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private Button bConfirm;
     private CheckBox yesCheck;
     private CheckBox noCheck;
+    private String userType = "";
 
     //Global variables for date of birth selection and storage
     DateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -96,12 +97,16 @@ public class CreateProfileActivity extends AppCompatActivity {
             etEmergencyContact.setError("Field Required");
             emptyField = true;
         }
+        if(!yesCheck.isChecked()&&!noCheck.isChecked()){
+            yesCheck.setError("Field Required");
+            emptyField = true;
+        }
 
         //If there are no empty fields, insert user into database
         if(emptyField==false){
             DatabaseController db = new DatabaseController(this);
             db.open();
-            db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirthString, ecID, ecNumber);
+            db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirthString, ecID, ecNumber, userType);
             db.close();
             Intent i = new Intent(this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
@@ -181,9 +186,11 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     public void yesCheck(View v){
         noCheck.setChecked(false);
+        userType = "primaryUser";
     }
 
     public void noClick(View v){
         yesCheck.setChecked(false);
+        userType = "emergencyContact";
     }
 }

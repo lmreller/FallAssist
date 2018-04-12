@@ -135,7 +135,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if(emptyField==false){
             DatabaseController db = new DatabaseController(this);
             db.open();
-            db.updateUser(userID, etEditFirstName.getText().toString(), etEditLastName.getText().toString(), userBirthdate, ecID, ecNumber);
+            db.updateUser(userID, etEditFirstName.getText().toString(), etEditLastName.getText().toString(), userBirthdate, ecID, ecNumber,MainActivity.getUserType());
             db.close();
             Intent i = new Intent();
             setResult(Activity.RESULT_OK, i);

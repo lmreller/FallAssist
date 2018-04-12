@@ -3,6 +3,7 @@ package com.struggleassist.View.Activities;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Controller.FallDetection;
@@ -32,6 +34,8 @@ import com.struggleassist.View.Contents.ViewProfileContent;
 import com.struggleassist.View.Notifications.NotificationController;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static String userType;
 
     private static final String BACK_STACK_ROOT_TAG = "root_fragment";
 
@@ -47,6 +51,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        DatabaseController db = new DatabaseController(ViewContext.getContext());
+        db.open();
+        Cursor c = db.getAllUsers();
+        c.moveToFirst();
+        userType = c.getString(c.getColumnIndex("userType"));
+        c.close();
+        db.close();
+
+        Toast.makeText(ViewContext.getContext(),getUserType(),Toast.LENGTH_LONG).show();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -161,6 +175,10 @@ public class MainActivity extends AppCompatActivity {
         db.reset();
         ViewContext.getContext().deleteDatabase("User");
         ViewContext.getContext().deleteDatabase("Records");
+    }
+
+    public static String getUserType(){
+        return userType;
     }
 
 }
