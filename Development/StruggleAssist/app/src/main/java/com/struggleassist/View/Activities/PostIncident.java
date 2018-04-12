@@ -159,10 +159,6 @@ public class PostIncident extends AppCompatActivity {
                 } else if (bottomNoSelected && !bottomYesSelected) {
                     responses.add("Did not have a headache prior to the fall");
                 }
-                topYes.setChecked(false);
-                topNo.setChecked(false);
-                bottomYes.setChecked(false);
-                bottomNo.setChecked(false);
                 break;
 
             case 2:
@@ -176,18 +172,12 @@ public class PostIncident extends AppCompatActivity {
                 } else if (bottomNoSelected && !bottomYesSelected) {
                     responses.add("Was never unconscious");
                 }
-                topYes.setChecked(false);
-                topNo.setChecked(false);
-                bottomYes.setChecked(false);
-                bottomNo.setChecked(false);
                 break;
 
             case 3:
                 if (topYesSelected) {
                     responses.add("The environment contributed to the fall: " + bfr);
                 }
-                topYes.setChecked(false);
-                topNo.setChecked(false);
                 break;
 
             case 4:
@@ -218,18 +208,5 @@ public class PostIncident extends AppCompatActivity {
         }
         //result.delete(result.length() - 2, result.length());//removes last ", "
         return result.toString();
-    }
-
-    public void topYes_Click(View v){
-        topNo.setChecked(false);
-    }
-    public void topNo_Click(View v){
-        topYes.setChecked(false);
-    }
-    public void bottomYes_Click(View v){
-        bottomNo.setChecked(false);
-    }
-    public void bottomNo_Click(View v){
-        bottomYes.setChecked(false);
     }
 }

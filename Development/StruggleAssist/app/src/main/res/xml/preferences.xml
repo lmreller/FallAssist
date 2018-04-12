@@ -10,18 +10,6 @@
         android:defaultValue="true"/>
 
     <android.support.v7.preference.SwitchPreferenceCompat
-        android:key="pref_enable_sound"
-        android:title="Enable Notification Sounds"
-        android:summary="Turn notification sounds on or off"
-        android:defaultValue="true"/>
-
-    <android.support.v7.preference.SwitchPreferenceCompat
-        android:key="pref_enable_vibration"
-        android:title="Enable Notification Vibration"
-        android:summary="Turn notification sounds on or off"
-        android:defaultValue="true"/>
-
-    <android.support.v7.preference.SwitchPreferenceCompat
         android:key="pref_enable_phone"
         android:title="Enable Phone Calls"
         android:summary="Dev Setting: Enables phone calling"

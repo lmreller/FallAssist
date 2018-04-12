@@ -77,7 +77,6 @@
     <string name="title_activity_create_profile">CreateProfileActivity</string>
     <string name="title_activity_edit_profile">EditProfileActivity</string>
     <string name="title_activity_edit_record">EditRecordActivity</string>
-    <string name="title_activity_post_incident">PostIncident</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -86,5 +85,4 @@
     <string name="action_profile">Profile</string>
     <string name="action_incident_reports">Incident Reports</string>
     <string name="action_settings">Settings</string>
-
 </resources>

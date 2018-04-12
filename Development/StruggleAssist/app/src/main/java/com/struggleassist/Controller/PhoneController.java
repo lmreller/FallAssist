@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.telephony.SmsManager;
-import android.view.View;
 import android.widget.Toast;
 
 import com.struggleassist.Model.ViewContext;

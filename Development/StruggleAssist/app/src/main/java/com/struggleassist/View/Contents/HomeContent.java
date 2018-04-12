@@ -26,7 +26,6 @@ public class HomeContent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         super.onCreateView(inflater,container,savedInstanceState);
-        getActivity().setTitle(R.string.action_home);
 
         //Since there is a fragment within this fragment, this block is necessary to make sure we don't duplicate the child
         if(view != null){
@@ -41,6 +40,7 @@ public class HomeContent extends Fragment {
         }
 
 
+        getActivity().setTitle(R.string.action_home);
 
         Button bResetDB = (Button) view.findViewById(R.id.bResetButton);
         bResetDB.setOnClickListener(new View.OnClickListener() {
@@ -57,13 +57,6 @@ public class HomeContent extends Fragment {
     public void onResume(){
         super.onResume();
         getActivity().setTitle(R.string.action_home);
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
-//        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.);
-//        getActivity().getSupportFragmentManager().beginTransaction().remove(fragment);
     }
 
     public void resetDB(){

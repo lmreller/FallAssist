@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
-import com.struggleassist.Controller.FallDetection;
 import com.struggleassist.R;
 
 import java.text.DateFormat;
@@ -56,7 +55,6 @@ public class CreateProfileActivity extends AppCompatActivity {
     String ecID = null;
     String ecName = null;
     String ecNumber = null;
-    String userType = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,16 +96,12 @@ public class CreateProfileActivity extends AppCompatActivity {
             etEmergencyContact.setError("Field Required");
             emptyField = true;
         }
-        if(!yesCheck.isChecked() && !noCheck.isChecked()){
-            yesCheck.setError("Option must be selected");
-            emptyField = true;
-        }
 
         //If there are no empty fields, insert user into database
         if(emptyField==false){
             DatabaseController db = new DatabaseController(this);
             db.open();
-            db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirthString, ecID, ecNumber, userType);
+            db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirthString, ecID, ecNumber);
             db.close();
             Intent i = new Intent(this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
@@ -187,11 +181,9 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     public void yesCheck(View v){
         noCheck.setChecked(false);
-        userType = FallDetection.USER_TYPE_PRIMARY;
     }
 
     public void noClick(View v){
         yesCheck.setChecked(false);
-        userType = FallDetection.USER_TYPE_CONTACT;
     }
 }

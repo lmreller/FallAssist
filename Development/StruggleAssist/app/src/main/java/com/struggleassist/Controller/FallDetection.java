@@ -5,10 +5,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
@@ -39,9 +37,6 @@ import java.util.Collections;
 
 public class FallDetection extends Service {
 
-    public static final String USER_TYPE_PRIMARY = "primaryUser";
-    public static final String USER_TYPE_CONTACT = "emergencyContact";
-
     private static final int timerLength = 1000;
     private static final int tickLength = 50;
 
@@ -55,7 +50,6 @@ public class FallDetection extends Service {
     private static String address;
     private static int uniqueID = 2112;
 
-    private static String userType;
     private static SharedPreferences settings;
     private static boolean fallDetectionPref;
 
@@ -81,17 +75,6 @@ public class FallDetection extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
-        DatabaseController db = new DatabaseController(ViewContext.getContext());
-        db.open();
-        Cursor cursor = db.getAllUsers();
-        cursor.moveToFirst();
-        userType = cursor.getString(cursor.getColumnIndex("userType"));
-        cursor.close();
-        db.close();
-
-
-
-
         mFallDetection = this;
 
         /*----------------BEGIN BUILDING THE SERVICE NOTIFICATION----------------*/
@@ -110,9 +93,7 @@ public class FallDetection extends Service {
                 stopService(serviceIntent);
             }
 
-            //userType == primaryUser
-
-            if (USER_TYPE_PRIMARY.equals(userType) && !NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
+            if (!NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
                 startDetection();
 
                 PhoneController phoneController = new PhoneController();
@@ -122,7 +103,6 @@ public class FallDetection extends Service {
                 switch (intent.getAction()) {
 
                     case NotificationController.CONFIRM_ACTION:                 //Confirm: Make call, get address, sendSMS, stop recording
-
                         phoneController.makeCall(ecNumber);                         //makeCall
                         address = RecordingController.getAddress();                 //Get address
 
@@ -137,14 +117,6 @@ public class FallDetection extends Service {
                     default:
                         break;
                 }
-            }
-
-            //userType == emergencyContact
-            if(USER_TYPE_CONTACT.equals(userType)){
-                BroadcastReceiver messageListener = new MessageListener();
-                IntentFilter filter = new IntentFilter();
-                filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-                this.registerReceiver(messageListener,filter);
             }
         /*-----------------END HANDLING THE SERVICE NOTIFICATION-----------------*/
 

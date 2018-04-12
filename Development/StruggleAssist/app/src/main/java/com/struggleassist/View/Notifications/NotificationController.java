@@ -3,11 +3,6 @@ package com.struggleassist.View.Notifications;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
@@ -18,7 +13,6 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -28,8 +22,6 @@ import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.LaunchActivity;
-
-import static com.struggleassist.Model.ViewContext.getContext;
 
 /**
  * Created by Ryan on 3/1/2018.
@@ -47,10 +39,6 @@ public class NotificationController {
 
     private static final int notificationTimerLength = 30000;
     private static final int notificationTickLength = 1000;
-
-    private static SharedPreferences settings;
-    private static boolean notificationSound;
-    private static boolean notificationVibration;
 
     private static final String CHANNEL_ID = "fall_detection_channel";
     public static CountDownTimer notificationTimer = new CountDownTimer(notificationTimerLength,notificationTickLength){
@@ -85,11 +73,6 @@ public class NotificationController {
 
     public static NotificationCompat.Builder getNotificationBuilder(String action){
 
-
-        settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
-        notificationSound = settings.getBoolean("pref_enable_sound", false);
-        notificationVibration = settings.getBoolean("pref_enable_vibration",false);
-
         Log.d("NotificationController","getNotificationBuilder");   
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(ViewContext.getContext());
@@ -117,35 +100,11 @@ public class NotificationController {
             builder.setContent(alertView)
                     .setSmallIcon(R.mipmap.struggleassist_icon)
                     .setAutoCancel(true)
-                    .setLights(Color.RED,1000,1000)
-                    .setOngoing(false)
+                    .setOngoing(true)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setCustomBigContentView(alertView)
                     .setContentIntent(pIntent);
 
-            if(notificationSound) {
-                AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                if (alarmSound == null) {
-                    alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                    if (alarmSound == null) {
-                        alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    }
-                }
-                if(alarmSound!=null){
-                    builder.setSound(alarmSound);
-                }
-                audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION,audioManager.getStreamMaxVolume(AudioManager.STREAM_RING),0);
-
-                NotificationManager mNotificationMangager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                if(Build.VERSION.SDK_INT>=23)
-                   mNotificationMangager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
-            }
-            if(notificationVibration){
-                builder.setVibrate(new long[]{0,3000,1000,3000,1000,3000,1000,3000,1000});
-            }
             notificationTimer.start();
 
         } else {                //NotificationController.IDLE_ACTION -- default to this
@@ -160,13 +119,10 @@ public class NotificationController {
             builder.setContent(idleView)
                     .setSmallIcon(R.mipmap.struggleassist_icon)
                     .setAutoCancel(true)
-                    .setOngoing(false)
+                    .setOngoing(true)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setCustomBigContentView(idleView)
-                    .setContentIntent(pIntent)
-                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                    .setVibrate(new long[]{0})
-                    .setLights(Color.TRANSPARENT,0,0);
+                    .setContentIntent(pIntent);
         }
         return builder;
     }
