@@ -83,7 +83,7 @@ public class MessageListener extends BroadcastReceiver {
                             if(notificationSound) {
                                 AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
 
-                                alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                                 if (alarmSound == null) {
                                     alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                                     if (alarmSound == null) {
