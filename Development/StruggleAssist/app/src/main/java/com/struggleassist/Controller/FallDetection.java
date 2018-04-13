@@ -56,8 +56,9 @@ public class FallDetection extends Service {
     private static String address;
     private static int uniqueID = 2112;
 
-    private static SharedPreferences settings;
-    private static boolean fallDetectionPref;
+    private static SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
+
+    private static float threshold;
 
     private static FallDetection mFallDetection = null;
 
@@ -83,6 +84,8 @@ public class FallDetection extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+
+
 
         mFallDetection = this;
 
@@ -126,6 +129,7 @@ public class FallDetection extends Service {
                         case NotificationController.CANCEL_ACTION:                  //Cancel: Stop recording
                             RecordingController.stopRecording(intent.getAction(), incidentScore);    //Stop recording
                             NotificationController.notificationTimer.cancel();                             //cancel timer (already finished on timeout)
+                            TrendAnalysis.updateValue();
                             break;
                         default:
                             break;
@@ -204,7 +208,11 @@ public class FallDetection extends Service {
 
                 incidentScore = findIncidentScore();
 
-                if(incidentScore > 1.6){
+                threshold = settings.getFloat("trend_analysis_value",1.5F);
+                //Toast.makeText(ViewContext.getContext(),"Threshold: "+incidentScore,Toast.LENGTH_LONG).show();
+
+                if(incidentScore > threshold){
+                //if(incidentScore>1.5){    //Static threshold
                     //Fall has been detected
                     Intent startIntent = new Intent(ViewContext.getContext(), FallDetection.class);
                     startIntent.setAction(NotificationController.ALERT_ACTION);

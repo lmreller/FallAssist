@@ -5,12 +5,14 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -26,6 +28,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
+import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 
 import java.text.DateFormat;
@@ -104,6 +107,13 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         //If there are no empty fields, insert user into database
         if(emptyField==false){
+
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
+            SharedPreferences.Editor editor = pref.edit();
+            float startingThreshold = (float) 1.5;
+            editor.putFloat("trend_analysis_value",startingThreshold);
+            editor.commit();
+
             DatabaseController db = new DatabaseController(this);
             db.open();
             db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirthString, ecID, ecNumber, userType);
