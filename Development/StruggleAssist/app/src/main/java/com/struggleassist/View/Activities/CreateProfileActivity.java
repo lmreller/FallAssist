@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.R;
+import com.struggleassist.View.Notifications.SimpleEula;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -61,6 +62,16 @@ public class CreateProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
+
+        //EULA
+        DatabaseController db = new DatabaseController(this);
+        boolean exists;
+        db.open();
+        exists = db.userExists();
+        db.close();
+        if (!exists) {
+            new SimpleEula(this).show();
+        }
 
         //EditText Fields
         etFirstName = (EditText) findViewById(R.id.etFirstName);
