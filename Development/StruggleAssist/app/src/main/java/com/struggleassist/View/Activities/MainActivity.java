@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
         c.close();
         db.close();
 
-        Toast.makeText(ViewContext.getContext(),getUserType(),Toast.LENGTH_LONG).show();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

@@ -5,13 +5,18 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -26,6 +31,7 @@ import com.struggleassist.Controller.SensorControllers.SensorController;
 import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
 import com.struggleassist.View.Activities.LaunchActivity;
+import com.struggleassist.View.Activities.MainActivity;
 import com.struggleassist.View.Notifications.NotificationController;
 
 import java.util.ArrayList;
@@ -98,30 +104,54 @@ public class FallDetection extends Service {
                 stopService(serviceIntent);
             }
 
-            if (!NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
-                startDetection();
+            if(MainActivity.getUserType().equals("primaryUser")) {
 
-                PhoneController phoneController = new PhoneController();
-                String userName = getUserName();
-                String ecNumber = getEmergencyContactNumber();
+                if (!NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
+                    startDetection();
 
-                switch (intent.getAction()) {
+                    PhoneController phoneController = new PhoneController();
+                    String userName = getUserName();
+                    String ecNumber = getEmergencyContactNumber();
 
-                    case NotificationController.CONFIRM_ACTION:                 //Confirm: Make call, get address, sendSMS, stop recording
-                        phoneController.makeCall(ecNumber);                         //makeCall
-                        address = RecordingController.getAddress();                 //Get address
+                    switch (intent.getAction()) {
+
+                        case NotificationController.CONFIRM_ACTION:                 //Confirm: Make call, get address, sendSMS, stop recording
+                            phoneController.makeCall(ecNumber);                         //makeCall
+                            address = RecordingController.getAddress();                 //Get address
 
 
-                    case NotificationController.TIMEOUT_ACTION:                 //Timeout: Get address, send SMS, stop recording
-                        phoneController.sendSMS(userName, ecNumber, address);       //sendSMS
+                        case NotificationController.TIMEOUT_ACTION:                 //Timeout: Get address, send SMS, stop recording
+                            phoneController.sendSMS(userName, ecNumber, address);       //sendSMS
 
-                    case NotificationController.CANCEL_ACTION:                  //Cancel: Stop recording
-                        RecordingController.stopRecording(intent.getAction(), incidentScore);    //Stop recording
-                        NotificationController.notificationTimer.cancel();                             //cancel timer (already finished on timeout)
-                        break;
-                    default:
-                        break;
+                        case NotificationController.CANCEL_ACTION:                  //Cancel: Stop recording
+                            RecordingController.stopRecording(intent.getAction(), incidentScore);    //Stop recording
+                            NotificationController.notificationTimer.cancel();                             //cancel timer (already finished on timeout)
+                            break;
+                        default:
+                            break;
+                    }
                 }
+            }
+
+            if(MainActivity.getUserType().equals("emergencyContact")){
+
+                DatabaseController db = new DatabaseController(ViewContext.getContext());
+                db.open();
+                Cursor dbCursor = db.getAllUsers();
+                dbCursor.moveToFirst();
+                String ecID = dbCursor.getString(dbCursor.getColumnIndex("emergencyContactID"));
+                dbCursor.close();
+                db.close();
+
+                Cursor cursor = ViewContext.getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Phone._ID + " ='" + ecID + "'", null, null);
+                cursor.moveToFirst();
+                String ecNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+
+                SmsListener listener = new SmsListener();
+                listener.setEcNumber(ecNumber);
+                IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+                registerReceiver(listener,filter);
             }
         /*-----------------END HANDLING THE SERVICE NOTIFICATION-----------------*/
 

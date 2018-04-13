@@ -126,15 +126,8 @@ public class NotificationController {
             if(notificationSound) {
                 AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
 
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                if (alarmSound == null) {
-                    alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                    if (alarmSound == null) {
-                        alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    }
-                }
-                if(alarmSound!=null){
-                    builder.setSound(alarmSound);
+                if(getAlarmSound()!=null){
+                    builder.setSound(getAlarmSound());
                 }
                 audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION,audioManager.getStreamMaxVolume(AudioManager.STREAM_RING),0);
@@ -144,7 +137,7 @@ public class NotificationController {
                     mNotificationMangager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
             }
             if(notificationVibration){
-                builder.setVibrate(new long[]{0,3000,1000,3000,1000,3000,1000,3000,1000});
+                builder.setVibrate(new long[]{0,3000,1000,3000,1000,3000});
             }
             notificationTimer.start();
 
@@ -171,5 +164,14 @@ public class NotificationController {
         return builder;
     }
 
-
+    public static Uri getAlarmSound(){
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        if (alarmSound == null) {
+            alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            if (alarmSound == null) {
+                alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+        }
+        return alarmSound;
+    }
 }
