@@ -130,8 +130,8 @@ public class CreateProfileActivity extends AppCompatActivity {
             db.insertUser(etFirstName.getText().toString(), etLastName.getText().toString(), dateOfBirthString, ecID, ecNumber, userType);
             db.close();
             Intent i = new Intent(this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
+            finish();
         }
     }
 
