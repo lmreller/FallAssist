@@ -2,7 +2,6 @@ package com.struggleassist.Model;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,6 @@ public class RecordAdapter extends ArrayAdapter<Record> {
 
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         } catch(Exception e){
-            Log.e("RecordAdapter:",e.toString());
         }
     }
 

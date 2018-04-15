@@ -2,9 +2,8 @@ package com.struggleassist.View.Contents;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,8 @@ import android.widget.TextView;
 
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.R;
-import com.struggleassist.View.Activities.CreateProfileActivity;
 import com.struggleassist.View.Activities.EditProfileActivity;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -117,7 +114,6 @@ public class ViewProfileContent extends Fragment {
             }
             age = currentCal.get(Calendar.YEAR) - dobCal.get(Calendar.YEAR) + factor;
         } catch (ParseException e){
-            Log.d("ViewProfileContent","Unable to parse date");
         }
         return age;
     }

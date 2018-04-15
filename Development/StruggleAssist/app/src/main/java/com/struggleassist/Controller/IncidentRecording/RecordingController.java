@@ -3,13 +3,9 @@ package com.struggleassist.Controller.IncidentRecording;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
@@ -46,8 +42,6 @@ public class RecordingController {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 //Got the location!
-                Log.d("GPSL", Double.toString(latitude));
-                Log.d("GPSL", Double.toString(longitude));
 
                 ReverseGeocoder geo = new ReverseGeocoder(latitude, longitude);
                 setAddress(geo.getLocalAddress());
@@ -73,7 +67,6 @@ public class RecordingController {
             record.setIncidentLocation(address);
         if(videoPath != null)
             record.setIncidentVideo(videoPath);
-        Log.d("RecordingController: ","Insert Record");
         db.open();
         db.insertRecord(record);
         db.close();
@@ -102,7 +95,6 @@ public class RecordingController {
                 country = addresses.get(0).getCountryName();
                 postalCode = addresses.get(0).getPostalCode();
                 knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-                Log.d("ADDRESS",address);
             } catch (IOException e) {
                 e.printStackTrace();
             }

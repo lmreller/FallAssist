@@ -10,11 +10,10 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
+import com.struggleassist.Model.Record;
 
 //import com.struggleassist.Model.Record;
-import com.struggleassist.Model.Record;
-import com.struggleassist.Model.ViewContext;
 
 public class DatabaseController {
     //user table
@@ -75,7 +74,6 @@ public class DatabaseController {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
             //db.execSQL("DROP TABLE IF EXISTS contacts");
             onCreate(db);
         }
@@ -104,7 +102,6 @@ public class DatabaseController {
         mcursor.moveToFirst();
         int icount = mcursor.getInt(0);
         boolean exists = icount > 0;
-        Log.d("COUNT_USER", Integer.toString(icount));
         return exists;
     }
 
@@ -167,8 +164,6 @@ public class DatabaseController {
         initialValues.put(KEY_NOTES,     record.getIncidentNotes());
         initialValues.put(KEY_SCORE,     Float.toString(record.getIncidentScore()));
         initialValues.put(KEY_RESPONSE,  record.getUserResponse());
-        Log.d("DBInsertRecord:", record.getId() + "|" + record.getDateOfIncident() + "|" + record.getIncidentLocation() + "|" +
-                record.getIncidentVideo() + "|" + record.getIncidentNotes() + "|" + Float.toString(record.getIncidentScore()) + "|" + record.getUserResponse());
         return db.insert(TABLE_RECORDS, null, initialValues);
     }
 
@@ -182,7 +177,6 @@ public class DatabaseController {
         args.put(KEY_NOTES,     record.getIncidentNotes());
         args.put(KEY_SCORE,     record.getIncidentScore());
         args.put(KEY_RESPONSE,  record.getUserResponse());
-        Log.d("DBUpdateRecord:",record.getIncidentNotes());
         return db.update(TABLE_RECORDS, args, KEY_RID + "=?", new String[]{record.getId()}) > 0;
     }
 

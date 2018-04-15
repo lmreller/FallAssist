@@ -38,7 +38,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/struggleassist_icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar" >
+
         <service
             android:name=".Controller.FallDetection"
             android:exported="false" />
