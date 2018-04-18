@@ -3,11 +3,8 @@ package com.struggleassist.Controller.SensorControllers;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.util.Log;
 
 import com.struggleassist.Controller.FallDetection;
-
-import java.util.ArrayList;
 
 /**
  * Created by lucas on 9/14/2017.
@@ -93,12 +90,9 @@ public class AccelerationController extends SensorController {
 
         double trueAccel = Math.sqrt((xValue*xValue)+(yValue*yValue)+(zValue*zValue));
 
-//        Log.d("Accel: ",type+ " trueAccel: " + trueAccel + " X:"+ xValue +"| Y:"+yValue +"| Z:"+zValue);
-
         if (type) {
             //trigger fall detection class somewhere in here based on conditionals
             if ((trueAccel > startThreshold)) {
-                Log.d("FALL", "Potential Fall");
                 FallDetection fallDetection = FallDetection.getInstance();
                 fallDetection.runAlgorithm();
                 linearAcceleration[0] = 0;

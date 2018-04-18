@@ -2,9 +2,8 @@ package com.struggleassist.View.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -104,7 +103,6 @@ public class PostIncident extends AppCompatActivity {
             freeResponse.setVisibility(View.INVISIBLE);
             firstCt +=2;
             secondCt +=2;
-            Log.d("Symptoms:", "set" + pageCt);
         }
         else{
             topQuestion.setText(questions.get(firstCt).getQuestion().toString());
@@ -114,7 +112,6 @@ public class PostIncident extends AppCompatActivity {
                 bottomQuestion.setVisibility(View.INVISIBLE);
                 bottomYes.setVisibility(View.INVISIBLE);
                 bottomNo.setVisibility(View.INVISIBLE);
-                Log.d("Symptoms:", "set" + pageCt);
             }
             else{
                 freeResponse.setVisibility(View.VISIBLE);
@@ -125,7 +122,6 @@ public class PostIncident extends AppCompatActivity {
                 bottomYes.setVisibility(View.INVISIBLE);
                 bottomNo.setVisibility(View.INVISIBLE);
                 button.setText("Submit");
-                Log.d("Symptoms:", "set" + pageCt);
             }
             firstCt++;
         }
@@ -139,7 +135,6 @@ public class PostIncident extends AppCompatActivity {
     }
 
     public void button_onClick(View v) {
-        Log.d("Symptoms:", "onClick: " + pageCt);
         boolean topYesSelected = topYes.isChecked();
         boolean bottomYesSelected = bottomYes.isChecked();
         boolean topNoSelected = topNo.isChecked();
@@ -195,7 +190,6 @@ public class PostIncident extends AppCompatActivity {
                 break;
 
             default:
-                Log.d("Symptoms:", Integer.toString(pageCt));
                 break;
         }
         if (pageCt < 5)
@@ -204,7 +198,6 @@ public class PostIncident extends AppCompatActivity {
 
             Intent i = new Intent();
             i.putExtra("NotesString",getResponsesAsString());
-            Log.d("Symptoms:", "Why: " + getResponsesAsString());
             setResult(Activity.RESULT_OK, i);
             finish();
         }

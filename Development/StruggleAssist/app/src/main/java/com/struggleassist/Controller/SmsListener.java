@@ -83,7 +83,6 @@ public class SmsListener extends BroadcastReceiver {
                         }
                     }
                 }catch(Exception e){
-                    //Log.d("Exception caught",e.getMessage());
                 }
             }
         }

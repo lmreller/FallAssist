@@ -2,35 +2,20 @@ package com.struggleassist.Controller;
 
 
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.provider.ContactsContract;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.RemoteViews;
-import android.widget.Toast;
 
-import com.struggleassist.Controller.IncidentRecording.LocationRecorder;
 import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Controller.SensorControllers.AccelerationController;
 import com.struggleassist.Controller.SensorControllers.GravityController;
-import com.struggleassist.Controller.SensorControllers.SensorController;
 import com.struggleassist.Model.ViewContext;
-import com.struggleassist.R;
-import com.struggleassist.View.Activities.LaunchActivity;
 import com.struggleassist.View.Activities.MainActivity;
 import com.struggleassist.View.Notifications.NotificationController;
 
@@ -67,8 +52,6 @@ public class FallDetection extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
-
-        Log.d("Fall Detection: ","onCreate()");
 
 //        if(Build.VERSION.SDK_INT >= 26){
 //            NotificationController.createChannel();
@@ -177,7 +160,6 @@ public class FallDetection extends Service {
 
     public static void startDetection() {
         accel = AccelerationController.getInstance(ViewContext.getContext());
-        Log.d("START", "Start start()");
         accel.setType(true);
         accel.start();
     }
@@ -188,7 +170,6 @@ public class FallDetection extends Service {
     }
 
     public void runAlgorithm(){
-        Log.d("RUN", "Start runAlgorithm()");
 
         grav = new GravityController(ViewContext.getContext());
         accel.setType(false);
@@ -245,13 +226,6 @@ public class FallDetection extends Service {
         float avg = findAvg();
 
         float score = (Q1Weight*Q1) + (Q3Weight * Q3) + (maxWeight * max) + (avgWeight * avg);
-
-        Log.d("Q1", Float.toString(Q1));
-        Log.d("MED", Float.toString(med));
-        Log.d("Q3", Float.toString(Q3));
-        Log.d("MAX", Float.toString(max));
-        Log.d("AVG", Float.toString(avg));
-        Log.d("SCORE", Float.toString(score));
 
         return score;
     }

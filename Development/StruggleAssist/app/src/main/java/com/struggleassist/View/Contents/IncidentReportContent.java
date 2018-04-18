@@ -2,23 +2,19 @@ package com.struggleassist.View.Contents;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.struggleassist.Controller.DatabaseController;
 import com.struggleassist.Model.Record;
 import com.struggleassist.Model.RecordAdapter;
-import com.struggleassist.Model.ViewContext;
 import com.struggleassist.R;
-import com.struggleassist.View.Activities.PostIncident;
 import com.struggleassist.View.Activities.ViewRecordActivity;
 
 import java.util.ArrayList;
@@ -112,7 +108,6 @@ public class IncidentReportContent extends Fragment {
 
                     list.add(record);
                 }catch(Exception e){
-                    Log.d("IncidentReportContent:",e.toString());
                 }
             }
         }
