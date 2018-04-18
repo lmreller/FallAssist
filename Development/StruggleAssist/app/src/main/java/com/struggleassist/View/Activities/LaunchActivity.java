@@ -32,9 +32,6 @@ public class LaunchActivity extends AppCompatActivity {
                                          Manifest.permission.READ_PHONE_STATE,
                                          Manifest.permission.READ_CONTACTS,
                                          Manifest.permission.ACCESS_FINE_LOCATION,
-                                         Manifest.permission.CAMERA,
-                                         Manifest.permission.RECORD_AUDIO,
-                                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                          Manifest.permission.SYSTEM_ALERT_WINDOW};
 
     @Override
@@ -77,7 +74,7 @@ public class LaunchActivity extends AppCompatActivity {
                 //This will allow the user to use the device and application as needed during an incident while the phone still records
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:"+getPackageName()));
-                startActivityForResult(intent,OVERLAY_CODE);
+                //startActivityForResult(intent,OVERLAY_CODE);
             }
 
         }
