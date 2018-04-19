@@ -40,16 +40,6 @@ public class HomeContent extends Fragment {
             //Return view as is
         }
 
-
-
-        Button bResetDB = (Button) view.findViewById(R.id.bResetButton);
-        bResetDB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                resetDB();
-            }
-        });
-
         return view;
     }
 
@@ -60,16 +50,9 @@ public class HomeContent extends Fragment {
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
 //        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.);
 //        getActivity().getSupportFragmentManager().beginTransaction().remove(fragment);
-    }
-
-    public void resetDB(){
-        DatabaseController db = new DatabaseController(ViewContext.getContext());
-        db.open();
-        db.reset();
-        db.close();
     }
 }
