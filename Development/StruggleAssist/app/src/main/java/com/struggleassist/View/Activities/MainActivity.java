@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         settings = PreferenceManager.getDefaultSharedPreferences(ViewContext.getContext());
-        fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", false);
+        fallDetectionPref = settings.getBoolean("pref_enable_fall_detection", true);
         if (fallDetectionPref)
             startService(startIntent);
 

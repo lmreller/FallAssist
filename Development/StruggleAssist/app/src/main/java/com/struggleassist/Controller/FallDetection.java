@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 
 import com.struggleassist.Controller.IncidentRecording.RecordingController;
 import com.struggleassist.Controller.SensorControllers.AccelerationController;
@@ -191,7 +192,7 @@ public class FallDetection extends Service {
 
                 threshold = settings.getFloat("trend_analysis_value",1.5F);
                 //Toast.makeText(ViewContext.getContext(),"Threshold: "+incidentScore,Toast.LENGTH_LONG).show();
-
+                Log.d("THRESHOLD",String.valueOf(threshold));
                 if(incidentScore > threshold){
                 //if(incidentScore>1.5){    //Static threshold
                     //Fall has been detected
