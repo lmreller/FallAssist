@@ -24,13 +24,13 @@
     <android.support.v7.preference.SwitchPreferenceCompat
         android:key="pref_enable_phone"
         android:title="Enable Phone Calls"
-        android:summary="Enables phone calling"
+        android:summary="Dev Setting: Enables phone calling"
         android:defaultValue="true" />
 
     <android.support.v7.preference.SwitchPreferenceCompat
         android:key="pref_enable_sms"
         android:title="Enable SMS"
-        android:summary="Enables SMS messaging"
+        android:summary="Dev Setting: Enables SMS messaging"
         android:defaultValue="true" />
 
 </android.support.v7.preference.PreferenceScreen>
