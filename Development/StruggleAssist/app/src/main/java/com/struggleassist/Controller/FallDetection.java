@@ -228,6 +228,13 @@ public class FallDetection extends Service {
 
         float score = (Q1Weight*Q1) + (Q3Weight * Q3) + (maxWeight * max) + (avgWeight * avg);
 
+        Log.d("Q1",String.valueOf(Q1));
+        Log.d("med",String.valueOf(med));
+        Log.d("Q3",String.valueOf(Q3));
+        Log.d("max",String.valueOf(max));
+        Log.d("avg",String.valueOf(avg));
+        Log.d("score",String.valueOf(score));
+
         return score;
     }
 

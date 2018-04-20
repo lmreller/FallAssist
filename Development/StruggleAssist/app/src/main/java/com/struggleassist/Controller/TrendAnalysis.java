@@ -34,6 +34,11 @@ public class TrendAnalysis {
     }
 
     private static Tuple<Double,Double> getInterval(double[] samples, double interval){
+        if(samples.length==0){
+            Tuple<Double,Double> t = new Tuple<>(0.0,0.0);
+            return t;
+        }
+
         double mean = getMean(samples);
         double stdDev = getStdDev(samples);
 
@@ -114,6 +119,10 @@ public class TrendAnalysis {
 
     private static double getMean(double[] m){
         double sum = 0;
+        if(m.length == 0){
+            return 0;
+        }
+
         for(double num: m){
             sum += num;
         }
@@ -122,6 +131,11 @@ public class TrendAnalysis {
 
     private static double getStdDev(double[] s){
         double squaredDifferenceSum = 0.0;
+
+        if(s.length == 0){
+            return 0;
+        }
+
         double mean = getMean(s);
 
         for(double num: s){
