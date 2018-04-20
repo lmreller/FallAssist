@@ -87,8 +87,7 @@ public class FallDetection extends Service {
             if (NotificationController.STOP_ACTION.equalsIgnoreCase(intent.getAction())) {
                 stopDetection();
 
-                Intent serviceIntent = new Intent(this, FallDetection.class);
-                stopService(serviceIntent);
+                this.stopSelf();
             }
 
             if(MainActivity.getUserType().equals("primaryUser")) {
@@ -175,6 +174,7 @@ public class FallDetection extends Service {
         grav = new GravityController(ViewContext.getContext());
         accel.setType(false);
         grav.start();
+        fallData.clear();
 
 
         new CountDownTimer(timerLength,tickLength){
